@@ -27,6 +27,7 @@ contract Market is Ownable {
         uint256 noBetAmount;
         uint256 rewardAmount;
         uint256 yesBetAmount;
+        uint256 shareAmount;
         mapping(uint256 => bool) betOn;
     }
 
@@ -174,6 +175,7 @@ contract Market is Ownable {
         
         userInfo[msg.sender].betOn[sellInfo[msg.sender][_listNo].listOn] = true;
         eachUser[totalUsers] = msg.sender;
+        totalUsers++;
 
         bool success = usdcToken.transferFrom(
             msg.sender,
@@ -189,19 +191,47 @@ contract Market is Ownable {
         
         require(winningIndex == 0 || winningIndex == 1, " either bet yes or no.");
         require(block.timestamp >  marketInfo[address(this)].endTime, "Market has not ended");
+       
+        uint256 totalAmount = marketInfo[address(this)].totalAmount;
 
-        for (uint256 i = 0; i < totalUsers; i++) {
-            
-            if( userInfo[address(this)][eachUser[i]].betOn == winningIndex) {
-
-                uint256 _rewardAmount = calculatePotentialReturn(userInfo[address(this)][eachUser[i]].noOfShares);
-                userInfo[address(this)][eachUser[i]].rewardAmount = _rewardAmount;
-                
-                bool success = usdcToken.transferFrom(address(this),eachUser[i], _rewardAmount);
-                require(success, "Transfer failed");
+        for(uint256 i = 0; i < totalUsers; i++){
+            if(winningIndex == 0 && userInfo[eachUser[i]].noBetAmount != 0){
+                userInfo[eachUser[i]].shareAmount = calculateShares(
+                    userInfo[eachUser[i]].noBetAmount,
+                    winningIndex
+                );
+            }else{
+                userInfo[eachUser[i]].shareAmount = calculateShares(
+                    userInfo[eachUser[i]].yesBetAmount,
+                    winningIndex
+                );
             }
         }
+        
+        if(winningIndex == 0){
 
+            uint256 totalSharesNo = marketInfo[address(this)].totalBetsOnNo;
+            uint256 payoutPerShareNo = totalAmount / totalSharesNo;
+        }else{
+
+            uint256 totalSharesYes = marketInfo[address(this)].totalBetsOnYes;
+            uint256 payoutPerShareYes = totalAmount / totalSharesYes;
+        }
+       
+        for (uint256 i = 0; i < totalUsers; i++) {
+            
+            if(userInfo[eachUser[i]].betOn[winningIndex]) {
+                if(winningIndex == 0){
+
+                }else{
+
+                }
+
+                bool success = usdcToken.transferFrom(address(this),eachUser[i], _rewardAmount);
+                require(success, "Transfer failed");
+
+            }
+        }
     }
 
     function calculateShares(uint256 _amount, uint256 _betOn ) public view returns (uint256) {
