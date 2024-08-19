@@ -191,43 +191,40 @@ contract Market is Ownable {
         
         require(winningIndex == 0 || winningIndex == 1, " either bet yes or no.");
         require(block.timestamp >  marketInfo[address(this)].endTime, "Market has not ended");
-       
-        uint256 totalAmount = marketInfo[address(this)].totalAmount;
+
+        uint256 totalWinnerShare;
 
         for(uint256 i = 0; i < totalUsers; i++){
+            
             if(winningIndex == 0 && userInfo[eachUser[i]].noBetAmount != 0){
+                
                 userInfo[eachUser[i]].shareAmount = calculateShares(
                     userInfo[eachUser[i]].noBetAmount,
                     winningIndex
                 );
+                totalWinnerShare += userInfo[eachUser[i]].shareAmount;
+
             }else{
+               
                 userInfo[eachUser[i]].shareAmount = calculateShares(
                     userInfo[eachUser[i]].yesBetAmount,
                     winningIndex
                 );
+                totalWinnerShare += userInfo[eachUser[i]].shareAmount;
             }
         }
-        
-        if(winningIndex == 0){
 
-            uint256 totalSharesNo = marketInfo[address(this)].totalBetsOnNo;
-            uint256 payoutPerShareNo = totalAmount / totalSharesNo;
-        }else{
-
-            uint256 totalSharesYes = marketInfo[address(this)].totalBetsOnYes;
-            uint256 payoutPerShareYes = totalAmount / totalSharesYes;
-        }
+        uint256 perShare = marketInfo[address(this)].totalAmount / totalWinnerShare;
        
         for (uint256 i = 0; i < totalUsers; i++) {
             
             if(userInfo[eachUser[i]].betOn[winningIndex]) {
-                if(winningIndex == 0){
 
-                }else{
-
-                }
-
-                bool success = usdcToken.transferFrom(address(this),eachUser[i], _rewardAmount);
+                bool success = usdcToken.transferFrom(
+                    address(this),
+                    eachUser[i],
+                    userInfo[eachUser[i]].shareAmount * perShare
+                );
                 require(success, "Transfer failed");
 
             }

@@ -561,6 +561,11 @@
 						"internalType": "uint256",
 						"name": "yesBetAmount",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "shareAmount",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -665,11 +670,11 @@
 			]
 		},
 		"FacctoryContract/WagerContract.sol": {
-			"keccak256": "0x8eb97d9fa2275b0a9a18911a1f7e2824bb7739fe54fe2caab51a1cc2df2f4701",
+			"keccak256": "0x70577f37d43c91e3d9ca4a7884fbaecb93e44bbea74e5dca1e4d53ddf30de2d4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0885e881d3435673c241e350c500233a3a60d2ee4154d63cb1da0c2dfa675260",
-				"dweb:/ipfs/QmPahDUC1vhcgwsTiVHg6mFsNcVRSKwqvsAjhs4im9eC3t"
+				"bzz-raw://abda0608fbd18a1c12fc1cf857166d8f8ad9374a947253897a21c8b5862fb1c0",
+				"dweb:/ipfs/QmNsGM3ZNy96BWGe4F1SfCzx5rGAUwb2PWzDvS5nBY43p3"
 			]
 		},
 		"hardhat/console.sol": {
