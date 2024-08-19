@@ -402,6 +402,143 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_market",
+						"type": "address"
+					}
+				],
+				"name": "readMarketInfo",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "endTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalBets",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "initialPriceYes",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "initialPriceNo",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalBetsOnYes",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalBetsOnNo",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_owner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_id",
+						"type": "uint256"
+					}
+				],
+				"name": "readSellInfo",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "list",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "sold",
+						"type": "bool"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "listOn",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_user",
+						"type": "address"
+					}
+				],
+				"name": "readUserInfo",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "listNo",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "noBetAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rewardAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "yesBetAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "shareAmount",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "renounceOwnership",
 				"outputs": [],
@@ -527,6 +664,30 @@
 						"internalType": "contract ERC20",
 						"name": "",
 						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_user",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_betIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "userBetOn",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -670,11 +831,11 @@
 			]
 		},
 		"FacctoryContract/WagerContract.sol": {
-			"keccak256": "0x70577f37d43c91e3d9ca4a7884fbaecb93e44bbea74e5dca1e4d53ddf30de2d4",
+			"keccak256": "0xf81fb3851bc74063b911c897f90039b90b54ad4c458662ce9136e3dee1f7638d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://abda0608fbd18a1c12fc1cf857166d8f8ad9374a947253897a21c8b5862fb1c0",
-				"dweb:/ipfs/QmNsGM3ZNy96BWGe4F1SfCzx5rGAUwb2PWzDvS5nBY43p3"
+				"bzz-raw://110df4bdfcdacdd0ee6b3778031017f937d605db2fd47d50cf48701cabd0b110",
+				"dweb:/ipfs/QmRtT4jqX2xdmLxwYnBQAsdP1uq9Jci6Lt6ciixuyTXmjr"
 			]
 		},
 		"hardhat/console.sol": {

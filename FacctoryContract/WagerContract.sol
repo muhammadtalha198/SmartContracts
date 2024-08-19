@@ -260,5 +260,64 @@ contract Market is Ownable {
         return (marketInfo[address(this)].initialPrice[0], marketInfo[address(this)].initialPrice[1]);
     }
 
+    function readMarketInfo(address _market) public view returns (
+        uint256 endTime,
+        uint256 totalBets,
+        uint256 totalAmount,
+        uint256 initialPriceYes,
+        uint256 initialPriceNo,
+        uint256 totalBetsOnYes,
+        uint256 totalBetsOnNo
+    ) {
+        return (
+            marketInfo[_market].endTime,
+            marketInfo[_market].totalBets,
+            marketInfo[_market].totalAmount,
+            marketInfo[_market].initialPrice[1], // Yes Price
+            marketInfo[_market].initialPrice[0], // No Price
+            marketInfo[_market].totalBetsOnYes,
+            marketInfo[_market].totalBetsOnNo
+        );
+    }
+
+    function readUserInfo(address _user) public view returns (
+        uint256 listNo,
+        uint256 noBetAmount,
+        uint256 rewardAmount,
+        uint256 yesBetAmount,
+        uint256 shareAmount
+    ) {
+        return (
+            userInfo[_user].listNo,
+            userInfo[_user].noBetAmount,
+            userInfo[_user].rewardAmount,
+            userInfo[_user].yesBetAmount,
+            userInfo[_user].shareAmount
+        );
+    }
+    function readSellInfo(address _owner, uint256 _id) public view returns (
+        bool list,
+        bool sold,
+        address owner,
+        uint256 price,
+        uint256 amount,
+        uint256 listOn
+    ) {
+
+        return (
+            sellInfo[_owner][_id].list,
+            sellInfo[_owner][_id].sold,
+            sellInfo[_owner][_id].owner,
+            sellInfo[_owner][_id].price,
+            sellInfo[_owner][_id].amount,
+            sellInfo[_owner][_id].listOn
+        );
+    }
+
+
+    function userBetOn(address _user, uint256 _betIndex) public view returns (bool) {
+        return userInfo[_user].betOn[_betIndex];
+    }
+
 
 }
