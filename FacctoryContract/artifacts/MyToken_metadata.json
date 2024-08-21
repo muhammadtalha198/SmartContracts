@@ -547,7 +547,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -602,11 +602,11 @@
 			]
 		},
 		"FacctoryContract/Usdc.sol": {
-			"keccak256": "0x60f550d1d4089ab59928bbc5805b71ba6e98873ed5e232bc7d4fae0fd3a58344",
+			"keccak256": "0xc9b15a4b22dee413576bdc2ee6ef084e3b013e00d8bbf52ec86c4729effa1ebf",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4bacddaad7e585aa39ed652af1137ac62007e2b537975c71bdfd51dc9e57e364",
-				"dweb:/ipfs/Qmb8svygyzu66ry6ukQXLtgsbuP21XpHgaYcgfzZJJ5AWD"
+				"bzz-raw://176e15a86a781bc7e8dc7be17c6b42fc6721db70cfe045c3a62b778fe9fcdc47",
+				"dweb:/ipfs/QmWoMrVL8irfULhpaLU8fEk4poCMKHHdWJEED2xoNGYmy4"
 			]
 		}
 	},

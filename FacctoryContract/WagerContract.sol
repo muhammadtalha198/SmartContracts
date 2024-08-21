@@ -74,7 +74,7 @@ contract Market is Ownable {
        
         require(_betOn == 0 || _betOn == 1, "you either bet yes or no.");
         require(_amount > 0, "Bet amount must be greater than 0");
-        require(block.timestamp < marketInfo[address(this)].endTime, "Market is closed.");
+        // require(block.timestamp < marketInfo[address(this)].endTime, "Market is closed.");
         
 
         if(!userInfo[msg.sender].betOn[_betOn] && !userInfo[msg.sender].betOn[_betOn]){     
@@ -94,6 +94,7 @@ contract Market is Ownable {
         }
 
         marketInfo[address(this)].totalAmount += _amount;
+        marketInfo[address(this)].totalBets++;
         userInfo[msg.sender].betOn[_betOn] = true;
 
 
@@ -139,7 +140,7 @@ contract Market is Ownable {
         require(_price > 0, "price must be greater than 0");
         require(_amount > 0, "amount must be greater than 0");
         require(_sellOf == 0 || _sellOf == 1, "you either list yes or no.");
-        require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
+        // require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
         
         userInfo[msg.sender].listNo++;
 
@@ -158,7 +159,7 @@ contract Market is Ownable {
         require(sellInfo[_owner][_listNo].list, "Not listeed!");
         require(!sellInfo[_owner][_listNo].sold, "allready Sold.");
         require(sellInfo[_owner][_listNo].owner == _owner, "wrong Owner.");
-        require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
+        // require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
 
         sellInfo[msg.sender][_listNo].sold = true;
         sellInfo[msg.sender][_listNo].owner = msg.sender;
@@ -190,38 +191,47 @@ contract Market is Ownable {
     function resolveMarket(uint256 winningIndex) external   {
         
         require(winningIndex == 0 || winningIndex == 1, " either bet yes or no.");
-        require(block.timestamp >  marketInfo[address(this)].endTime, "Market has not ended");
+        // require(block.timestamp >  marketInfo[address(this)].endTime, "Market has not ended");
 
         uint256 totalWinnerShare;
 
         for(uint256 i = 0; i < totalUsers; i++){
-            
-            if(winningIndex == 0 && userInfo[eachUser[i]].noBetAmount != 0){
-                
-                userInfo[eachUser[i]].shareAmount = calculateShares(
-                    userInfo[eachUser[i]].noBetAmount,
-                    winningIndex
-                );
-                totalWinnerShare += userInfo[eachUser[i]].shareAmount;
 
-            }else{
-               
-                userInfo[eachUser[i]].shareAmount = calculateShares(
-                    userInfo[eachUser[i]].yesBetAmount,
-                    winningIndex
-                );
-                totalWinnerShare += userInfo[eachUser[i]].shareAmount;
-            }
+             if(userInfo[eachUser[i]].betOn[winningIndex]) {
+
+                if(winningIndex == 0 && userInfo[eachUser[i]].noBetAmount != 0){
+                    
+                    userInfo[eachUser[i]].shareAmount = calculateShares(
+                        userInfo[eachUser[i]].noBetAmount,
+                        winningIndex
+                    );
+                    console.log("userInfo[eachUser[i]].shareAmount: ", userInfo[eachUser[i]].shareAmount);
+                    totalWinnerShare += userInfo[eachUser[i]].shareAmount;
+
+                }else{
+                
+                    userInfo[eachUser[i]].shareAmount = calculateShares(
+                        userInfo[eachUser[i]].yesBetAmount,
+                        winningIndex
+                    );
+
+                    console.log("userInfo[eachUser[i]].shareAmount: ", userInfo[eachUser[i]].shareAmount);
+                    totalWinnerShare += userInfo[eachUser[i]].shareAmount;
+                }
+             }
+            
         }
 
         uint256 perShare = marketInfo[address(this)].totalAmount / totalWinnerShare;
-       
+       console.log("perShare: ", perShare);
+        
         for (uint256 i = 0; i < totalUsers; i++) {
             
             if(userInfo[eachUser[i]].betOn[winningIndex]) {
 
-                bool success = usdcToken.transferFrom(
-                    address(this),
+                   console.log("userInfo[eachUser[i]].shareAmount * perShare: ", userInfo[eachUser[i]].shareAmount * perShare); 
+                
+                bool success = usdcToken.transfer(
                     eachUser[i],
                     userInfo[eachUser[i]].shareAmount * perShare
                 );
