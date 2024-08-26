@@ -161,27 +161,27 @@ contract Market is Ownable {
         require(sellInfo[_owner][_listNo].owner == _owner, "wrong Owner.");
         // require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
 
-        sellInfo[msg.sender][_listNo].sold = true;
-        sellInfo[msg.sender][_listNo].owner = msg.sender;
+        sellInfo[_owner][_listNo].sold = true;
+        sellInfo[_owner][_listNo].owner = msg.sender;
         
-        if(sellInfo[msg.sender][_listNo].listOn == 0){
-
-            userInfo[msg.sender].noBetAmount += sellInfo[msg.sender][_listNo].amount;
-            userInfo[_owner].noBetAmount -= sellInfo[msg.sender][_listNo].amount;
+        if(sellInfo[_owner][_listNo].listOn == 0){
+            
+            userInfo[msg.sender].noBetAmount += sellInfo[_owner][_listNo].amount;
+            userInfo[_owner].noBetAmount -= sellInfo[_owner][_listNo].amount;
         }else{
 
-            userInfo[msg.sender].yesBetAmount += sellInfo[msg.sender][_listNo].amount;
-            userInfo[_owner].yesBetAmount -= sellInfo[msg.sender][_listNo].amount;
+            userInfo[_owner].yesBetAmount -= sellInfo[_owner][_listNo].amount;
+            userInfo[msg.sender].yesBetAmount += sellInfo[_owner][_listNo].amount;
         }
         
-        userInfo[msg.sender].betOn[sellInfo[msg.sender][_listNo].listOn] = true;
+        userInfo[msg.sender].betOn[sellInfo[_owner][_listNo].listOn] = true;
         eachUser[totalUsers] = msg.sender;
         totalUsers++;
 
         bool success = usdcToken.transferFrom(
             msg.sender,
             _owner,
-            sellInfo[msg.sender][_listNo].price
+            sellInfo[_owner][_listNo].price
         );
         require(success, "Transfer failed");
 
@@ -313,7 +313,6 @@ contract Market is Ownable {
         uint256 amount,
         uint256 listOn
     ) {
-
         return (
             sellInfo[_owner][_id].list,
             sellInfo[_owner][_id].sold,
