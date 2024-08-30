@@ -11,11 +11,6 @@
 						"internalType": "address",
 						"name": "newOwner",
 						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "pendingOwner",
-						"type": "address"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -118,7 +113,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"ChailLinkAutomation/Farwarder_flattened.sol": "ConfirmedOwnerWithProposal"
+			".deps/npm/@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol": "ConfirmedOwner"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -132,12 +127,28 @@
 		"remappings": []
 	},
 	"sources": {
-		"ChailLinkAutomation/Farwarder_flattened.sol": {
-			"keccak256": "0xdcef06cc8fad3b556a3591121e0505db14cdbb0f513c622bf8f62392974534e5",
+		".deps/npm/@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol": {
+			"keccak256": "0xdcb0e9135ddbe71ee27ba99fa06656960c66c964cf2ecb29696da1c1427d9861",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f5ae5d1bcef2fd1c619c6ddf45c0b1b2b88f39745c78802f0c41b81292bf644d",
-				"dweb:/ipfs/QmQXyajLh7VUqV7bGLPn8me1kRJ6AQGZPM86VDhYgHvosn"
+				"bzz-raw://f914a1b638300e82d8f5a020a4195235599afebab4ef1e10c6992f3c90e7df3e",
+				"dweb:/ipfs/Qmf2MbuVB16qbCGii3U5cjcBvVjAHHYzKp9voJa2eDch9B"
+			]
+		},
+		".deps/npm/@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwnerWithProposal.sol": {
+			"keccak256": "0x2422a055657a87e98be61f8f31abb1824ec50fd0f73949f4e3c6ac877efb6da8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fde3b9ac3a4c42ea43e2f92b037d32ab20e30818471c6e20d2590147a6c2958a",
+				"dweb:/ipfs/QmQ2ohQP4GnhPUsiWCvCfb1dsoGYDdxSap3dxtnYTV4rmT"
+			]
+		},
+		".deps/npm/@chainlink/contracts/src/v0.8/shared/interfaces/IOwnable.sol": {
+			"keccak256": "0x885de72b7b4e4f1bf8ba817a3f2bcc37fd9022d342c4ce76782151c30122d767",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://17c636625a5d29a140612db496d2cca9fb4b48c673adb0fd7b3957d287e75921",
+				"dweb:/ipfs/QmNoBX8TY424bdQWyQC7y3kpKfgxyWxhLw7KEhhEEoBN9q"
 			]
 		}
 	},

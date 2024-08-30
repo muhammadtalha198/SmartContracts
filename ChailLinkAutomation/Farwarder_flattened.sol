@@ -1,6 +1,6 @@
 
 // File: @chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol
-
+// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
 

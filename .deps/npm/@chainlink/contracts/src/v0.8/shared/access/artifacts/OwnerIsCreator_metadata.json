@@ -6,13 +6,7 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "updateInterval",
-						"type": "uint256"
-					}
-				],
+				"inputs": [],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
@@ -62,69 +56,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "bytes",
-						"name": "",
-						"type": "bytes"
-					}
-				],
-				"name": "checkUpkeep",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					},
-					{
-						"internalType": "bytes",
-						"name": "",
-						"type": "bytes"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "counter",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "interval",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "lastTimeStamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "owner",
 				"outputs": [
@@ -135,45 +66,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "bytes",
-						"name": "",
-						"type": "bytes"
-					}
-				],
-				"name": "performUpkeep",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "s_forwarderAddress",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "forwarderAddress",
-						"type": "address"
-					}
-				],
-				"name": "setForwarderAddress",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -192,14 +84,8 @@
 		],
 		"devdoc": {
 			"kind": "dev",
-			"methods": {
-				"setForwarderAddress(address)": {
-					"details": "Only callable by the owner",
-					"params": {
-						"forwarderAddress": "the address to set"
-					}
-				}
-			},
+			"methods": {},
+			"title": "The OwnerIsCreator contract",
 			"version": 1
 		},
 		"userdoc": {
@@ -211,19 +97,17 @@
 				"owner()": {
 					"notice": "Get the current owner"
 				},
-				"setForwarderAddress(address)": {
-					"notice": "Set the address that `performUpkeep` is called from"
-				},
 				"transferOwnership(address)": {
 					"notice": "Allows an owner to begin transferring ownership to a new address."
 				}
 			},
+			"notice": "A contract with helpers for basic contract ownership.",
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"ChailLinkAutomation/Farwarder.sol": "CounterwForwarder"
+			".deps/npm/@chainlink/contracts/src/v0.8/shared/access/OwnerIsCreator.sol": "OwnerIsCreator"
 		},
 		"evmVersion": "paris",
 		"libraries": {},
@@ -237,15 +121,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol": {
-			"keccak256": "0xf504b227c442cd4ed31b336b7bd15cfcb23220c84c26e750975c7e7d959125aa",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://34e35eb46dfadf12396e92dd970547209dfd99f0ae5b1ec7b5a3e81617f620a1",
-				"dweb:/ipfs/Qmanoi2CDi9MwkP44HosagvewfMEvCMN1YthGRmCexVjwY"
-			]
-		},
-		"@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol": {
+		".deps/npm/@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol": {
 			"keccak256": "0xdcb0e9135ddbe71ee27ba99fa06656960c66c964cf2ecb29696da1c1427d9861",
 			"license": "MIT",
 			"urls": [
@@ -253,7 +129,7 @@
 				"dweb:/ipfs/Qmf2MbuVB16qbCGii3U5cjcBvVjAHHYzKp9voJa2eDch9B"
 			]
 		},
-		"@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwnerWithProposal.sol": {
+		".deps/npm/@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwnerWithProposal.sol": {
 			"keccak256": "0x2422a055657a87e98be61f8f31abb1824ec50fd0f73949f4e3c6ac877efb6da8",
 			"license": "MIT",
 			"urls": [
@@ -261,7 +137,7 @@
 				"dweb:/ipfs/QmQ2ohQP4GnhPUsiWCvCfb1dsoGYDdxSap3dxtnYTV4rmT"
 			]
 		},
-		"@chainlink/contracts/src/v0.8/shared/access/OwnerIsCreator.sol": {
+		".deps/npm/@chainlink/contracts/src/v0.8/shared/access/OwnerIsCreator.sol": {
 			"keccak256": "0x895af02d6a3df2930bbb6ec1f2d68118b492ca6e710ba0c34fcb6b574a0906aa",
 			"license": "MIT",
 			"urls": [
@@ -269,20 +145,12 @@
 				"dweb:/ipfs/QmP4fYQ9k7xeZms6cwnqnQuuAkRkeE2TWewyvCD8Mrc2DZ"
 			]
 		},
-		"@chainlink/contracts/src/v0.8/shared/interfaces/IOwnable.sol": {
+		".deps/npm/@chainlink/contracts/src/v0.8/shared/interfaces/IOwnable.sol": {
 			"keccak256": "0x885de72b7b4e4f1bf8ba817a3f2bcc37fd9022d342c4ce76782151c30122d767",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://17c636625a5d29a140612db496d2cca9fb4b48c673adb0fd7b3957d287e75921",
 				"dweb:/ipfs/QmNoBX8TY424bdQWyQC7y3kpKfgxyWxhLw7KEhhEEoBN9q"
-			]
-		},
-		"ChailLinkAutomation/Farwarder.sol": {
-			"keccak256": "0x7f9418deb5ead8c62f912ebba5d2f152ebfcc5dc520f1b85650362774fb0d5a7",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://cadd16f2b0b31edaaf55c9951a26c0ed46696eba37dde3ddd75f4443d4a822ce",
-				"dweb:/ipfs/QmVRsxwRsfkzQ3gCEeSzci8ptGdL1ZgVibBm4X25nd4FzU"
 			]
 		}
 	},

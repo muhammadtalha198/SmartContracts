@@ -95,10 +95,11 @@
 	},
 	"sources": {
 		"ChailLinkAutomation/Farwarder_flattened.sol": {
-			"keccak256": "0xfd3bc062604cb2b5095a818bf69cc2e17e7a6f28ff8e099990618b996152a863",
+			"keccak256": "0xdcef06cc8fad3b556a3591121e0505db14cdbb0f513c622bf8f62392974534e5",
+			"license": "MIT",
 			"urls": [
-				"bzz-raw://16030b42b63f1258ce4ec0a531ac79e8722d1f885c0d26a7a31c4a7322429891",
-				"dweb:/ipfs/QmRRF5egck7LHaMRTNJ3PhMLBt8FZSE4QPKpUP4SUkuZrB"
+				"bzz-raw://f5ae5d1bcef2fd1c619c6ddf45c0b1b2b88f39745c78802f0c41b81292bf644d",
+				"dweb:/ipfs/QmQXyajLh7VUqV7bGLPn8me1kRJ6AQGZPM86VDhYgHvosn"
 			]
 		}
 	},
