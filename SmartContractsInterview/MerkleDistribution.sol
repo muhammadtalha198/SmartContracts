@@ -74,6 +74,7 @@ contract MerkleDistributor is Pausable, Ownable, ReentrancyGuard {
         uint256 _amount,
         bytes32[] calldata _merkleProof
     ) external whenNotPaused nonReentrant onlyClaimingRound {
+        
         require(!claimed[msg.sender], "Already claimed");
 
         // Verify the merkle proof

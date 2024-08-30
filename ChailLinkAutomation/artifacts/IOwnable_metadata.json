@@ -1,0 +1,78 @@
+{
+	"compiler": {
+		"version": "0.8.19+commit.7dd6d404"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "acceptOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"ChailLinkAutomation/Farwarder_flattened.sol": "IOwnable"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"ChailLinkAutomation/Farwarder_flattened.sol": {
+			"keccak256": "0xfd3bc062604cb2b5095a818bf69cc2e17e7a6f28ff8e099990618b996152a863",
+			"urls": [
+				"bzz-raw://16030b42b63f1258ce4ec0a531ac79e8722d1f885c0d26a7a31c4a7322429891",
+				"dweb:/ipfs/QmRRF5egck7LHaMRTNJ3PhMLBt8FZSE4QPKpUP4SUkuZrB"
+			]
+		}
+	},
+	"version": 1
+}

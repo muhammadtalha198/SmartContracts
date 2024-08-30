@@ -4,7 +4,6 @@ pragma solidity ^0.8.26;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "hardhat/console.sol";
 
 
 contract Market is Ownable {
@@ -54,7 +53,7 @@ contract Market is Ownable {
     event RemainingTransfer(address owner,uint256 remainingBalance);
     event Bet(address indexed user,uint256 indexed _amount,uint256 _betOn);
     event SellShare(address indexed user, uint256 listNo,  uint256 onPrice);
-    event BuyShare(address buyer, address seller, uint256 _noOfShares, uint256 ofBet, uint256 onPrice);
+   event BuyShare(address buyer, address seller, uint256 _amountBBuyed, uint256 onPrice);
 
 
     constructor(
@@ -100,9 +99,6 @@ contract Market is Ownable {
 
         (marketInfo[address(this)].initialPrice[0],marketInfo[address(this)].initialPrice[1]) = 
             PriceCalculation(marketInfo[address(this)].totalBetsOnNo, marketInfo[address(this)].totalBetsOnYes);
-
-            console.log("NoPrice: ",marketInfo[address(this)].initialPrice[0]);
-            console.log("YesPrice: ",marketInfo[address(this)].initialPrice[1]);
        
         bool success = usdcToken.transferFrom(msg.sender, address(this), _amount);
         require(success, "Transfer failed");
@@ -185,9 +181,10 @@ contract Market is Ownable {
         );
         require(success, "Transfer failed");
 
-        // emit BuyShare(msg.sender,_owner, _noOfShares, _shareOf, _onPrice);
+        emit BuyShare(msg.sender,_owner, sellInfo[_owner][_listNo].amount, sellInfo[_owner][_listNo].price);
     }
-
+ 
+    
     function resolveMarket(uint256 winningIndex) external   {
         
         require(winningIndex == 0 || winningIndex == 1, " either bet yes or no.");
@@ -205,7 +202,6 @@ contract Market is Ownable {
                         userInfo[eachUser[i]].noBetAmount,
                         winningIndex
                     );
-                    console.log("userInfo[eachUser[i]].shareAmount: ", userInfo[eachUser[i]].shareAmount);
                     totalWinnerShare += userInfo[eachUser[i]].shareAmount;
 
                 }else{
@@ -215,7 +211,6 @@ contract Market is Ownable {
                         winningIndex
                     );
 
-                    console.log("userInfo[eachUser[i]].shareAmount: ", userInfo[eachUser[i]].shareAmount);
                     totalWinnerShare += userInfo[eachUser[i]].shareAmount;
                 }
              }
@@ -223,13 +218,11 @@ contract Market is Ownable {
         }
 
         uint256 perShare = marketInfo[address(this)].totalAmount / totalWinnerShare;
-       console.log("perShare: ", perShare);
         
         for (uint256 i = 0; i < totalUsers; i++) {
             
             if(userInfo[eachUser[i]].betOn[winningIndex]) {
 
-                   console.log("userInfo[eachUser[i]].shareAmount * perShare: ", userInfo[eachUser[i]].shareAmount * perShare); 
                 
                 bool success = usdcToken.transfer(
                     eachUser[i],

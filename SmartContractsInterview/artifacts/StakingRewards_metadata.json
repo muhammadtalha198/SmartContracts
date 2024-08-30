@@ -351,48 +351,6 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_referrer",
-						"type": "address"
-					}
-				],
-				"name": "earnedReferralReward",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_token",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_amount",
-						"type": "uint256"
-					}
-				],
-				"name": "emergencyWithdrawTokens",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "",
 						"type": "address"
 					},
@@ -498,100 +456,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "getAllStakers",
-				"outputs": [
-					{
-						"internalType": "address[]",
-						"name": "",
-						"type": "address[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_account",
-						"type": "address"
-					}
-				],
-				"name": "getCalculateMultiplier",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_referrer",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_referee",
-						"type": "address"
-					}
-				],
-				"name": "getFirstRefReward",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_referrer",
-						"type": "address"
-					}
-				],
-				"name": "getFirstReferees",
-				"outputs": [
-					{
-						"internalType": "address[]",
-						"name": "",
-						"type": "address[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_account",
-						"type": "address"
-					}
-				],
-				"name": "getRefRewardClaimed",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -600,119 +464,6 @@
 					}
 				],
 				"name": "getRefereeCount",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_referrer",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "_referee",
-						"type": "address"
-					}
-				],
-				"name": "getSecondRefReward",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_referrer",
-						"type": "address"
-					}
-				],
-				"name": "getSecondReferees",
-				"outputs": [
-					{
-						"internalType": "address[]",
-						"name": "",
-						"type": "address[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getStakersLength",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_account",
-						"type": "address"
-					}
-				],
-				"name": "getStakingRewardsToRelease",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_account",
-						"type": "address"
-					}
-				],
-				"name": "getTokenStaked",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_account",
-						"type": "address"
-					}
-				],
-				"name": "getTotalRewardClaimed",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -982,25 +733,6 @@
 					}
 				],
 				"name": "refereeCount",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_referrer",
-						"type": "address"
-					}
-				],
-				"name": "referralRewardToClaim",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -1517,184 +1249,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "_discountUnstakeFee",
-						"type": "uint256"
-					}
-				],
-				"name": "updateDiscountUnstakeFee",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_longtermStakingRewardsRate",
-						"type": "uint256"
-					}
-				],
-				"name": "updateLongtermStakingRewardsRate",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_multiplierRatePerEpoch",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_multiplierEpoch",
-						"type": "uint256"
-					}
-				],
-				"name": "updateMultiplier",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_firstRefRewardRate",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_secondRefRewardRate",
-						"type": "uint256"
-					}
-				],
-				"name": "updateRefRewardRates",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_releaseRefRewardDuration",
-						"type": "uint256"
-					}
-				],
-				"name": "updateReleaseRefRewardDuration",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_duration",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_epoch",
-						"type": "uint256"
-					}
-				],
-				"name": "updateReleaseRefRewardInfo",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_duration",
-						"type": "uint256"
-					}
-				],
-				"name": "updateReleaseStakingRewardDuration",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_duration",
-						"type": "uint256"
-					}
-				],
-				"name": "updateRewardDuration",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "updateStakingAppStartedAt",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_token",
-						"type": "address"
-					}
-				],
-				"name": "updateStakingToken",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_token",
-						"type": "address"
-					}
-				],
-				"name": "updateToken",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_treasuryRateForRewards",
-						"type": "uint256"
-					}
-				],
-				"name": "updateTreasuryRateForRewards",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_unstakeFee",
-						"type": "uint256"
-					}
-				],
-				"name": "updateUnstakeFee",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "address",
 						"name": "_to",
 						"type": "address"
@@ -1772,9 +1326,6 @@
 				"constructor": {
 					"notice": "constructor to initialize the staking contract"
 				},
-				"emergencyWithdrawTokens(address,address,uint256)": {
-					"notice": "withdraw tokens stored in the contract"
-				},
 				"pause()": {
 					"notice": "pause the staking"
 				},
@@ -1789,13 +1340,13 @@
 		"compilationTarget": {
 			"SmartContractsInterview/StakingReward.sol": "StakingRewards"
 		},
-		"evmVersion": "london",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
@@ -1890,11 +1441,11 @@
 			]
 		},
 		"SmartContractsInterview/StakingReward.sol": {
-			"keccak256": "0x41d116b9b2a7eba6f1746d3f11409a7fd051290f932eea931e18b9810b61cfa5",
+			"keccak256": "0x044ec2cefd10b1e17efba66cbc980da198079b74a3477993f6fda20a95541859",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6e4bf102e06fd4a84e2f0380247f25e129e46a9676a7aed2ac42f98cccbad329",
-				"dweb:/ipfs/QmbJX5saCcPDPs9UvADheZiquZqwacb2399Mvd2zyVJDCu"
+				"bzz-raw://c1ba5b8832cfbfebd5f3e4d047bb026a59dc3d3f3cdeba4d2cbf703e4caba484",
+				"dweb:/ipfs/Qmeh5LaKSYab6VkQ5Knn4n7NcZSvsZ6LUfNbGuags1dnPT"
 			]
 		}
 	},

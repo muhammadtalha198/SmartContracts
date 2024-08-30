@@ -278,7 +278,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"FacctoryContract/WagerContract_flattened.sol": "IERC20Metadata"
+			"FacctoryContract/FacctoryContract_flattened.sol": "IERC20Metadata"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -292,12 +292,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"FacctoryContract/WagerContract_flattened.sol": {
-			"keccak256": "0xfde72cab8e14c711b74318a65040627498498c7ba12dc137df30f9c1a3db62ed",
+		"FacctoryContract/FacctoryContract_flattened.sol": {
+			"keccak256": "0x66f177256bfdddb106639b545a2d2c3d65292555136422ba7db60577fe69acb1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f2cb4b3959155de52e94774e91de82398f7d0f87b59285f5135c1b2e3d181c3e",
-				"dweb:/ipfs/QmRBraHWRj99SyBu3xtzyhsngJwMH9Uo7PaTebamv9rYqp"
+				"bzz-raw://0ab46dbeb5d9b597195beda2855c40ce27717793fc44085b9fe5f04946f8eed9",
+				"dweb:/ipfs/QmPqazs8eoJkNUYUMNAiKbM9DLRMdkw2XBAQJRtrNdFJG5"
 			]
 		}
 	},

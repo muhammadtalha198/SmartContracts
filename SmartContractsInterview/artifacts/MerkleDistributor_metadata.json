@@ -433,7 +433,7 @@
 		"compilationTarget": {
 			"SmartContractsInterview/MerkleDistribution.sol": "MerkleDistributor"
 		},
-		"evmVersion": "london",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -494,11 +494,11 @@
 			]
 		},
 		"SmartContractsInterview/MerkleDistribution.sol": {
-			"keccak256": "0x19cee729cc99cb4af600c9ec754d46dfe5ed3e804b18231824220fdb2800a5fd",
+			"keccak256": "0xbe4cdcfe05d86007632bfd882c2764997f3c71900331f6fabb2f10a203a18ba9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://119f54032f0f83ef6f077fccbee18f7a8be47c9bfe98c3c0c13f5d51ecaec1e1",
-				"dweb:/ipfs/QmTLFeSiV2SWFE9A8HH7X8R2FgQvmmqDfaNemXVbyx12qP"
+				"bzz-raw://1482ac9f10bf2a679e83c11eb247c58e5bbea800c1edd67f753461b66f5a39ef",
+				"dweb:/ipfs/QmYJmmmuuhoj6UmpNrhhMQompnzxCzQsAtw3Ct6G5Xn9Hy"
 			]
 		}
 	},

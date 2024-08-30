@@ -91,13 +91,7 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "_noOfShares",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "ofBet",
+						"name": "_amountBBuyed",
 						"type": "uint256"
 					},
 					{
@@ -768,7 +762,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"FacctoryContract/WagerContract_flattened.sol": "Market"
+			"FacctoryContract/WagerContract.sol": "Market"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -782,12 +776,60 @@
 		"remappings": []
 	},
 	"sources": {
-		"FacctoryContract/WagerContract_flattened.sol": {
-			"keccak256": "0xfde72cab8e14c711b74318a65040627498498c7ba12dc137df30f9c1a3db62ed",
+		"@openzeppelin/contracts/access/Ownable.sol": {
+			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f2cb4b3959155de52e94774e91de82398f7d0f87b59285f5135c1b2e3d181c3e",
-				"dweb:/ipfs/QmRBraHWRj99SyBu3xtzyhsngJwMH9Uo7PaTebamv9rYqp"
+				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
+				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
+			]
+		},
+		"@openzeppelin/contracts/interfaces/draft-IERC6093.sol": {
+			"keccak256": "0x60c65f701957fdd6faea1acb0bb45825791d473693ed9ecb34726fdfaa849dd7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ea290300e0efc4d901244949dc4d877fd46e6c5e43dc2b26620e8efab3ab803f",
+				"dweb:/ipfs/QmcLLJppxKeJWqHxE2CUkcfhuRTgHSn8J4kijcLa5MYhSt"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/ERC20.sol": {
+			"keccak256": "0xc3e1fa9d1987f8d349dfb4d6fe93bf2ca014b52ba335cfac30bfe71e357e6f80",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c5703ccdeb7b1d685e375ed719117e9edf2ab4bc544f24f23b0d50ec82257229",
+				"dweb:/ipfs/QmTdwkbQq7owpCiyuzE7eh5LrD2ddrBCZ5WHVsWPi1RrTS"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0xc6a8ff0ea489379b61faa647490411b80102578440ab9d84e9a957cc12164e70",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ea104e577e63faea3b69c415637e99e755dcbf64c5833d7140c35a714d6d90c",
+				"dweb:/ipfs/Qmau6x4Ns9XdyynRCNNp3RhLqijJjFm7z5fyZazfYFGYdq"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+			"keccak256": "0xaa761817f6cd7892fcf158b3c776b34551cde36f48ff9703d53898bc45a94ea2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ad7c8d4d08938c8dfc43d75a148863fb324b80cf53e0a36f7e5a4ac29008850",
+				"dweb:/ipfs/QmcrhfPgVNf5mkdhQvy1pMv51TFokD3Y4Wa5WZhFqVh8UV"
+			]
+		},
+		"@openzeppelin/contracts/utils/Context.sol": {
+			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+			]
+		},
+		"FacctoryContract/WagerContract.sol": {
+			"keccak256": "0x446e3542d0d0997f8a166f6dac1427fac3145282357a0822bb2da3da41a2976a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b19c422e53d6a919c2abdfdf8b051256588cfd10ca65ed8c755811c5e47d94a5",
+				"dweb:/ipfs/QmRabUvCfVkYMuD6fNqcEVJUorKf8sXD4MS4xdawHdHUy8"
 			]
 		}
 	},

@@ -234,7 +234,194 @@
 			},
 			{
 				"inputs": [],
-				"name": "TOKEN_INTERNAL_DECIMALS",
+				"name": "TOKEN_public_DECIMALS",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_holder",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_spender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "_approve",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_from",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "_burn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_debaseToken",
+						"type": "uint256"
+					}
+				],
+				"name": "_debaseTokenToFragment",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_account",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "_isExcluded",
+						"type": "bool"
+					}
+				],
+				"name": "_excludedFromDebasing",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_account",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "_isExcluded",
+						"type": "bool"
+					}
+				],
+				"name": "_excludedFromHoldingLimit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "_fragmentToDebaseToken",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "_mint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					}
+				],
+				"name": "_sendTokensTreasuryWallet",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "_transfer",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "_treasuryBalanceOf",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -400,25 +587,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_debaseToken",
-						"type": "uint256"
-					}
-				],
-				"name": "debaseTokenToFragment",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "decimals",
 				"outputs": [
@@ -458,25 +626,6 @@
 			{
 				"inputs": [],
 				"name": "excludeDebasingSupply",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_fragment",
-						"type": "uint256"
-					}
-				],
-				"name": "fragmentToDebaseToken",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -1085,7 +1234,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -1188,11 +1337,11 @@
 			]
 		},
 		"SmartContractsInterview/Token.sol": {
-			"keccak256": "0xe4559c8782cea08de58285891bc53dbc1e5c500b349f81330a12e6c413d3099b",
+			"keccak256": "0xc9f305978de0fd900c34742d7a8b63412980b4c8c003db90c12b265d81a65ef4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8e0143376c3a634270e856f5452cfc7c20f19fde19cd8f5a080dad2e8f2ff032",
-				"dweb:/ipfs/QmZQf5tDKFDKhyYXZgWwS7Y79JUJSsmzDabgeYHpvkgqYc"
+				"bzz-raw://398a60beb41557257bc8b5c75fee699f13fb81cac1e61680074685073aff1fbb",
+				"dweb:/ipfs/QmTtcJ3i7SQrsTooWpMLa3UDPVet93KALQE6giMunzfiXc"
 			]
 		}
 	},
