@@ -53,6 +53,15 @@ contract Market is Ownable {
     event BuyShare(address buyer, address seller, uint256 _amountBBuyed, uint256 onPrice);
     event ResolveMarket(address ownerAddress, uint256 ownerAmount, uint256 perShareAmount, uint256 winningIndex);
 
+    error marketResolved();
+    error notBet(bool beted);
+    error alreadySold(bool sold);
+    error wrongOwner(address owner);
+    error wrongPrice(uint256 price);
+    error notListed(uint256 listNo);
+    error wrongAmount(uint256 amount);
+    error wrongBetIndex(uint256 betIndex);
+
 
     constructor(
         address initialOwner,
@@ -68,11 +77,17 @@ contract Market is Ownable {
     }
 
     function bet(uint256 _amount, uint256 _betOn) external {
-       
-        require(_betOn == 0 || _betOn == 1, "you either bet yes or no.");
-        require(_amount > 0, "Bet amount must be greater than 0");
-        require(!marketInfo[address(this)].resolved, "Market is resolved!");
-        require(block.timestamp < marketInfo[address(this)].endTime, "Market is closed.");
+
+        if(_betOn == 0 || _betOn == 1){
+            revert wrongBetIndex(_betOn);
+        }
+        if(_amount > 0){
+            revert wrongAmount(_amount);
+        }
+        
+        if(!marketInfo[address(this)].resolved){
+            revert marketResolved();
+        }
         
 
         if(!userInfo[msg.sender].betOn[_betOn] && !userInfo[msg.sender].betOn[_betOn]){     
@@ -131,12 +146,23 @@ contract Market is Ownable {
 
     function sellShare(uint256 _amount, uint256 _price, uint256 _sellOf) external {
         
-        require(userInfo[msg.sender].betOn[_sellOf], "wrong user.");
-        require(_price > 0, "price must be greater than 0");
-        require(_amount > 0, "amount must be greater than 0");
-        require(_sellOf == 0 || _sellOf == 1, "you either list yes or no.");
-        require(!marketInfo[address(this)].resolved, "Market is resolved!");
-        require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
+        if(_sellOf == 0 || _sellOf == 1){
+            revert wrongBetIndex(_sellOf);
+        }
+        if(_amount > 0){
+            revert wrongAmount(_amount);
+        }
+        
+        if(!marketInfo[address(this)].resolved){
+            revert marketResolved();
+        }
+
+        if(!userInfo[msg.sender].betOn[_sellOf]){
+            revert notBet(userInfo[msg.sender].betOn[_sellOf]);
+        }
+        if(_price > 0){
+            revert wrongPrice(_price);
+        }
         
         if(_sellOf == 0){
 
@@ -160,11 +186,20 @@ contract Market is Ownable {
 
     function buyShare(uint256 _listNo, address _owner) external {
         
-        require(sellInfo[_owner][_listNo].list, "Not listeed!");
-        require(!sellInfo[_owner][_listNo].sold, "allready Sold.");
-        require(sellInfo[_owner][_listNo].owner == _owner, "wrong Owner.");
-        require(!marketInfo[address(this)].resolved, "Market is resolved!");
-        require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
+        if(sellInfo[_owner][_listNo].list){
+            revert notListed(_listNo);
+        }
+        if(!sellInfo[_owner][_listNo].sold){
+            revert alreadySold(sellInfo[_owner][_listNo].sold);
+        }
+        
+        if(!marketInfo[address(this)].resolved){
+            revert marketResolved();
+        }
+
+        if(sellInfo[_owner][_listNo].owner == _owner){
+            revert wrongOwner(_owner);
+        }
 
         sellInfo[_owner][_listNo].sold = true;
         sellInfo[_owner][_listNo].owner = msg.sender;
@@ -196,10 +231,13 @@ contract Market is Ownable {
     
     function resolveMarket(uint256 winningIndex) external   {
         
-        require(winningIndex == 0 || winningIndex == 1, " either bet yes or no.");
-        require(!marketInfo[address(this)].resolved, "Market is resolved!");
-        require(block.timestamp >  marketInfo[address(this)].endTime, 
-            "Markeeet must be resolved after required Time.");
+       if(winningIndex == 0 || winningIndex == 1){
+            revert wrongBetIndex(winningIndex);
+        }
+        
+        if(!marketInfo[address(this)].resolved){
+            revert marketResolved();
+        }
 
         uint256 totalWinnerShare;
 

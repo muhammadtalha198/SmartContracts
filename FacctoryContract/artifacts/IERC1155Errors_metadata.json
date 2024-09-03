@@ -185,7 +185,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"FacctoryContract/FacctoryContract_flattened.sol": "IERC1155Errors"
+			"FacctoryContract/WagerContract_flattened.sol": "IERC1155Errors"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -199,12 +199,11 @@
 		"remappings": []
 	},
 	"sources": {
-		"FacctoryContract/FacctoryContract_flattened.sol": {
-			"keccak256": "0x66f177256bfdddb106639b545a2d2c3d65292555136422ba7db60577fe69acb1",
-			"license": "MIT",
+		"FacctoryContract/WagerContract_flattened.sol": {
+			"keccak256": "0x985df266ab0bd3c6c223b06fbd1aaed1efe95dae6df58872f9a5754abe8da8ed",
 			"urls": [
-				"bzz-raw://0ab46dbeb5d9b597195beda2855c40ce27717793fc44085b9fe5f04946f8eed9",
-				"dweb:/ipfs/QmPqazs8eoJkNUYUMNAiKbM9DLRMdkw2XBAQJRtrNdFJG5"
+				"bzz-raw://b5d57ceecd0dbfafae734c15d9a712965b67070498ad2318f9b47e547090a056",
+				"dweb:/ipfs/QmZw44xf4oxKK2qN8VSdKAhk2Bs3BCWe8d1heJkU25ZGHN"
 			]
 		}
 	},

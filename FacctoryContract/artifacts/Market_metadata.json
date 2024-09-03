@@ -49,6 +49,88 @@
 				"type": "error"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "sold",
+						"type": "bool"
+					}
+				],
+				"name": "alreadySold",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "marketResolved",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "beted",
+						"type": "bool"
+					}
+				],
+				"name": "notBet",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "listNo",
+						"type": "uint256"
+					}
+				],
+				"name": "notListed",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "wrongAmount",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "betIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "wrongBetIndex",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "wrongOwner",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "wrongPrice",
+				"type": "error"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -816,11 +898,11 @@
 			]
 		},
 		"FacctoryContract/WagerContract.sol": {
-			"keccak256": "0x3c45d57f4b766e51f38e0368baa276a86b1216da74108610eaee26486993a6e5",
+			"keccak256": "0x75ceecc16176bbaa24844f8199b50f0ca3c750910117ca19c32f338a659a30ec",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1ef5262f4967b32846beb6fd436746cbb8e1d27c3e9152877cec8063641d1efc",
-				"dweb:/ipfs/QmPhi8CQKX672NoY9g9HALyKZpkmRmgbuk92xwhRVN1gMV"
+				"bzz-raw://c90baed098c7d5eb2274f8d8128655d357daa8146d2061100115c471380e4514",
+				"dweb:/ipfs/QmeVJKsxragXYeShEVTEseAK7JazGetfE7ygMvKzx4kMKA"
 			]
 		}
 	},
