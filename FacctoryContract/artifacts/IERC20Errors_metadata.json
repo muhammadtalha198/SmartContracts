@@ -162,7 +162,7 @@
 		"compilationTarget": {
 			"FacctoryContract/WagerContract_flattened.sol": "IERC20Errors"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"

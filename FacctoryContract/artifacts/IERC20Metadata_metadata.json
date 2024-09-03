@@ -280,7 +280,7 @@
 		"compilationTarget": {
 			"FacctoryContract/WagerContract_flattened.sol": "IERC20Metadata"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"

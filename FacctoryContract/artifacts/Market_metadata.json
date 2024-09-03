@@ -60,6 +60,28 @@
 				"type": "error"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "contractBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "contractLowbalance",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "contractBalance",
+						"type": "uint256"
+					}
+				],
+				"name": "contractLowbalanceForOwner",
+				"type": "error"
+			},
+			{
 				"inputs": [],
 				"name": "marketResolved",
 				"type": "error"
@@ -84,6 +106,17 @@
 					}
 				],
 				"name": "notListed",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "endTime",
+						"type": "uint256"
+					}
+				],
+				"name": "notResolvedBeforeTime",
 				"type": "error"
 			},
 			{
@@ -472,55 +505,6 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_market",
-						"type": "address"
-					}
-				],
-				"name": "readMarketInfo",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "endTime",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalBets",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "initialPriceYes",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "initialPriceNo",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalBetsOnYes",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalBetsOnNo",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "_owner",
 						"type": "address"
 					},
@@ -560,45 +544,6 @@
 					{
 						"internalType": "uint256",
 						"name": "listOn",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_user",
-						"type": "address"
-					}
-				],
-				"name": "readUserInfo",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "listNo",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "noBetAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "rewardAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "yesBetAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "shareAmount",
 						"type": "uint256"
 					}
 				],
@@ -837,7 +782,7 @@
 		"compilationTarget": {
 			"FacctoryContract/WagerContract.sol": "Market"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -898,11 +843,11 @@
 			]
 		},
 		"FacctoryContract/WagerContract.sol": {
-			"keccak256": "0xe74a6f74e7ffa1fcf088057ecd60dbcaebb577f0514e3b9cd786acf7119e9598",
+			"keccak256": "0x0a39f8e4fbedf3e1f08d2fcdd9485ebbeecf5418768493cc4da2a66ec07672c5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3827f91279f43119d0043f832162abb28c65ce18db9f884ac2f211efec254efb",
-				"dweb:/ipfs/QmZbLPWJjoeEf7Ct7wPtmfLMCBRkreUva8TVrTyNusQYUQ"
+				"bzz-raw://c8e30b986849dc268e5a6a050104209fd2aadeb3ba72b016cbacd752320df212",
+				"dweb:/ipfs/QmVbmAFQT9APWGZzz13n7b7QGaWLi9KioWVqpYGUoRSvxa"
 			]
 		}
 	},

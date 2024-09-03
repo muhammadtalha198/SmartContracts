@@ -21,7 +21,7 @@
 		"compilationTarget": {
 			"FacctoryContract/WagerContract_flattened.sol": "Context"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"

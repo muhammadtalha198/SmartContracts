@@ -61,6 +61,9 @@ contract Market is Ownable {
     error wrongOwner(address owner);
     error wrongAmount(uint256 amount);
     error wrongBetIndex(uint256 betIndex);
+    error notResolvedBeforeTime(uint256 endTime);
+    error contractLowbalance(uint256 contractBalance);
+    error contractLowbalanceForOwner(uint256 contractBalance);
 
 
     constructor(
@@ -78,7 +81,7 @@ contract Market is Ownable {
 
     function bet(uint256 _amount, uint256 _betOn) external {
 
-        if(_betOn != 0 || _betOn != 1){
+        if(_betOn != 0 && _betOn != 1){
             revert wrongBetIndex(_betOn);
         }
         if(_amount <= 0){
@@ -146,7 +149,7 @@ contract Market is Ownable {
 
     function sellShare(uint256 _amount, uint256 _price, uint256 _sellOf) external {
         
-        if(_sellOf != 0 || _sellOf != 1){
+        if(_sellOf != 0 && _sellOf != 1){
             revert wrongBetIndex(_sellOf);
         }
         if(_amount <= 0){
@@ -231,12 +234,16 @@ contract Market is Ownable {
     
     function resolveMarket(uint256 winningIndex) external   {
         
-       if(winningIndex != 0 || winningIndex != 1){
+        if(winningIndex != 0 && winningIndex != 1){
             revert wrongBetIndex(winningIndex);
         }
         
         if(marketInfo[address(this)].resolved){
             revert marketResolved();
+        }
+        
+        if(marketInfo[address(this)].endTime > block.timestamp){
+            revert notResolvedBeforeTime(marketInfo[address(this)].endTime);
         }
 
         uint256 totalWinnerShare;
@@ -281,6 +288,11 @@ contract Market is Ownable {
                     _ownerAmount += ((userInfo[eachUser[i]].shareAmount * _perShare) - userInfo[eachUser[i]].yesBetAmount);
                 }
 
+                if(usdcToken.balanceOf(address(this)) < userInfo[eachUser[i]].shareAmount * _perShare){
+                    revert contractLowbalance(usdcToken.balanceOf(address(this)));
+                }
+
+
                 bool success = usdcToken.transfer(
                     eachUser[i],
                     userInfo[eachUser[i]].shareAmount * _perShare
@@ -288,6 +300,10 @@ contract Market is Ownable {
                 require(success, "Transfer failed");
 
             }
+        }
+
+        if(usdcToken.balanceOf(address(this)) < _ownerAmount){
+            revert contractLowbalanceForOwner(usdcToken.balanceOf(address(this)));
         }
 
         marketInfo[address(this)].resolved = true;
@@ -328,41 +344,7 @@ contract Market is Ownable {
         return (marketInfo[address(this)].initialPrice[0], marketInfo[address(this)].initialPrice[1]);
     }
 
-    function readMarketInfo(address _market) public view returns (
-        uint256 endTime,
-        uint256 totalBets,
-        uint256 totalAmount,
-        uint256 initialPriceYes,
-        uint256 initialPriceNo,
-        uint256 totalBetsOnYes,
-        uint256 totalBetsOnNo
-    ) {
-        return (
-            marketInfo[_market].endTime,
-            marketInfo[_market].totalBets,
-            marketInfo[_market].totalAmount,
-            marketInfo[_market].initialPrice[1], // Yes Price
-            marketInfo[_market].initialPrice[0], // No Price
-            marketInfo[_market].totalBetsOnYes,
-            marketInfo[_market].totalBetsOnNo
-        );
-    }
 
-    function readUserInfo(address _user) public view returns (
-        uint256 listNo,
-        uint256 noBetAmount,
-        uint256 rewardAmount,
-        uint256 yesBetAmount,
-        uint256 shareAmount
-    ) {
-        return (
-            userInfo[_user].listNo,
-            userInfo[_user].noBetAmount,
-            userInfo[_user].rewardAmount,
-            userInfo[_user].yesBetAmount,
-            userInfo[_user].shareAmount
-        );
-    }
     function readSellInfo(address _owner, uint256 _id) public view returns (
         bool list,
         bool sold,

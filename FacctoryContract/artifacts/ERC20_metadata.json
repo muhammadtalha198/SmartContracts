@@ -423,7 +423,7 @@
 		"compilationTarget": {
 			"FacctoryContract/WagerContract_flattened.sol": "ERC20"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"

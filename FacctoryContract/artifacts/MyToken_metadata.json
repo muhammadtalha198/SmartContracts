@@ -541,7 +541,7 @@
 		"compilationTarget": {
 			"FacctoryContract/Usdc.sol": "MyToken"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -602,11 +602,11 @@
 			]
 		},
 		"FacctoryContract/Usdc.sol": {
-			"keccak256": "0xb72265a9e1561ac22e15e46676c08b8baaed5d1377fa8d88c454e289f75567ec",
+			"keccak256": "0x60f550d1d4089ab59928bbc5805b71ba6e98873ed5e232bc7d4fae0fd3a58344",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d808f6d58f4952225e82c6c371c9bacc80f69df7c3d2dbc307c27c2640e12abc",
-				"dweb:/ipfs/QmQau5JHbRg2msNpQ21vuzT1STo35zLmwVXm6XUvi4wFbs"
+				"bzz-raw://4bacddaad7e585aa39ed652af1137ac62007e2b537975c71bdfd51dc9e57e364",
+				"dweb:/ipfs/Qmb8svygyzu66ry6ukQXLtgsbuP21XpHgaYcgfzZJJ5AWD"
 			]
 		}
 	},
