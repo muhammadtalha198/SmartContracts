@@ -12,6 +12,7 @@ contract Market is Ownable {
 
     struct MarketInfo {
 
+        bool resolved;
         uint256 endTime;
         uint256 totalBets;
         uint256 totalAmount;
@@ -47,13 +48,10 @@ contract Market is Ownable {
     mapping(address => mapping(uint256 => SellInfo)) public sellInfo;
     
 
-   
-    event WithdrawWinner (uint256 indexed outcomeIndex);
-    event MarketResolved(uint256 indexed winningOutcomeIndex);
-    event RemainingTransfer(address owner,uint256 remainingBalance);
     event Bet(address indexed user,uint256 indexed _amount,uint256 _betOn);
     event SellShare(address indexed user, uint256 listNo,  uint256 onPrice);
-   event BuyShare(address buyer, address seller, uint256 _amountBBuyed, uint256 onPrice);
+    event BuyShare(address buyer, address seller, uint256 _amountBBuyed, uint256 onPrice);
+    event ResolveMarket(address ownerAddress, uint256 ownerAmount, uint256 perShareAmount, uint256 winningIndex);
 
 
     constructor(
@@ -73,7 +71,8 @@ contract Market is Ownable {
        
         require(_betOn == 0 || _betOn == 1, "you either bet yes or no.");
         require(_amount > 0, "Bet amount must be greater than 0");
-        // require(block.timestamp < marketInfo[address(this)].endTime, "Market is closed.");
+        require(!marketInfo[address(this)].resolved, "Market is resolved!");
+        require(block.timestamp < marketInfo[address(this)].endTime, "Market is closed.");
         
 
         if(!userInfo[msg.sender].betOn[_betOn] && !userInfo[msg.sender].betOn[_betOn]){     
@@ -136,7 +135,16 @@ contract Market is Ownable {
         require(_price > 0, "price must be greater than 0");
         require(_amount > 0, "amount must be greater than 0");
         require(_sellOf == 0 || _sellOf == 1, "you either list yes or no.");
-        // require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
+        require(!marketInfo[address(this)].resolved, "Market is resolved!");
+        require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
+        
+        if(_sellOf == 0){
+
+            require(_amount <= userInfo[msg.sender].noBetAmount, "not enough Amount");
+        }else{
+            
+            require(_amount <= userInfo[msg.sender].yesBetAmount, "not enough Amount");
+        }
         
         userInfo[msg.sender].listNo++;
 
@@ -155,7 +163,8 @@ contract Market is Ownable {
         require(sellInfo[_owner][_listNo].list, "Not listeed!");
         require(!sellInfo[_owner][_listNo].sold, "allready Sold.");
         require(sellInfo[_owner][_listNo].owner == _owner, "wrong Owner.");
-        // require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
+        require(!marketInfo[address(this)].resolved, "Market is resolved!");
+        require(block.timestamp < marketInfo[address(this)].endTime, "Market has ended");
 
         sellInfo[_owner][_listNo].sold = true;
         sellInfo[_owner][_listNo].owner = msg.sender;
@@ -188,7 +197,9 @@ contract Market is Ownable {
     function resolveMarket(uint256 winningIndex) external   {
         
         require(winningIndex == 0 || winningIndex == 1, " either bet yes or no.");
-        // require(block.timestamp >  marketInfo[address(this)].endTime, "Market has not ended");
+        require(!marketInfo[address(this)].resolved, "Market is resolved!");
+        require(block.timestamp >  marketInfo[address(this)].endTime, 
+            "Markeeet must be resolved after required Time.");
 
         uint256 totalWinnerShare;
 
@@ -213,27 +224,43 @@ contract Market is Ownable {
 
                     totalWinnerShare += userInfo[eachUser[i]].shareAmount;
                 }
-             }
-            
+             }   
         }
 
-        uint256 perShare = marketInfo[address(this)].totalAmount / totalWinnerShare;
+        uint256 _perShare = marketInfo[address(this)].totalAmount / totalWinnerShare;
+        uint256 _ownerAmount;
         
         for (uint256 i = 0; i < totalUsers; i++) {
             
             if(userInfo[eachUser[i]].betOn[winningIndex]) {
-
                 
+                if(winningIndex == 0){
+
+                    _ownerAmount += ((userInfo[eachUser[i]].shareAmount * _perShare) - userInfo[eachUser[i]].noBetAmount) ;
+                }
+                else{
+
+                    _ownerAmount += ((userInfo[eachUser[i]].shareAmount * _perShare) - userInfo[eachUser[i]].yesBetAmount);
+                }
+
                 bool success = usdcToken.transfer(
                     eachUser[i],
-                    userInfo[eachUser[i]].shareAmount * perShare
+                    userInfo[eachUser[i]].shareAmount * _perShare
                 );
                 require(success, "Transfer failed");
 
             }
         }
+
+        marketInfo[address(this)].resolved = true;
+        
+        bool success1 = usdcToken.transfer(owner(),_ownerAmount);
+        require(success1, "Transfer failed");
+
+        emit ResolveMarket( owner(), _ownerAmount, _perShare, winningIndex);
     }
 
+    
     function calculateShares(uint256 _amount, uint256 _betOn ) public view returns (uint256) {
 
         uint256 price =  marketInfo[address(this)].initialPrice[_betOn];

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.19+commit.7dd6d404"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -82,7 +82,7 @@
 		"compilationTarget": {
 			"ChailLinkAutomation/Farwarder_flattened.sol": "AutomationCompatibleInterface"
 		},
-		"evmVersion": "paris",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -95,11 +95,11 @@
 	},
 	"sources": {
 		"ChailLinkAutomation/Farwarder_flattened.sol": {
-			"keccak256": "0xdcef06cc8fad3b556a3591121e0505db14cdbb0f513c622bf8f62392974534e5",
+			"keccak256": "0x054e9cecdfa676847be5ba2000189d3c8d28ed57f2c0ae9f2446b7473a87398d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f5ae5d1bcef2fd1c619c6ddf45c0b1b2b88f39745c78802f0c41b81292bf644d",
-				"dweb:/ipfs/QmQXyajLh7VUqV7bGLPn8me1kRJ6AQGZPM86VDhYgHvosn"
+				"bzz-raw://c62e1d2d1f2ca0e0cf008d0581e61dbf280da3bfc5cccf760347d8fa6e9ee960",
+				"dweb:/ipfs/QmRFeM8Az4evMo8EgNKVsUnbWHEwELoSeSYUhEjzN4KyXV"
 			]
 		}
 	},

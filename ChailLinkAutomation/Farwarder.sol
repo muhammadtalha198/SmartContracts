@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+pragma solidity ^0.8.20;
 
 /**
  * @dev Example contract which uses the Forwarder
@@ -14,15 +14,17 @@ pragma solidity 0.8.19;
  */
 
 import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
-import {OwnerIsCreator} from "@chainlink/contracts/src/v0.8/shared/access/OwnerIsCreator.sol";
+// import {OwnerIsCreator} from "@chainlink/contracts/src/v0.8/shared/access/OwnerIsCreator.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
+
+contract CounterwForwarder is AutomationCompatibleInterface, Ownable {
     uint256 public counter; // counter counts the number of upkeeps performed
     uint256 public interval; // interval specifies the time between upkeeps
     uint256 public lastTimeStamp; // lastTimeStamp tracks the last upkeep performed
     address public s_forwarderAddress;
 
-    constructor(uint256 updateInterval) {
+    constructor(address initialOwner,uint256 updateInterval)Ownable(initialOwner)  {
         interval = updateInterval;
     }
 
@@ -42,9 +44,6 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         counter = counter + 1;
     }
 
-    /// @notice Set the address that `performUpkeep` is called from
-    /// @dev Only callable by the owner
-    /// @param forwarderAddress the address to set
     function setForwarderAddress(address forwarderAddress) external onlyOwner {
         s_forwarderAddress = forwarderAddress;
     }

@@ -109,19 +109,6 @@
 				"inputs": [
 					{
 						"indexed": true,
-						"internalType": "uint256",
-						"name": "winningOutcomeIndex",
-						"type": "uint256"
-					}
-				],
-				"name": "MarketResolved",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
 						"internalType": "address",
 						"name": "previousOwner",
 						"type": "address"
@@ -142,17 +129,29 @@
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "owner",
+						"name": "ownerAddress",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "remainingBalance",
+						"name": "ownerAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "perShareAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "winningIndex",
 						"type": "uint256"
 					}
 				],
-				"name": "RemainingTransfer",
+				"name": "ResolveMarket",
 				"type": "event"
 			},
 			{
@@ -178,19 +177,6 @@
 					}
 				],
 				"name": "SellShare",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "uint256",
-						"name": "outcomeIndex",
-						"type": "uint256"
-					}
-				],
-				"name": "WithdrawWinner",
 				"type": "event"
 			},
 			{
@@ -353,6 +339,11 @@
 				],
 				"name": "marketInfo",
 				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "resolved",
+						"type": "bool"
+					},
 					{
 						"internalType": "uint256",
 						"name": "endTime",
@@ -825,11 +816,11 @@
 			]
 		},
 		"FacctoryContract/WagerContract.sol": {
-			"keccak256": "0x446e3542d0d0997f8a166f6dac1427fac3145282357a0822bb2da3da41a2976a",
+			"keccak256": "0x3c45d57f4b766e51f38e0368baa276a86b1216da74108610eaee26486993a6e5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b19c422e53d6a919c2abdfdf8b051256588cfd10ca65ed8c755811c5e47d94a5",
-				"dweb:/ipfs/QmRabUvCfVkYMuD6fNqcEVJUorKf8sXD4MS4xdawHdHUy8"
+				"bzz-raw://1ef5262f4967b32846beb6fd436746cbb8e1d27c3e9152877cec8063641d1efc",
+				"dweb:/ipfs/QmPhi8CQKX672NoY9g9HALyKZpkmRmgbuk92xwhRVN1gMV"
 			]
 		}
 	},

@@ -9,22 +9,6 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "initialOwner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "updateInterval",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "owner",
 						"type": "address"
 					}
@@ -63,69 +47,6 @@
 				"type": "event"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "bytes",
-						"name": "",
-						"type": "bytes"
-					}
-				],
-				"name": "checkUpkeep",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					},
-					{
-						"internalType": "bytes",
-						"name": "",
-						"type": "bytes"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "counter",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "interval",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "lastTimeStamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "owner",
 				"outputs": [
@@ -139,47 +60,8 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "bytes",
-						"name": "",
-						"type": "bytes"
-					}
-				],
-				"name": "performUpkeep",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "renounceOwnership",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "s_forwarderAddress",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "forwarderAddress",
-						"type": "address"
-					}
-				],
-				"name": "setForwarderAddress",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -199,6 +81,7 @@
 			}
 		],
 		"devdoc": {
+			"details": "Contract module which provides a basic access control mechanism, where there is an account (an owner) that can be granted exclusive access to specific functions. The initial owner is set to the address provided by the deployer. This can later be changed with {transferOwnership}. This module is used through inheritance. It will make available the modifier `onlyOwner`, which can be applied to your functions to restrict their use to the owner.",
 			"errors": {
 				"OwnableInvalidOwner(address)": [
 					{
@@ -213,6 +96,9 @@
 			},
 			"kind": "dev",
 			"methods": {
+				"constructor": {
+					"details": "Initializes the contract setting the address provided by the deployer as the initial owner."
+				},
 				"owner()": {
 					"details": "Returns the address of the current owner."
 				},
@@ -228,13 +114,12 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {},
-			"notice": "THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY. THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE. DO NOT USE THIS CODE IN PRODUCTION.",
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"ChailLinkAutomation/Farwarder_flattened.sol": "CounterwForwarder"
+			".deps/npm/@openzeppelin/contracts/access/Ownable.sol": "Ownable"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -248,12 +133,20 @@
 		"remappings": []
 	},
 	"sources": {
-		"ChailLinkAutomation/Farwarder_flattened.sol": {
-			"keccak256": "0x054e9cecdfa676847be5ba2000189d3c8d28ed57f2c0ae9f2446b7473a87398d",
+		".deps/npm/@openzeppelin/contracts/access/Ownable.sol": {
+			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c62e1d2d1f2ca0e0cf008d0581e61dbf280da3bfc5cccf760347d8fa6e9ee960",
-				"dweb:/ipfs/QmRFeM8Az4evMo8EgNKVsUnbWHEwELoSeSYUhEjzN4KyXV"
+				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
+				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
+			]
+		},
+		".deps/npm/@openzeppelin/contracts/utils/Context.sol": {
+			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		}
 	},
