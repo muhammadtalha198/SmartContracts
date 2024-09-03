@@ -56,9 +56,9 @@ contract Market is Ownable {
     error marketResolved();
     error notBet(bool beted);
     error alreadySold(bool sold);
-    error wrongOwner(address owner);
     error wrongPrice(uint256 price);
     error notListed(uint256 listNo);
+    error wrongOwner(address owner);
     error wrongAmount(uint256 amount);
     error wrongBetIndex(uint256 betIndex);
 
@@ -78,19 +78,19 @@ contract Market is Ownable {
 
     function bet(uint256 _amount, uint256 _betOn) external {
 
-        if(_betOn == 0 || _betOn == 1){
+        if(_betOn != 0 || _betOn != 1){
             revert wrongBetIndex(_betOn);
         }
-        if(_amount > 0){
+        if(_amount <= 0){
             revert wrongAmount(_amount);
         }
         
-        if(!marketInfo[address(this)].resolved){
+        if(marketInfo[address(this)].resolved){
             revert marketResolved();
         }
         
 
-        if(!userInfo[msg.sender].betOn[_betOn] && !userInfo[msg.sender].betOn[_betOn]){     
+        if(!userInfo[msg.sender].betOn[_betOn]){     
             eachUser[totalUsers] = msg.sender;
             totalUsers++;
         }
@@ -146,21 +146,21 @@ contract Market is Ownable {
 
     function sellShare(uint256 _amount, uint256 _price, uint256 _sellOf) external {
         
-        if(_sellOf == 0 || _sellOf == 1){
+        if(_sellOf != 0 || _sellOf != 1){
             revert wrongBetIndex(_sellOf);
         }
-        if(_amount > 0){
+        if(_amount <= 0){
             revert wrongAmount(_amount);
         }
         
-        if(!marketInfo[address(this)].resolved){
+        if(marketInfo[address(this)].resolved){
             revert marketResolved();
         }
 
         if(!userInfo[msg.sender].betOn[_sellOf]){
             revert notBet(userInfo[msg.sender].betOn[_sellOf]);
         }
-        if(_price > 0){
+        if(_price <= 0){
             revert wrongPrice(_price);
         }
         
@@ -186,18 +186,18 @@ contract Market is Ownable {
 
     function buyShare(uint256 _listNo, address _owner) external {
         
-        if(sellInfo[_owner][_listNo].list){
+        if(!sellInfo[_owner][_listNo].list){
             revert notListed(_listNo);
         }
-        if(!sellInfo[_owner][_listNo].sold){
+        if(sellInfo[_owner][_listNo].sold){
             revert alreadySold(sellInfo[_owner][_listNo].sold);
         }
         
-        if(!marketInfo[address(this)].resolved){
+        if(marketInfo[address(this)].resolved){
             revert marketResolved();
         }
 
-        if(sellInfo[_owner][_listNo].owner == _owner){
+        if(sellInfo[_owner][_listNo].owner != _owner){
             revert wrongOwner(_owner);
         }
 
@@ -231,11 +231,11 @@ contract Market is Ownable {
     
     function resolveMarket(uint256 winningIndex) external   {
         
-       if(winningIndex == 0 || winningIndex == 1){
+       if(winningIndex != 0 || winningIndex != 1){
             revert wrongBetIndex(winningIndex);
         }
         
-        if(!marketInfo[address(this)].resolved){
+        if(marketInfo[address(this)].resolved){
             revert marketResolved();
         }
 
@@ -380,7 +380,6 @@ contract Market is Ownable {
             sellInfo[_owner][_id].listOn
         );
     }
-
 
     function userBetOn(address _user, uint256 _betIndex) public view returns (bool) {
         return userInfo[_user].betOn[_betIndex];

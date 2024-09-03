@@ -898,11 +898,11 @@
 			]
 		},
 		"FacctoryContract/WagerContract.sol": {
-			"keccak256": "0x75ceecc16176bbaa24844f8199b50f0ca3c750910117ca19c32f338a659a30ec",
+			"keccak256": "0xe74a6f74e7ffa1fcf088057ecd60dbcaebb577f0514e3b9cd786acf7119e9598",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c90baed098c7d5eb2274f8d8128655d357daa8146d2061100115c471380e4514",
-				"dweb:/ipfs/QmeVJKsxragXYeShEVTEseAK7JazGetfE7ygMvKzx4kMKA"
+				"bzz-raw://3827f91279f43119d0043f832162abb28c65ce18db9f884ac2f211efec254efb",
+				"dweb:/ipfs/QmZbLPWJjoeEf7Ct7wPtmfLMCBRkreUva8TVrTyNusQYUQ"
 			]
 		}
 	},
