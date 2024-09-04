@@ -160,9 +160,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"FacctoryContract/WagerContract_flattened.sol": "IERC20Errors"
+			"FacctoryContract/FacctoryContract_flattened.sol": "IERC20Errors"
 		},
-		"evmVersion": "london",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -174,11 +174,11 @@
 		"remappings": []
 	},
 	"sources": {
-		"FacctoryContract/WagerContract_flattened.sol": {
-			"keccak256": "0x985df266ab0bd3c6c223b06fbd1aaed1efe95dae6df58872f9a5754abe8da8ed",
+		"FacctoryContract/FacctoryContract_flattened.sol": {
+			"keccak256": "0x736cdb5f61be835f4c1888a0b1eeddf79b9c6d1fc8c21270749966b14aa9e9ef",
 			"urls": [
-				"bzz-raw://b5d57ceecd0dbfafae734c15d9a712965b67070498ad2318f9b47e547090a056",
-				"dweb:/ipfs/QmZw44xf4oxKK2qN8VSdKAhk2Bs3BCWe8d1heJkU25ZGHN"
+				"bzz-raw://8530b4ed57158b325ee216ac96b224cf91926e559a248002489bf74471d12939",
+				"dweb:/ipfs/QmbNQjkXyFsyBDErm9sSyKaJK11pNtxdGGQhQy4qfZNTED"
 			]
 		}
 	},

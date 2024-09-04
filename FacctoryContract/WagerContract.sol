@@ -41,6 +41,7 @@ contract Market is Ownable {
     }
 
     uint256 public totalUsers;
+    uint256 public profitPercentage;
 
     mapping(uint256 => address) public eachUser;
     mapping(address => UserInfo) public userInfo;
@@ -77,6 +78,7 @@ contract Market is Ownable {
             marketInfo[address(this)].initialPrice[0] = 500000000000000000;
             marketInfo[address(this)].initialPrice[1] = 500000000000000000;
             usdcToken = ERC20(_usdcToken);
+            profitPercentage = 1000; // 10 %
     }
 
     function bet(uint256 _amount, uint256 _betOn) external {
@@ -241,7 +243,7 @@ contract Market is Ownable {
         if(marketInfo[address(this)].resolved){
             revert marketResolved();
         }
-        
+
         if(marketInfo[address(this)].endTime > block.timestamp){
             revert notResolvedBeforeTime(marketInfo[address(this)].endTime);
         }
@@ -278,24 +280,21 @@ contract Market is Ownable {
         for (uint256 i = 0; i < totalUsers; i++) {
             
             if(userInfo[eachUser[i]].betOn[winningIndex]) {
-                
-                if(winningIndex == 0){
 
-                    _ownerAmount += ((userInfo[eachUser[i]].shareAmount * _perShare) - userInfo[eachUser[i]].noBetAmount) ;
-                }
-                else{
+                uint256 userTotalAmount = userInfo[eachUser[i]].shareAmount * _perShare;
+                uint256 userProfitAmountAmount = userTotalAmount - userInfo[eachUser[i]].shareAmount;
 
-                    _ownerAmount += ((userInfo[eachUser[i]].shareAmount * _perShare) - userInfo[eachUser[i]].yesBetAmount);
-                }
+                uint256 tenPercentAmount = calculatePercentage(userProfitAmountAmount,profitPercentage);
+                _ownerAmount += tenPercentAmount;
 
-                if(usdcToken.balanceOf(address(this)) < userInfo[eachUser[i]].shareAmount * _perShare){
+                if(usdcToken.balanceOf(address(this)) < (userTotalAmount - tenPercentAmount)){
                     revert contractLowbalance(usdcToken.balanceOf(address(this)));
                 }
 
 
                 bool success = usdcToken.transfer(
                     eachUser[i],
-                    userInfo[eachUser[i]].shareAmount * _perShare
+                    userTotalAmount - tenPercentAmount
                 );
                 require(success, "Transfer failed");
 
@@ -325,13 +324,23 @@ contract Market is Ownable {
         return result;
     }
 
+
+    function calculatePercentage(uint256 _totalStakeAmount,uint256 percentageNumber) private pure returns(uint256) {
+        
+        require(_totalStakeAmount !=0 , "_totalStakeAmount can not be zero");
+        require(percentageNumber !=0 , "_totalStakeAmount can not be zero");
+        uint256 serviceFee = (_totalStakeAmount * percentageNumber)/(10000);
+        
+        return serviceFee;
+    }
+
     // Function to calculate potential return
     function calculatePotentialReturn(uint256 _shares) private pure returns (uint256) {
     
         uint256 potentialReturn = _shares * 1e18 ;
         return potentialReturn;
     }
-
+    
     function calculateInvestment(uint256 shares, uint256 _betOn) public view returns (uint256) {
         
         require(shares > 0, "Shares must be greater than zero");
@@ -366,6 +375,7 @@ contract Market is Ownable {
     function userBetOn(address _user, uint256 _betIndex) public view returns (bool) {
         return userInfo[_user].betOn[_betIndex];
     }
+
 
 
 }
