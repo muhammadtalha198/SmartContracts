@@ -1,0 +1,91 @@
+{
+	"compiler": {
+		"version": "0.8.27+commit.40a35a09"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "target",
+						"type": "address"
+					}
+				],
+				"name": "AddressEmptyCode",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "AddressInsufficientBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "FailedInnerCall",
+				"type": "error"
+			}
+		],
+		"devdoc": {
+			"details": "Collection of functions related to the address type",
+			"errors": {
+				"AddressEmptyCode(address)": [
+					{
+						"details": "There's no code at `target` (it is not a contract)."
+					}
+				],
+				"AddressInsufficientBalance(address)": [
+					{
+						"details": "The ETH balance of the account is not enough to perform the operation."
+					}
+				],
+				"FailedInnerCall()": [
+					{
+						"details": "A call to an address target failed. The target may have reverted."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"DripWarrior/poolContract_flattened.sol": "Address"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"DripWarrior/poolContract_flattened.sol": {
+			"keccak256": "0x15d15a673a0ad952895797370f99f1ef5a902255a20e0b9b8d4aee80e9d489ce",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://960719f498fa0670da62de3631776a43d03a57901ff86d55a96201d9252a8dec",
+				"dweb:/ipfs/QmSXy7dSJ4bRK7QRq4HvxqR7sbVNSzDUzdLAAkUkFHnWtH"
+			]
+		}
+	},
+	"version": 1
+}

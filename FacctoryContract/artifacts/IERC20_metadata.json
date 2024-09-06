@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.26+commit.8a97fa7a"
+		"version": "0.8.27+commit.40a35a09"
 	},
 	"language": "Solidity",
 	"output": {
@@ -230,7 +230,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"FacctoryContract/FacctoryContract_flattened.sol": "IERC20"
+			"FacctoryContract/WagerContract_flattened.sol": "IERC20"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -244,11 +244,11 @@
 		"remappings": []
 	},
 	"sources": {
-		"FacctoryContract/FacctoryContract_flattened.sol": {
-			"keccak256": "0x736cdb5f61be835f4c1888a0b1eeddf79b9c6d1fc8c21270749966b14aa9e9ef",
+		"FacctoryContract/WagerContract_flattened.sol": {
+			"keccak256": "0xe5ec703a332c9e18a7e04d6894ecd564a0af5fe400d34cdc820288d467a2f324",
 			"urls": [
-				"bzz-raw://8530b4ed57158b325ee216ac96b224cf91926e559a248002489bf74471d12939",
-				"dweb:/ipfs/QmbNQjkXyFsyBDErm9sSyKaJK11pNtxdGGQhQy4qfZNTED"
+				"bzz-raw://30589c5fd21cc3f7d6cce02e9d376ae126366c37041710a2e6ad18483539a652",
+				"dweb:/ipfs/QmcFbzuVKSFzx9dLSyWCnc87wRBB3t3f4NZzxPLuecMWBs"
 			]
 		}
 	},

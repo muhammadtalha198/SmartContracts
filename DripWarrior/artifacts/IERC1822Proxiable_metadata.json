@@ -1,0 +1,64 @@
+{
+	"compiler": {
+		"version": "0.8.27+commit.40a35a09"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "proxiableUUID",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "ERC1822: Universal Upgradeable Proxy Standard (UUPS) documents a method for upgradeability through a simplified proxy whose upgrades are fully controlled by the current implementation.",
+			"kind": "dev",
+			"methods": {
+				"proxiableUUID()": {
+					"details": "Returns the storage slot that the proxiable contract assumes is being used to store the implementation address. IMPORTANT: A proxy pointing at a proxiable contract should not be considered proxiable itself, because this risks bricking a proxy that upgrades to it, by delegating to itself until out of gas. Thus it is critical that this function revert if invoked through a proxy."
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"DripWarrior/poolContract_flattened.sol": "IERC1822Proxiable"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"DripWarrior/poolContract_flattened.sol": {
+			"keccak256": "0x15d15a673a0ad952895797370f99f1ef5a902255a20e0b9b8d4aee80e9d489ce",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://960719f498fa0670da62de3631776a43d03a57901ff86d55a96201d9252a8dec",
+				"dweb:/ipfs/QmSXy7dSJ4bRK7QRq4HvxqR7sbVNSzDUzdLAAkUkFHnWtH"
+			]
+		}
+	},
+	"version": 1
+}

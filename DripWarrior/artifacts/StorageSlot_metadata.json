@@ -1,0 +1,46 @@
+{
+	"compiler": {
+		"version": "0.8.27+commit.40a35a09"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Library for reading and writing primitive types to specific storage slots. Storage slots are often used to avoid storage conflict when dealing with upgradeable contracts. This library helps with reading and writing to such slots without the need for inline assembly. The functions in this library return Slot structs that contain a `value` member that can be used to read or write. Example usage to set ERC1967 implementation slot: ```solidity contract ERC1967 {     bytes32 internal constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;     function _getImplementation() internal view returns (address) {         return StorageSlot.getAddressSlot(_IMPLEMENTATION_SLOT).value;     }     function _setImplementation(address newImplementation) internal {         require(newImplementation.code.length > 0);         StorageSlot.getAddressSlot(_IMPLEMENTATION_SLOT).value = newImplementation;     } } ```",
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"DripWarrior/poolContract_flattened.sol": "StorageSlot"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"DripWarrior/poolContract_flattened.sol": {
+			"keccak256": "0x15d15a673a0ad952895797370f99f1ef5a902255a20e0b9b8d4aee80e9d489ce",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://960719f498fa0670da62de3631776a43d03a57901ff86d55a96201d9252a8dec",
+				"dweb:/ipfs/QmSXy7dSJ4bRK7QRq4HvxqR7sbVNSzDUzdLAAkUkFHnWtH"
+			]
+		}
+	},
+	"version": 1
+}

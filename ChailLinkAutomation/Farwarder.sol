@@ -47,4 +47,13 @@ contract CounterwForwarder is AutomationCompatibleInterface, Ownable {
     function setForwarderAddress(address forwarderAddress) external onlyOwner {
         s_forwarderAddress = forwarderAddress;
     }
+
+    function setInterval (uint256 updateInterval) external  onlyOwner{
+         interval = updateInterval;
+          lastTimeStamp = block.timestamp;
+
+    }
+    function off () external  onlyOwner{
+         interval = 0;
+    }
 }
