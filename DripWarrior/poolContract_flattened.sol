@@ -1438,6 +1438,10 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             "This address does not have permission to call performUpkeep"
         );
         
+        if(interval == 0){
+            revert wrongInterval(interval);
+        }
+        
         lastTimeStamp = block.timestamp;
         weeklyTransfer();
         

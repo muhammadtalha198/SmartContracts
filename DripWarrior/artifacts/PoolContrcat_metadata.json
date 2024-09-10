@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.27+commit.40a35a09"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -176,6 +176,17 @@
 					}
 				],
 				"name": "wrongProjectNo",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					}
+				],
+				"name": "wrongTime",
 				"type": "error"
 			},
 			{
@@ -588,6 +599,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "checkOnce",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes",
@@ -834,6 +858,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "_startingTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "updateInterval",
 						"type": "uint256"
 					}
@@ -924,6 +953,19 @@
 				"name": "stakeTokens",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startingTime",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -1313,11 +1355,11 @@
 			]
 		},
 		"DripWarrior/poolContract.sol": {
-			"keccak256": "0x98e45aa019bbbc317c9c72b36939dc02f93c3c5aebcbeb62c51a80bf8b9e9206",
+			"keccak256": "0x9b3bb6f332dbc970b8f6f2165d88b6ae2ec9adedeab898ae527ef469c774022b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c4e028e1a1233e848c4b383e9793dcffcfd7dee7649a5bd12c812f7c383dedc0",
-				"dweb:/ipfs/QmaRtwFxLKba9Xq2FWmnmCni5R8MGdVEFQWCSXJoQxUvSB"
+				"bzz-raw://76adbdf055a4ab445aad8218fc198e5cdce3600038d9ad39a98690bc9236c59b",
+				"dweb:/ipfs/QmWBtcvQEQ62YB1jkfQZmNHVMQoWnA2eyGFspnRigkKHud"
 			]
 		}
 	},

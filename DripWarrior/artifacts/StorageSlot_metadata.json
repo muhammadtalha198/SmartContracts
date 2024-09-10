@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.27+commit.40a35a09"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -34,11 +34,11 @@
 	},
 	"sources": {
 		"DripWarrior/poolContract_flattened.sol": {
-			"keccak256": "0x15d15a673a0ad952895797370f99f1ef5a902255a20e0b9b8d4aee80e9d489ce",
+			"keccak256": "0x5e6dd6c903318110bc75f6d224e95caa789e691f68ab953e253b902ac5e60414",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://960719f498fa0670da62de3631776a43d03a57901ff86d55a96201d9252a8dec",
-				"dweb:/ipfs/QmSXy7dSJ4bRK7QRq4HvxqR7sbVNSzDUzdLAAkUkFHnWtH"
+				"bzz-raw://56441532785aa65f6d10edecbf6e7d481b4534e281e657847b638a87546e65c6",
+				"dweb:/ipfs/QmWM3qxSQK9bzvLxDPunwiatususj7NuFbahF3t363SkTS"
 			]
 		}
 	},
