@@ -302,14 +302,22 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
     function checkUpkeep(bytes calldata /*checkData*/) external override view  returns (bool, bytes memory) {
       
+        bool needsUpkeep;
+        
         if(!checkOnce){
 
-            if(block.timestamp != startingTime){
+            if(block.timestamp == startingTime){
+
+               needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+            }
+            else{
                 revert wrongTime(startingTime);
             }
         }
-        
-        bool needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+        else{
+
+            needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+        }
 
         return (needsUpkeep, bytes(""));
     }
@@ -326,8 +334,11 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         }
         
         lastTimeStamp = block.timestamp;
-        checkOnce = true;
         weeklyTransfer();
+       
+        if(!checkOnce){
+            checkOnce = true;
+        }
         
     }
 
@@ -339,7 +350,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             revert wrongInterval(updateInterval);
         }
         
-        if(_startingTime > block.timestamp){
+        if(_startingTime < block.timestamp){
             revert wrongTime(_startingTime);
         }
 
@@ -355,7 +366,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
        
         interval = 0;
         checkOnce = false;
-        
+
         emit offInterval(msg.sender, interval);
     }
 

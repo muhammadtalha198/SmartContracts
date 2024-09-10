@@ -1,7 +1,7 @@
 
 // File: @openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
 
-// SPDX-License-Identifier: MIT
+
 // OpenZeppelin Contracts (last updated v5.0.0) (proxy/utils/Initializable.sol)
 
 pragma solidity ^0.8.20;
@@ -1160,7 +1160,9 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     uint256 public noOfUsers;
     address public multisigAddress;
 
+    bool public checkOnce;
     uint256 public interval; // interval specifies the time between upkeeps
+    uint256 public startingTime; 
     uint256 public lastTimeStamp; // lastTimeStamp tracks the last upkeep performed
     address public s_forwarderAddress;
 
@@ -1194,6 +1196,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     event WeeklyTransfered(address caller,uint256  ownerShipPoolAmount, uint256  treasuryPoolAmount);
 
     error wrongValue(bool value);
+    error wrongTime(uint256 time);
     error userBlocked(bool blocked);
     error wrongOwner(address owner);
     error wrongAmount(uint256 amount);
@@ -1425,9 +1428,25 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         return (remainFiftyOPool,dividentPayoutOPoolAmount,perPersonFromTPool);
     }
 
-    function checkUpkeep(bytes calldata /*checkData*/) external view  returns (bool, bytes memory) {
+    function checkUpkeep(bytes calldata /*checkData*/) external override view  returns (bool, bytes memory) {
       
-        bool needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+        bool needsUpkeep;
+        
+        if(!checkOnce){
+
+            if(block.timestamp == startingTime){
+
+               needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+            }
+            else{
+                revert wrongTime(startingTime);
+            }
+        }
+        else{
+
+            needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+        }
+
         return (needsUpkeep, bytes(""));
     }
 
@@ -1444,17 +1463,27 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         
         lastTimeStamp = block.timestamp;
         weeklyTransfer();
+       
+        if(!checkOnce){
+            checkOnce = true;
+        }
         
     }
 
 
     
-    function setInterval (uint256 updateInterval) external  onlyOwner{
+    function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
          
         if(updateInterval <= 0){
             revert wrongInterval(updateInterval);
         }
+        
+        if(_startingTime < block.timestamp){
+            revert wrongTime(_startingTime);
+        }
+
         interval = updateInterval;
+        startingTime = _startingTime;
         lastTimeStamp = block.timestamp;
 
         emit SetInterval(msg.sender, interval, lastTimeStamp);
@@ -1464,6 +1493,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     function off () external  onlyOwner{
        
         interval = 0;
+        checkOnce = false;
 
         emit offInterval(msg.sender, interval);
     }

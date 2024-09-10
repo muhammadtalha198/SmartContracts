@@ -52,11 +52,11 @@
 	},
 	"sources": {
 		"DripWarrior/poolContract_flattened.sol": {
-			"keccak256": "0x5e6dd6c903318110bc75f6d224e95caa789e691f68ab953e253b902ac5e60414",
+			"keccak256": "0x6a5238db0f081e0d779b6d410a6de0bcdf967253467ec43a32b9e2cf6f44f141",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://56441532785aa65f6d10edecbf6e7d481b4534e281e657847b638a87546e65c6",
-				"dweb:/ipfs/QmWM3qxSQK9bzvLxDPunwiatususj7NuFbahF3t363SkTS"
+				"bzz-raw://1ef1282dcf97413707e5bae3f4d658913c4369cd85663cc57b21bc0d77ffe661",
+				"dweb:/ipfs/QmXnfEbU1cLJRcUZzjmiwVLfzKdWRJ1hLtRkXrFbDrGjxh"
 			]
 		}
 	},
