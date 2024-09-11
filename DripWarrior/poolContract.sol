@@ -328,7 +328,6 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             lastTimeStamp = block.timestamp;
             weeklyTransfer();
         }
-        
        
         if(!checkOnce){
             checkOnce = true;

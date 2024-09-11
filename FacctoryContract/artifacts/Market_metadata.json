@@ -298,12 +298,12 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "totalBetsOnNo",
+						"name": "totalBetAmountOnNo",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "totalBetsOnYes",
+						"name": "totalBetAmountOnYes",
 						"type": "uint256"
 					}
 				],
@@ -856,11 +856,11 @@
 			]
 		},
 		"FacctoryContract/WagerWithAmount.sol": {
-			"keccak256": "0xc1a04cac0f2526850898821122e61fce660bf9f6c2430ef31170d51efea82c5f",
+			"keccak256": "0x787331923e9aa7e0e07342e8e46792f38702a39118488dcddb4d10c398403adb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1cd2afcc17b619ba74b5e59fd690712f4a0108d44af1e1457d1439ef88390482",
-				"dweb:/ipfs/Qma3fKAV5DrmZGoCMuDzS99eK2UmrUBQDwVe2tbbzKz8KB"
+				"bzz-raw://7df12016c9cc3d69bc81247f11d418c6371c9c50e68ffa2c7b8bbf4489b91d2c",
+				"dweb:/ipfs/QmcoUKPJimSByQXcwuZ1d6575jEkiZiaKMrPUqHZ6cmUyX"
 			]
 		}
 	},

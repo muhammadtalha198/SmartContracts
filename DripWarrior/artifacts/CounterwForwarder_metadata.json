@@ -1,46 +1,35 @@
 {
 	"compiler": {
-		"version": "0.8.26+commit.8a97fa7a"
+		"version": "0.8.19+commit.7dd6d404"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "initialOwner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "updateInterval",
-						"type": "uint256"
-					}
-				],
+				"inputs": [],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "updateInterval",
+						"type": "uint256"
 					}
 				],
-				"name": "OwnableInvalidOwner",
+				"name": "wrongInterval",
 				"type": "error"
 			},
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "account",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
 					}
 				],
-				"name": "OwnableUnauthorizedAccount",
+				"name": "wrongTime",
 				"type": "error"
 			},
 			{
@@ -49,18 +38,57 @@
 					{
 						"indexed": true,
 						"internalType": "address",
-						"name": "previousOwner",
+						"name": "from",
 						"type": "address"
 					},
 					{
 						"indexed": true,
 						"internalType": "address",
-						"name": "newOwner",
+						"name": "to",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferRequested",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
 						"type": "address"
 					}
 				],
 				"name": "OwnershipTransferred",
 				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "acceptOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "checkOnce",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [
@@ -160,13 +188,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "renounceOwnership",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "s_forwarderAddress",
 				"outputs": [
 					{
@@ -195,6 +216,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "_startingTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "updateInterval",
 						"type": "uint256"
 					}
@@ -205,10 +231,23 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "startingTime",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "newOwner",
+						"name": "to",
 						"type": "address"
 					}
 				],
@@ -216,46 +255,52 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "weeklyTransfer",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
-			"errors": {
-				"OwnableInvalidOwner(address)": [
-					{
-						"details": "The owner is not a valid owner account. (eg. `address(0)`)"
-					}
-				],
-				"OwnableUnauthorizedAccount(address)": [
-					{
-						"details": "The caller account is not authorized to perform an operation."
-					}
-				]
-			},
 			"kind": "dev",
 			"methods": {
-				"owner()": {
-					"details": "Returns the address of the current owner."
-				},
-				"renounceOwnership()": {
-					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
-				},
-				"transferOwnership(address)": {
-					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				"setForwarderAddress(address)": {
+					"details": "Only callable by the owner",
+					"params": {
+						"forwarderAddress": "the address to set"
+					}
 				}
 			},
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"acceptOwnership()": {
+					"notice": "Allows an ownership transfer to be completed by the recipient."
+				},
+				"owner()": {
+					"notice": "Get the current owner"
+				},
+				"setForwarderAddress(address)": {
+					"notice": "Set the address that `performUpkeep` is called from"
+				},
+				"transferOwnership(address)": {
+					"notice": "Allows an owner to begin transferring ownership to a new address."
+				}
+			},
+			"notice": "THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY. THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE. DO NOT USE THIS CODE IN PRODUCTION.",
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"ChailLinkAutomation/Farwarder.sol": "CounterwForwarder"
+			"DripWarrior/checckUpKep_flattened.sol": "CounterwForwarder"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "paris",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -267,36 +312,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol": {
-			"keccak256": "0xf504b227c442cd4ed31b336b7bd15cfcb23220c84c26e750975c7e7d959125aa",
+		"DripWarrior/checckUpKep_flattened.sol": {
+			"keccak256": "0x4df97d772c120ccd9f1782c1cfa789fdbe0cc283b0d21933f8a4d690d33fe1f5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://34e35eb46dfadf12396e92dd970547209dfd99f0ae5b1ec7b5a3e81617f620a1",
-				"dweb:/ipfs/Qmanoi2CDi9MwkP44HosagvewfMEvCMN1YthGRmCexVjwY"
-			]
-		},
-		"@openzeppelin/contracts/access/Ownable.sol": {
-			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
-				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
-			]
-		},
-		"@openzeppelin/contracts/utils/Context.sol": {
-			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
-				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
-			]
-		},
-		"ChailLinkAutomation/Farwarder.sol": {
-			"keccak256": "0xcd575435c7913e5e43ca10bd155aaca18612cf24a6d72a62a4241b35c474dd88",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://8d18b6fb40a76af7364c4be7a72e14a429844a8d5882bd354ebf4d15c446fbba",
-				"dweb:/ipfs/QmPWogr2iA6b9U23V6QW5zPeMFGnHTJTYdedgDysqPgJxX"
+				"bzz-raw://f02c0918ca69f214ca175a54055b03bc8b43aa5318d5f28f3e72eced47a3b2c2",
+				"dweb:/ipfs/QmZeRc1VmLZqwibyT1BFEogbwrB5iA1uzA9SrqDZ6VBk8G"
 			]
 		}
 	},

@@ -126,21 +126,21 @@ contract Market is Ownable {
     }
 
 
-    function PriceCalculation(uint256 totalBetsOnNo, uint256 totalBetsOnYes) public view returns(uint256, uint256){
+    function PriceCalculation(uint256 totalBetAmountOnNo, uint256 totalBetAmountOnYes) public view returns(uint256, uint256){
         
          uint256 originalNoPrice = marketInfo[address(this)].initialPrice[0];
          uint256 originalYesPrice = marketInfo[address(this)].initialPrice[1];
          
-         uint256 totalBets = totalBetsOnNo + totalBetsOnYes;
+         uint256 totalBetAmount = totalBetAmountOnNo + totalBetAmountOnYes;
 
-        if(totalBetsOnNo != 0){
+        if(totalBetAmountOnNo != 0){
             
-            originalNoPrice = ((totalBetsOnNo * 100)/(totalBets));
+            originalNoPrice = ((totalBetAmountOnNo * 100)/(totalBetAmount));
             originalNoPrice *= 10000000000000000;
         }
-        if(totalBetsOnYes != 0){
+        if(totalBetAmountOnYes != 0){
            
-            originalYesPrice = ((totalBetsOnYes * 100)/(totalBets));
+            originalYesPrice = ((totalBetAmountOnYes * 100)/(totalBetAmount));
             originalYesPrice *= 10000000000000000;
         }
 
