@@ -312,9 +312,14 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             msg.sender == s_forwarderAddress,
             "This address does not have permission to call performUpkeep"
         );
+       
+        if (interval == 0){
+            revert wrongInterval(interval);
+        }
+        
         if(!checkOnce){
 
-            if(block.timestamp == startingTime){
+            if(block.timestamp >= startingTime){
 
                lastTimeStamp = block.timestamp;
                 weeklyTransfer();

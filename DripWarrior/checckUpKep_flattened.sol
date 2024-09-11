@@ -1,7 +1,8 @@
 
 // File: @chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol
-
 // SPDX-License-Identifier: MIT
+
+
 pragma solidity ^0.8.0;
 
 // solhint-disable-next-line interface-starts-with-i
@@ -193,19 +194,28 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         return (needsUpkeep, bytes(""));
     }
 
+    uint256 public ifYesTime;
+    uint256 public ifNoTime;
+
     function performUpkeep(bytes calldata /*performData*/) external override {
          require(
             msg.sender == s_forwarderAddress,
             "This address does not have permission to call performUpkeep"
         );
-        if(!checkOnce){
+        
+        if (interval == 0){
+            revert wrongInterval(interval);
+        }
+        
+         if(!checkOnce){
 
-            if(block.timestamp == startingTime){
+            if(block.timestamp >= startingTime){
 
                lastTimeStamp = block.timestamp;
                 weeklyTransfer();
             }
             else{
+                laterCheck = true;
                 revert wrongTime(startingTime);
             }
         }
@@ -218,7 +228,10 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         if(!checkOnce){
             checkOnce = true;
         }
+        
     }
+
+    bool public laterCheck;
 
      function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
          
@@ -253,5 +266,11 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
     /// @param forwarderAddress the address to set
     function setForwarderAddress(address forwarderAddress) external onlyOwner {
         s_forwarderAddress = forwarderAddress;
+    }
+
+    function doWee() public {
+        if(!checkOnce){
+                checkOnce = true;
+        }
     }
 }
