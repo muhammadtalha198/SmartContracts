@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.27+commit.40a35a09"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -34,10 +34,11 @@
 	},
 	"sources": {
 		"FacctoryContract/WagerContract_flattened.sol": {
-			"keccak256": "0xe5ec703a332c9e18a7e04d6894ecd564a0af5fe400d34cdc820288d467a2f324",
+			"keccak256": "0x544d0761e81158c6c26956c81feafc5cc0f11730290f8051bc242d7c25bff686",
+			"license": "MIT",
 			"urls": [
-				"bzz-raw://30589c5fd21cc3f7d6cce02e9d376ae126366c37041710a2e6ad18483539a652",
-				"dweb:/ipfs/QmcFbzuVKSFzx9dLSyWCnc87wRBB3t3f4NZzxPLuecMWBs"
+				"bzz-raw://c5ec785f5c6b9987156e872074a7f9f481a3f598e009d90f09f584425c091e25",
+				"dweb:/ipfs/QmeXRazuBZ3v1LhLG4mBjYsgiaCarnp8eTVnRreR4zJ9or"
 			]
 		}
 	},

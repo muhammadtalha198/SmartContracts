@@ -1,5 +1,6 @@
 
 // File: @openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
+// SPDX-License-Identifier: MIT
 
 
 // OpenZeppelin Contracts (last updated v5.0.0) (proxy/utils/Initializable.sol)

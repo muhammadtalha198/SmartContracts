@@ -1,6 +1,6 @@
 
 // File: @openzeppelin/contracts/utils/Context.sol
-
+// SPDX-License-Identifier: MIT
 
 // OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)
 
@@ -1122,10 +1122,10 @@ contract FactoryMacketContract {
 
     mapping (address => bool) public marketCreated;
 
-    event MarketCreated(address indexed marketAddress);
     error OwnableUnauthorizedAccount(address account);
     error OwnableInvalidOwner(address owner);
 
+    event MarketCreated(address indexed marketAddress);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // Function to create a new prediction market
@@ -1168,7 +1168,7 @@ contract FactoryMacketContract {
 
 
 
-     function transferOwnership(address newOwner) public  {
+    function transferOwnership(address newOwner) public  {
         if (newOwner == address(0)) {
             revert OwnableInvalidOwner(address(0));
         }
