@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.27+commit.40a35a09"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -88,6 +88,17 @@
 					}
 				],
 				"name": "UUPSUnsupportedProxiableUUID",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "notEnoughBalance",
 				"type": "error"
 			},
 			{
@@ -1355,11 +1366,11 @@
 			]
 		},
 		"DripWarrior/poolContract.sol": {
-			"keccak256": "0x7ed6365650ad41399fede4f8f021c0cfde305c6fa398877b678e13ae5b7b3937",
+			"keccak256": "0x3ec7719c1beaf8b2d6e8ef619da9c5d3ea9685626efc0ca322619096126f9d28",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1877f4c800fc4dc0bb0f93c68bbc9e7d7671a7100a10ce6a3f86b1c7df43cc71",
-				"dweb:/ipfs/QmW7soNMRP3GhKpauwHNA3dPreXkVebhVBErebfK9m92nv"
+				"bzz-raw://49cc3b2eef912baf1945b5808b5a72a047a822f14b6582809cbd87cb98014459",
+				"dweb:/ipfs/QmX9vjh2NSSNBAhb3d8tSrUoWmKo28UvSe37BzecCfLWHs"
 			]
 		}
 	},

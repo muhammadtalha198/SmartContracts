@@ -2,7 +2,6 @@
 // File: @chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol
 // SPDX-License-Identifier: MIT
 
-
 pragma solidity ^0.8.0;
 
 // solhint-disable-next-line interface-starts-with-i
@@ -45,117 +44,143 @@ interface AutomationCompatibleInterface {
   function performUpkeep(bytes calldata performData) external;
 }
 
-// File: @chainlink/contracts/src/v0.8/shared/interfaces/IOwnable.sol
+// File: @openzeppelin/contracts/utils/Context.sol
 
 
-pragma solidity ^0.8.0;
+// OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)
 
-interface IOwnable {
-  function owner() external returns (address);
+pragma solidity ^0.8.20;
 
-  function transferOwnership(address recipient) external;
-
-  function acceptOwnership() external;
-}
-
-// File: @chainlink/contracts/src/v0.8/shared/access/ConfirmedOwnerWithProposal.sol
-
-
-pragma solidity ^0.8.0;
-
-
-/// @title The ConfirmedOwner contract
-/// @notice A contract with helpers for basic contract ownership.
-contract ConfirmedOwnerWithProposal is IOwnable {
-  address private s_owner;
-  address private s_pendingOwner;
-
-  event OwnershipTransferRequested(address indexed from, address indexed to);
-  event OwnershipTransferred(address indexed from, address indexed to);
-
-  constructor(address newOwner, address pendingOwner) {
-    // solhint-disable-next-line gas-custom-errors
-    require(newOwner != address(0), "Cannot set owner to zero");
-
-    s_owner = newOwner;
-    if (pendingOwner != address(0)) {
-      _transferOwnership(pendingOwner);
+/**
+ * @dev Provides information about the current execution context, including the
+ * sender of the transaction and its data. While these are generally available
+ * via msg.sender and msg.data, they should not be accessed in such a direct
+ * manner, since when dealing with meta-transactions the account sending and
+ * paying for execution may not be the actual sender (as far as an application
+ * is concerned).
+ *
+ * This contract is only required for intermediate, library-like contracts.
+ */
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
+        return msg.sender;
     }
-  }
 
-  /// @notice Allows an owner to begin transferring ownership to a new address.
-  function transferOwnership(address to) public override onlyOwner {
-    _transferOwnership(to);
-  }
+    function _msgData() internal view virtual returns (bytes calldata) {
+        return msg.data;
+    }
 
-  /// @notice Allows an ownership transfer to be completed by the recipient.
-  function acceptOwnership() external override {
-    // solhint-disable-next-line gas-custom-errors
-    require(msg.sender == s_pendingOwner, "Must be proposed owner");
-
-    address oldOwner = s_owner;
-    s_owner = msg.sender;
-    s_pendingOwner = address(0);
-
-    emit OwnershipTransferred(oldOwner, msg.sender);
-  }
-
-  /// @notice Get the current owner
-  function owner() public view override returns (address) {
-    return s_owner;
-  }
-
-  /// @notice validate, transfer ownership, and emit relevant events
-  function _transferOwnership(address to) private {
-    // solhint-disable-next-line gas-custom-errors
-    require(to != msg.sender, "Cannot transfer to self");
-
-    s_pendingOwner = to;
-
-    emit OwnershipTransferRequested(s_owner, to);
-  }
-
-  /// @notice validate access
-  function _validateOwnership() internal view {
-    // solhint-disable-next-line gas-custom-errors
-    require(msg.sender == s_owner, "Only callable by owner");
-  }
-
-  /// @notice Reverts if called by anyone other than the contract owner.
-  modifier onlyOwner() {
-    _validateOwnership();
-    _;
-  }
+    function _contextSuffixLength() internal view virtual returns (uint256) {
+        return 0;
+    }
 }
 
-// File: @chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol
+// File: @openzeppelin/contracts/access/Ownable.sol
 
 
-pragma solidity ^0.8.0;
+// OpenZeppelin Contracts (last updated v5.0.0) (access/Ownable.sol)
+
+pragma solidity ^0.8.20;
 
 
-/// @title The ConfirmedOwner contract
-/// @notice A contract with helpers for basic contract ownership.
-contract ConfirmedOwner is ConfirmedOwnerWithProposal {
-  constructor(address newOwner) ConfirmedOwnerWithProposal(newOwner, address(0)) {}
-}
+/**
+ * @dev Contract module which provides a basic access control mechanism, where
+ * there is an account (an owner) that can be granted exclusive access to
+ * specific functions.
+ *
+ * The initial owner is set to the address provided by the deployer. This can
+ * later be changed with {transferOwnership}.
+ *
+ * This module is used through inheritance. It will make available the modifier
+ * `onlyOwner`, which can be applied to your functions to restrict their use to
+ * the owner.
+ */
+abstract contract Ownable is Context {
+    address private _owner;
 
-// File: @chainlink/contracts/src/v0.8/shared/access/OwnerIsCreator.sol
+    /**
+     * @dev The caller account is not authorized to perform an operation.
+     */
+    error OwnableUnauthorizedAccount(address account);
 
+    /**
+     * @dev The owner is not a valid owner account. (eg. `address(0)`)
+     */
+    error OwnableInvalidOwner(address owner);
 
-pragma solidity ^0.8.0;
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
+    /**
+     * @dev Initializes the contract setting the address provided by the deployer as the initial owner.
+     */
+    constructor(address initialOwner) {
+        if (initialOwner == address(0)) {
+            revert OwnableInvalidOwner(address(0));
+        }
+        _transferOwnership(initialOwner);
+    }
 
-/// @title The OwnerIsCreator contract
-/// @notice A contract with helpers for basic contract ownership.
-contract OwnerIsCreator is ConfirmedOwner {
-  constructor() ConfirmedOwner(msg.sender) {}
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        _checkOwner();
+        _;
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+
+    /**
+     * @dev Throws if the sender is not the owner.
+     */
+    function _checkOwner() internal view virtual {
+        if (owner() != _msgSender()) {
+            revert OwnableUnauthorizedAccount(_msgSender());
+        }
+    }
+
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby disabling any functionality that is only available to the owner.
+     */
+    function renounceOwnership() public virtual onlyOwner {
+        _transferOwnership(address(0));
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        if (newOwner == address(0)) {
+            revert OwnableInvalidOwner(address(0));
+        }
+        _transferOwnership(newOwner);
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Internal function without access restriction.
+     */
+    function _transferOwnership(address newOwner) internal virtual {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
 }
 
 // File: DripWarrior/checckUpKep.sol
 
 
-pragma solidity 0.8.19;
+pragma solidity 0.8.26;
 
 /**
  * @dev Example contract which uses the Forwarder
@@ -171,8 +196,8 @@ pragma solidity 0.8.19;
 
 
 
-contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
-    uint256 public counter; // counter counts the number of upkeeps performed
+contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
+   uint256 public counter; // counter counts the number of upkeeps performed
     uint256 public interval; // interval specifies the time between upkeeps
     uint256 public lastTimeStamp; // lastTimeStamp tracks the last upkeep performed
     address public s_forwarderAddress;
@@ -183,7 +208,7 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
     error wrongTime(uint256 time);
      error wrongInterval(uint256 updateInterval);
 
-    constructor() {
+    constructor()Ownable(msg.sender) {
         
     }
 
@@ -194,20 +219,18 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         return (needsUpkeep, bytes(""));
     }
 
-    uint256 public ifYesTime;
-    uint256 public ifNoTime;
 
     function performUpkeep(bytes calldata /*performData*/) external override {
          require(
             msg.sender == s_forwarderAddress,
             "This address does not have permission to call performUpkeep"
         );
-        
+       
         if (interval == 0){
             revert wrongInterval(interval);
         }
         
-         if(!checkOnce){
+        if(!checkOnce){
 
             if(block.timestamp >= startingTime){
 
@@ -215,7 +238,6 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
                 weeklyTransfer();
             }
             else{
-                laterCheck = true;
                 revert wrongTime(startingTime);
             }
         }
@@ -231,9 +253,9 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         
     }
 
-    bool public laterCheck;
+  
 
-     function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
+      function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
          
         if(updateInterval <= 0){
             revert wrongInterval(updateInterval);
@@ -247,17 +269,22 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         startingTime = _startingTime;
         lastTimeStamp = block.timestamp;
 
+        // emit SetInterval(msg.sender, interval, lastTimeStamp);
+
     }
 
     function off () external  onlyOwner{
        
         interval = 0;
         checkOnce = false;
-
         
     }
 
     function weeklyTransfer() public {
+        require(
+            msg.sender == s_forwarderAddress,
+            "This address does not have permission to call performUpkeep"
+        );
         counter ++;
     }
 
@@ -268,6 +295,11 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         s_forwarderAddress = forwarderAddress;
     }
 
+    modifier bothOwner(){
+            
+        require(msg.sender == owner() && msg.sender == s_forwarderAddress,"wrong caller");
+        _;
+    }
     function doWee() public {
         if(!checkOnce){
                 checkOnce = true;

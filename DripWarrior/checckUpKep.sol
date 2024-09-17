@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+pragma solidity 0.8.26;
 
 /**
  * @dev Example contract which uses the Forwarder
@@ -14,10 +14,10 @@ pragma solidity 0.8.19;
  */
 
 import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
-import {OwnerIsCreator} from "@chainlink/contracts/src/v0.8/shared/access/OwnerIsCreator.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
-    uint256 public counter; // counter counts the number of upkeeps performed
+contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
+   uint256 public counter; // counter counts the number of upkeeps performed
     uint256 public interval; // interval specifies the time between upkeeps
     uint256 public lastTimeStamp; // lastTimeStamp tracks the last upkeep performed
     address public s_forwarderAddress;
@@ -28,7 +28,7 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
     error wrongTime(uint256 time);
      error wrongInterval(uint256 updateInterval);
 
-    constructor() {
+    constructor()Ownable(msg.sender) {
         
     }
 
@@ -39,20 +39,18 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         return (needsUpkeep, bytes(""));
     }
 
-    uint256 public ifYesTime;
-    uint256 public ifNoTime;
 
     function performUpkeep(bytes calldata /*performData*/) external override {
          require(
             msg.sender == s_forwarderAddress,
             "This address does not have permission to call performUpkeep"
         );
-        
+       
         if (interval == 0){
             revert wrongInterval(interval);
         }
         
-         if(!checkOnce){
+        if(!checkOnce){
 
             if(block.timestamp >= startingTime){
 
@@ -60,7 +58,6 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
                 weeklyTransfer();
             }
             else{
-                laterCheck = true;
                 revert wrongTime(startingTime);
             }
         }
@@ -76,9 +73,9 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         
     }
 
-    bool public laterCheck;
+  
 
-     function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
+      function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
          
         if(updateInterval <= 0){
             revert wrongInterval(updateInterval);
@@ -92,17 +89,22 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         startingTime = _startingTime;
         lastTimeStamp = block.timestamp;
 
+        // emit SetInterval(msg.sender, interval, lastTimeStamp);
+
     }
 
     function off () external  onlyOwner{
        
         interval = 0;
         checkOnce = false;
-
         
     }
 
     function weeklyTransfer() public {
+        require(
+            msg.sender == s_forwarderAddress,
+            "This address does not have permission to call performUpkeep"
+        );
         counter ++;
     }
 
@@ -113,6 +115,11 @@ contract CounterwForwarder is AutomationCompatibleInterface, OwnerIsCreator {
         s_forwarderAddress = forwarderAddress;
     }
 
+    modifier bothOwner(){
+            
+        require(msg.sender == owner() && msg.sender == s_forwarderAddress,"wrong caller");
+        _;
+    }
     function doWee() public {
         if(!checkOnce){
                 checkOnce = true;

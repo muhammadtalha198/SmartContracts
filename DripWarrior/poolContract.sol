@@ -33,6 +33,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     address public multisigAddress;
 
     bool public checkOnce;
+    bool private locked;
     uint256 public interval; // interval specifies the time between upkeeps
     uint256 public startingTime; 
     uint256 public lastTimeStamp; // lastTimeStamp tracks the last upkeep performed
@@ -73,6 +74,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     error wrongOwner(address owner);
     error wrongAmount(uint256 amount);
     error transferFailed(bool transfered);
+    error notEnoughBalance(uint256 amount);
     error wrongProjectNo(uint256 projectNO);
     error wrongAddress(address wrongAddress);
     error wrongPercentage(uint256 percentage);
@@ -192,7 +194,9 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             revert userBlocked(userRegistered[msg.sender].blocked);
         }
 
-        require(_amount <= userRegistered[msg.sender].receivedAmount,"invalid _amount!");
+        if(userRegistered[msg.sender].receivedAmount <= _amount){
+            revert notEnoughBalance(_amount);
+        }
 
         userRegistered[msg.sender].receivedAmount -= _amount;
         userRegistered[msg.sender].totalStakedAmount += _amount;
@@ -239,11 +243,12 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
 
 
-    function weeklyTransfer() public bothOwner {
+    function weeklyTransfer() public  {
         
         ( uint256 remainFiftyOPool,uint256 dividentPayoutOPoolAmount, uint256 perPersonFromTPool)  = perPoolCalculation();
         
         require(ownerShipPoolAmount > 0 && treasuryPoolAmount > 0, "not enough amount");
+       
         uint256 maxlimit;
 
         for(uint256 i = 0; i < noOfUsers; i++){
@@ -390,7 +395,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     }
     
     
-    function userWithdrawAmoount(uint256 _amount) external {
+    function userWithdrawAmoount(uint256 _amount) external nonReentrant {
         
         if(_amount <= 0){
             revert wrongAmount(_amount);
@@ -494,6 +499,13 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             revert wrongOwner(msg.sender);
         }
         _;
+    }
+
+    modifier nonReentrant() {
+        require(!locked, "ReentrancyGuard: reentrant call");
+        locked = true;
+        _;
+        locked = false;
     }
 
     function _authorizeUpgrade(address newImplementation)

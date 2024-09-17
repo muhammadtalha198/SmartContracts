@@ -1,6 +1,6 @@
 
 // File: @openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
-
+// SPDX-License-Identifier: MIT
 
 // OpenZeppelin Contracts (last updated v5.0.0) (proxy/utils/Initializable.sol)
 
@@ -1440,9 +1440,14 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             msg.sender == s_forwarderAddress,
             "This address does not have permission to call performUpkeep"
         );
+       
+        if (interval == 0){
+            revert wrongInterval(interval);
+        }
+        
         if(!checkOnce){
 
-            if(block.timestamp == startingTime){
+            if(block.timestamp >= startingTime){
 
                lastTimeStamp = block.timestamp;
                 weeklyTransfer();
