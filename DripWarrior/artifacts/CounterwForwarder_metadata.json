@@ -191,6 +191,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "realInterval",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "renounceOwnership",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -358,11 +371,11 @@
 			]
 		},
 		"DripWarrior/checckUpKep.sol": {
-			"keccak256": "0x3a6cdf5c6ffcb4ab1a48da3a613cf42f04f0a38466cc2bead212b8887a44c336",
+			"keccak256": "0x8b02e5926c116c5e86b6b8320d2ac41b8d38fa791ece82848dd4f13fb33de3cc",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://67a6c4da5a2b12e34d193b2ba750eef45307f1009bdd852486c7ecd0b9e179c9",
-				"dweb:/ipfs/QmWtjrG2KVvtaX5YYpDXT537EAJWiwtJfgiPiTJV1gwCQC"
+				"bzz-raw://c7054deb8276cd0e059c70030bfc3fd1c9a4c86367ac68ea5d2b3e519a5ea936",
+				"dweb:/ipfs/QmXCEN9fYQpgXjP2n9neCjwtwyDAfEc7TUdSJxFBZnmuAh"
 			]
 		}
 	},

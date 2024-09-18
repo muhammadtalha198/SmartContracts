@@ -6,18 +6,7 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "initialOwner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "updateInterval",
-						"type": "uint256"
-					}
-				],
+				"inputs": [],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
@@ -44,6 +33,28 @@
 				"type": "error"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "updateInterval",
+						"type": "uint256"
+					}
+				],
+				"name": "wrongInterval",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					}
+				],
+				"name": "wrongTime",
+				"type": "error"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -61,6 +72,19 @@
 				],
 				"name": "OwnershipTransferred",
 				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "checkOnce",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [
@@ -97,6 +121,13 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "doWee",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -160,6 +191,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "realInterval",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "renounceOwnership",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -195,6 +239,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "_startingTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "updateInterval",
 						"type": "uint256"
 					}
@@ -202,6 +251,19 @@
 				"name": "setInterval",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startingTime",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -213,6 +275,13 @@
 					}
 				],
 				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "weeklyTransfer",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -239,6 +308,12 @@
 				"renounceOwnership()": {
 					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
 				},
+				"setForwarderAddress(address)": {
+					"details": "Only callable by the owner",
+					"params": {
+						"forwarderAddress": "the address to set"
+					}
+				},
 				"transferOwnership(address)": {
 					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
 				}
@@ -247,13 +322,17 @@
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"setForwarderAddress(address)": {
+					"notice": "Set the address that `performUpkeep` is called from"
+				}
+			},
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"ChailLinkAutomation/Farwarder.sol": "CounterwForwarder"
+			"ChailLinkAutomation/testedWorkingUpkeep.sol": "CounterwForwarder"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -291,12 +370,12 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
-		"ChailLinkAutomation/Farwarder.sol": {
-			"keccak256": "0xcd575435c7913e5e43ca10bd155aaca18612cf24a6d72a62a4241b35c474dd88",
+		"ChailLinkAutomation/testedWorkingUpkeep.sol": {
+			"keccak256": "0x8b02e5926c116c5e86b6b8320d2ac41b8d38fa791ece82848dd4f13fb33de3cc",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8d18b6fb40a76af7364c4be7a72e14a429844a8d5882bd354ebf4d15c446fbba",
-				"dweb:/ipfs/QmPWogr2iA6b9U23V6QW5zPeMFGnHTJTYdedgDysqPgJxX"
+				"bzz-raw://c7054deb8276cd0e059c70030bfc3fd1c9a4c86367ac68ea5d2b3e519a5ea936",
+				"dweb:/ipfs/QmXCEN9fYQpgXjP2n9neCjwtwyDAfEc7TUdSJxFBZnmuAh"
 			]
 		}
 	},

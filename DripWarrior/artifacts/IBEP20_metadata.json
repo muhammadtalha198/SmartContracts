@@ -210,11 +210,11 @@
 			]
 		},
 		"DripWarrior/poolContract.sol": {
-			"keccak256": "0x7b682e0503538d2a4afe5bd45bda5c2a58abb00c6b2e255fcd403360c536f93d",
+			"keccak256": "0xe480f02115cd8724ae5a92c114d15043c08d21c310a4459d0cb946123f2cad8b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0cbc3640eb810309b897d9e32bfe113af3cc182b04dda1f7ea92acec6fe964d0",
-				"dweb:/ipfs/QmRAYHJzpyKmP48YwMTTQrsWSBMF5ueQgNdNW69hu9E43J"
+				"bzz-raw://e0f3c0d114ba60ec8d8a71f3822fc6101f67152424481aff036dd2f3c24c6ef0",
+				"dweb:/ipfs/QmUkQquBhgp5ZbUix9iTEjzX2La2KwAGj5sJmyhLTHwCJn"
 			]
 		}
 	},

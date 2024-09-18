@@ -36,6 +36,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     bool public checkOnce;
     bool private locked;
     uint256 public interval; // interval specifies the time between upkeeps
+    uint256 public realInterval; // interval specifies the time between upkeeps
     uint256 public startingTime; 
     uint256 public lastTimeStamp; // lastTimeStamp tracks the last upkeep performed
     address public s_forwarderAddress;
@@ -314,12 +315,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
     function checkUpkeep(bytes calldata /*checkData*/) external override view  returns (bool, bytes memory) {
          
-        bool needsUpkeep;
-        
-        if(checkOnce){
-             needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
-        }
-
+        bool needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
         return (needsUpkeep, bytes(""));
     }
     
@@ -341,6 +337,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
                lastTimeStamp = block.timestamp;
                 weeklyTransfer();
+                interval = realInterval;
             }
             else{
                 revert wrongTime(startingTime);
@@ -362,7 +359,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     
     function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
          
-        if(updateInterval <= 0){
+       if(updateInterval <= 0){
             revert wrongInterval(updateInterval);
         }
         
@@ -370,9 +367,10 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             revert wrongTime(_startingTime);
         }
 
-        interval = updateInterval;
+        interval = _startingTime - block.timestamp;
         startingTime = _startingTime;
         lastTimeStamp = block.timestamp;
+        realInterval = updateInterval;
 
         emit SetInterval(msg.sender, interval, lastTimeStamp);
 
