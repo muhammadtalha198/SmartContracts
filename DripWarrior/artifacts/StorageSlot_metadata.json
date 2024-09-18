@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.27+commit.40a35a09"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -19,7 +19,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"DripWarrior/poolContract_flattened.sol": "StorageSlot"
+			"DripWarrior/poolClieent_flattened.sol": "StorageSlot"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -33,12 +33,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"DripWarrior/poolContract_flattened.sol": {
-			"keccak256": "0x95cc04f46415339fe0a51f73b07f49e264cb5c4ed924871b6d8a945152b5a0a5",
+		"DripWarrior/poolClieent_flattened.sol": {
+			"keccak256": "0xad6c8b78dec21046d8d8d7e95858cb38b25edb82c89ebca589b4b82526285bcf",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5d65f2ccfa387d99c4df58c9c773002114b2b04e896b17922a658783188c11bb",
-				"dweb:/ipfs/QmdTjPa4pBkhqySBhrS2LBUwyKSQaPjJLQjHuGYr18HFXV"
+				"bzz-raw://5d17b284f485ffdea1db86380a41fe64b742b15f6348d2140c00f821b10b8b51",
+				"dweb:/ipfs/QmRVqCuvVE5DFDXfciKnqFamZ3VLmXZLrkPi3hhH85rwav"
 			]
 		}
 	},

@@ -7,6 +7,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
 
+
 // 0xcCc22A7fc54d184138dfD87B7aD24552cD4E0915
 interface IBEP20 {        
     
@@ -92,17 +93,17 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
         usdcToken = IBEP20(_usdcAddress);
 
-            tPPercentages[0] = 5100; // 51 %
-            tPPercentages[1] = 7500; // 75 % 
-            tPPercentages[2] = 3500; // 35 %
-            tPPercentages[3] = 7700; // 77 %
+            // tPPercentages[0] = 5100; // 51 %
+            // tPPercentages[1] = 7500; // 75 % 
+            // tPPercentages[2] = 3500; // 35 %
+            // tPPercentages[3] = 7700; // 77 %
             tdividentPayoutPercentage = 5000; // 50 %
             odividentPayoutPercentage = 7500; // 75 %
             
             flowToTreasuryPercentage = 1500; // l5%
             maintainceFeePercentage = 1000; // 10 % 
 
-            totalProjects = 4;
+            // totalProjects = 4;
             multisigAddress = _multisigAddress;
     }
 
@@ -117,7 +118,8 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         tPPercentages[totalProjects] = _tPPercentage;
         totalProjects++;
 
-        emit AddProject((totalProjects--), (10000 - _tPPercentage), _tPPercentage);
+
+        emit AddProject((totalProjects), (10000 - _tPPercentage), _tPPercentage);
     }
 
     function addOwnership(uint256 _amount) external onlyOwner(){
@@ -244,6 +246,11 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
 
     function weeklyTransfer() public  {
+
+        require(
+            msg.sender == s_forwarderAddress,
+            "This address does not have permission to call performUpkeep"
+        );
         
         ( uint256 remainFiftyOPool,uint256 dividentPayoutOPoolAmount, uint256 perPersonFromTPool)  = perPoolCalculation();
         
@@ -306,10 +313,16 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     }
 
     function checkUpkeep(bytes calldata /*checkData*/) external override view  returns (bool, bytes memory) {
-      
-        bool needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+         
+        bool needsUpkeep;
+        
+        if(checkOnce){
+             needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+        }
+
         return (needsUpkeep, bytes(""));
     }
+    
 
     function performUpkeep(bytes calldata /*performData*/) external  {
         

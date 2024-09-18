@@ -32,10 +32,14 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
         
     }
 
-    function checkUpkeep(
-        bytes calldata /*checkData*/
-    ) external view override returns (bool, bytes memory) {
-        bool needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+    function checkUpkeep(bytes calldata /*checkData*/) external override view  returns (bool, bytes memory) {
+         
+        bool needsUpkeep;
+        
+        if(checkOnce){
+             needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+        }
+
         return (needsUpkeep, bytes(""));
     }
 
@@ -73,9 +77,8 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
         
     }
 
-  
 
-      function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
+    function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
          
         if(updateInterval <= 0){
             revert wrongInterval(updateInterval);
@@ -115,11 +118,6 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
         s_forwarderAddress = forwarderAddress;
     }
 
-    modifier bothOwner(){
-            
-        require(msg.sender == owner() && msg.sender == s_forwarderAddress,"wrong caller");
-        _;
-    }
     function doWee() public {
         if(!checkOnce){
                 checkOnce = true;

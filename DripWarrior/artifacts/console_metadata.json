@@ -1,0 +1,45 @@
+{
+	"compiler": {
+		"version": "0.8.20+commit.a1b79de6"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"DripWarrior/poolContract_flattened.sol": "console"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"DripWarrior/poolContract_flattened.sol": {
+			"keccak256": "0xc86f50705549c60817fdaf41a834e904de6d194c0f80d6f33e41b654895d5440",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5c73d7cf6f44c7dbe69ae05150be16c8d98c89116180d5eab76805fb099d48f1",
+				"dweb:/ipfs/QmRBsQzDMXun9cXEnukDdiAcXVG6SQ7beSgAFxhpTyQXkP"
+			]
+		}
+	},
+	"version": 1
+}
