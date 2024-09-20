@@ -17,6 +17,16 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [],
+				"name": "OnlyOwnerError",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ReentrancyError",
+				"type": "error"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -79,6 +89,17 @@
 					}
 				],
 				"name": "nodeNotExist",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "transfered",
+						"type": "bool"
+					}
+				],
+				"name": "withdrawFailed",
 				"type": "error"
 			},
 			{
@@ -240,6 +261,73 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_userAddress",
+						"type": "address"
+					}
+				],
+				"name": "getNodeIds",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_nodeId",
+						"type": "string"
+					}
+				],
+				"name": "getStakeAmountOfNode",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_nodeId",
+						"type": "string"
+					}
+				],
+				"name": "nodeExists",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "owner",
 				"outputs": [
@@ -253,13 +341,116 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_userAddress",
+						"type": "address"
+					}
+				],
+				"name": "totalStakedOfUser",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalStakedStorCoins",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"stateMutability": "payable",
 				"type": "receive"
 			}
 		],
 		"devdoc": {
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"addNode(string)": {
+					"details": "Adds a new node and stakes tokens to it.",
+					"params": {
+						"_nodeId": "The ID of the node to be added."
+					}
+				},
+				"checkTreasuryBalance()": {
+					"details": "Checks the contract's current treasury balance."
+				},
+				"deleteNode(string)": {
+					"details": "Deletes an existing node and unstakes the associated tokens.",
+					"params": {
+						"_nodeId": "The ID of the node to be deleted."
+					}
+				},
+				"feedNodeRecord(address[],string[],uint256[])": {
+					"details": "Feeds old contract data into the new contract.",
+					"params": {
+						"_nodeIds": "Array of node IDs corresponding to users.",
+						"_stakedAmounts": "Array of staked amounts corresponding to each node.",
+						"_userAddresses": "Array of user addresses."
+					}
+				},
+				"fillTreasury()": {
+					"details": "Fills the contract treasury with funds."
+				},
+				"getNodeIds(address)": {
+					"details": "Retrieves all node IDs associated with a specific user.",
+					"params": {
+						"_userAddress": "The address of the user."
+					},
+					"returns": {
+						"_0": "An array of node IDs owned by the user."
+					}
+				},
+				"getStakeAmountOfNode(address,string)": {
+					"details": "Gets the staked amount for a specific node owned by a user.",
+					"params": {
+						"_nodeId": "The ID of the node.",
+						"_userAddress": "The address of the user."
+					},
+					"returns": {
+						"_0": "The staked amount for the given node."
+					}
+				},
+				"nodeExists(address,string)": {
+					"details": "Checks if a specific node exists for a given user.",
+					"params": {
+						"_nodeId": "The ID of the node to check.",
+						"_userAddress": "The address of the user."
+					},
+					"returns": {
+						"_0": "A boolean indicating if the node exists and is alive."
+					}
+				},
+				"totalStakedOfUser(address)": {
+					"details": "Gets the total staked amount for a specific user.",
+					"params": {
+						"_userAddress": "The address of the user."
+					},
+					"returns": {
+						"_0": "The total staked amount by the user."
+					}
+				},
+				"totalStakedStorCoins()": {
+					"details": "Gets the total staked tokens across all users. Only the owner can view this value.",
+					"returns": {
+						"_0": "The total staked tokens in the contract."
+					}
+				}
+			},
 			"version": 1
 		},
 		"userdoc": {
@@ -285,11 +476,11 @@
 	},
 	"sources": {
 		"EthTesting.sol/storageChain.sol": {
-			"keccak256": "0xc71a302c00072643e2512c52fcc2dff732ac1d9dd8b45cc555296305db079cfb",
+			"keccak256": "0x4521adbafe44b2c1afeafff2ac368de0ff48105a0326acb8e28108410ad1adda",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e079aa64c05bf500cde19f3ad7456b252f8abe7ec5bdd64ab182e7b0dc6dceb7",
-				"dweb:/ipfs/QmSA2c6jw16DReX3HHxzNEZ18nBJ2SWMTgqraJQBokPzHa"
+				"bzz-raw://4bcd342b851d6e76c138b70664b2dba611274d9d0c78bb666801b3f4d77efbfc",
+				"dweb:/ipfs/QmahL6uvB9ZMhNJMHqDkqMSNMevUDtcX89NnsSuuDogEt9"
 			]
 		}
 	},
