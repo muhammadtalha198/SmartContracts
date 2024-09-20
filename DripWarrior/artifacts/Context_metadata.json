@@ -19,7 +19,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"DripWarrior/checckUpKep_flattened.sol": "Context"
+			"DripWarrior/usdc_flattened.sol": "Context"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -27,18 +27,17 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
-		"DripWarrior/checckUpKep_flattened.sol": {
-			"keccak256": "0x0d6c8fd4c784b1f95fdf2b65b1a44f21dc95c7c46fc9ff30fcb7901560021621",
-			"license": "MIT",
+		"DripWarrior/usdc_flattened.sol": {
+			"keccak256": "0xa5ebe892622d1833eaac2c3dc02afe1885997e1f36188f3218969571a0e03a89",
 			"urls": [
-				"bzz-raw://bd94aef2339b14c43c4bf3ae23011646b18dac49f7c7c07e60f235a36a2d89db",
-				"dweb:/ipfs/QmSKG6sdQ5yojg6J3mah3Tf3TsLi4pShmuQygyhfUEDL6h"
+				"bzz-raw://8386aba9844549b799bf3475878c9affb7c18ad933e4cb4a5761544b81b40ccc",
+				"dweb:/ipfs/Qmbgur6jRwo17dYPk2FMjpACjgqqTyfjDrEnM6qmV5vfB4"
 			]
 		}
 	},

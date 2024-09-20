@@ -1,0 +1,297 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_owner",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "treasuryBallance",
+						"type": "uint256"
+					}
+				],
+				"name": "insuficentTrasuryBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "invalidAmount",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "fee",
+						"type": "uint256"
+					}
+				],
+				"name": "invalidFee",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "addressLength",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "idsLength",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountsLength",
+						"type": "uint256"
+					}
+				],
+				"name": "lengthDontMatch",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "nodExist",
+						"type": "bool"
+					}
+				],
+				"name": "nodeNotExist",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "addressLength",
+						"type": "uint256"
+					}
+				],
+				"name": "wrongAddressLength",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amountsLength",
+						"type": "uint256"
+					}
+				],
+				"name": "wrongAmountsLength",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "idsLength",
+						"type": "uint256"
+					}
+				],
+				"name": "wrongIdsLength",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "nodeId",
+						"type": "string"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "stakedAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "totalStakedAmount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "tokenStaked",
+						"type": "bool"
+					}
+				],
+				"name": "StakeEvent",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "Transferred",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_nodeId",
+						"type": "string"
+					}
+				],
+				"name": "addNode",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "checkTreasuryBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_nodeId",
+						"type": "string"
+					}
+				],
+				"name": "deleteNode",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "_userAddresses",
+						"type": "address[]"
+					},
+					{
+						"internalType": "string[]",
+						"name": "_nodeIds",
+						"type": "string[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "_stakedAmounts",
+						"type": "uint256[]"
+					}
+				],
+				"name": "feedNodeRecord",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "fillTreasury",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"EthTesting.sol/storageChain.sol": "StakingContract"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"EthTesting.sol/storageChain.sol": {
+			"keccak256": "0xc71a302c00072643e2512c52fcc2dff732ac1d9dd8b45cc555296305db079cfb",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e079aa64c05bf500cde19f3ad7456b252f8abe7ec5bdd64ab182e7b0dc6dceb7",
+				"dweb:/ipfs/QmSA2c6jw16DReX3HHxzNEZ18nBJ2SWMTgqraJQBokPzHa"
+			]
+		}
+	},
+	"version": 1
+}

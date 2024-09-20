@@ -1,0 +1,45 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"EthTesting.sol/storageChain.sol": "ReentrancyGuard"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"EthTesting.sol/storageChain.sol": {
+			"keccak256": "0x1c16531130cde2d690f532ca45a065bd973abdd51ad96df8757a0a155db249ab",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://673028d558c1fd8350aaa4c603cfc5bff0c34e82577f0a9c3a04f17d24437cb9",
+				"dweb:/ipfs/QmSv73SQoYXkfGfnVoTtZ13DHdxuKgXuifpL55JnwH2QfA"
+			]
+		}
+	},
+	"version": 1
+}

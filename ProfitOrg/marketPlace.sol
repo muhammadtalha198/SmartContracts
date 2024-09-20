@@ -77,7 +77,6 @@ contract Marketplace is
     mapping (uint256 => DonationInfo) public donationInfo;
     mapping(address => uint256) public defaultFiscalFee;
 
-    // event CancelBid(bool bided, uint256 _heigestBidAmount);
     event Bided( address _currentBidder, uint256 _bidAmount, uint256 _previousBidAmount); 
     event CancelList(address _listerAddress, uint256 _listingID, bool _isListed);
     event plateFarmFeePercentage(uint256 _serviceFeePercentage,address _owner);
@@ -413,24 +412,24 @@ contract Marketplace is
 
     }
 
-    // function cancellListingForlist(uint256 _listingID) external {
+    function cancellListingForlist(uint256 _listingID) external {
 
-    //     require(msg.sender == listing[_listingID].nftOwner , "You are not the nftOwner");
-    //     require(!listing[_listingID].nftClaimed,"NFT is alrady sold,");
+        require(msg.sender == listing[_listingID].nftOwner , "You are not the nftOwner");
+        require(!listing[_listingID].nftClaimed,"NFT is alrady sold,");
         
-    //     transferNft(
-    //         listing[_listingID].nftAddress,
-    //         address(this),
-    //         listing[_listingID].nftOwner, 
-    //         listing[_listingID].tokenId, 
-    //         listing[_listingID].noOfCopies
-    //     );
+        transferNft(
+            listing[_listingID].nftAddress,
+            address(this),
+            listing[_listingID].nftOwner, 
+            listing[_listingID].tokenId, 
+            listing[_listingID].noOfCopies
+        );
 
-    //     setCancelList(_listingID);
+        setCancelList(_listingID);
 
-    //     emit CancelList(msg.sender, _listingID, listing[_listingID].listed);
+        emit CancelList(msg.sender, _listingID, listing[_listingID].listed);
 
-    // }
+    }
 
     function setPlatFormServiceFeePercentage(uint256 _serviceFeePercentage) external onlyOwner{
         require( _serviceFeePercentage > 0  && _serviceFeePercentage <= 3000, 

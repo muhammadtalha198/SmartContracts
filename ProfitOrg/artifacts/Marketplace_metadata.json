@@ -559,6 +559,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "_listingID",
+						"type": "uint256"
+					}
+				],
+				"name": "cancellListingForlist",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
@@ -1304,11 +1317,11 @@
 			]
 		},
 		"ProfitOrg/marketPlace.sol": {
-			"keccak256": "0xc183953ee15a85b7fa792252633c7165579bd56ac15ac0c2e8e6d941789ea920",
+			"keccak256": "0x8b654997b5c8ca22b58c6d8099159fbd019430e7af36e54cfc6e92f767a95cfb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0b0f219daedf04599bc0e0e4fe6a254662780a13ed01df34f821f59778070f0b",
-				"dweb:/ipfs/QmavRpEWzRLn4J4NDq3Gy5aCQHmwLTkejDbpuBUteNmc88"
+				"bzz-raw://2d2c0039cf629d44004d4993891a5bdb9217879d82fa27890d0747f526251dfe",
+				"dweb:/ipfs/QmQQJqvZ8EURNQfycXJ2Z34QotoDmBfevykAcoW2HbkYZm"
 			]
 		}
 	},
