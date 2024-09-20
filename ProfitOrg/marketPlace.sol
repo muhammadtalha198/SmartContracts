@@ -97,8 +97,11 @@ contract Marketplace is
     error onFixedPrice(bool onfixedPrice);
     error wrongListingId(uint256 listingid);
     error wrongNoOfCopies(uint256 noOfcopies);
+    error wrongAddress(address contractAddres);
     error initialPriceZero(uint256 initialPrice);
+    error worngOrganizationlength(uint256 organizationLength);
     error invalidTimeStamp(uint256 startTime, uint256 endTime);
+    error lengthDontMatch(uint256 organizationLength, uint256 percentagesLength);
 
     //--List item for list--------------------------------------------------------------------/
 
@@ -350,7 +353,7 @@ contract Marketplace is
             revert invalidTimeStamp(listing[_listId].listingStartTime,listing[_listId].listingEndTime);
         }
         
-        
+
         uint256 serviceFee;
 
         if (listing[_listId].serviceFeePercentage != 0){
@@ -410,24 +413,24 @@ contract Marketplace is
 
     }
 
-    function cancellListingForlist(uint256 _listingID) external {
+    // function cancellListingForlist(uint256 _listingID) external {
 
-        require(msg.sender == listing[_listingID].nftOwner , "You are not the nftOwner");
-        require(!listing[_listingID].nftClaimed,"NFT is alrady sold,");
+    //     require(msg.sender == listing[_listingID].nftOwner , "You are not the nftOwner");
+    //     require(!listing[_listingID].nftClaimed,"NFT is alrady sold,");
         
-        transferNft(
-            listing[_listingID].nftAddress,
-            address(this),
-            listing[_listingID].nftOwner, 
-            listing[_listingID].tokenId, 
-            listing[_listingID].noOfCopies
-        );
+    //     transferNft(
+    //         listing[_listingID].nftAddress,
+    //         address(this),
+    //         listing[_listingID].nftOwner, 
+    //         listing[_listingID].tokenId, 
+    //         listing[_listingID].noOfCopies
+    //     );
 
-        setCancelList(_listingID);
+    //     setCancelList(_listingID);
 
-        emit CancelList(msg.sender, _listingID, listing[_listingID].listed);
+    //     emit CancelList(msg.sender, _listingID, listing[_listingID].listed);
 
-    }
+    // }
 
     function setPlatFormServiceFeePercentage(uint256 _serviceFeePercentage) external onlyOwner{
         require( _serviceFeePercentage > 0  && _serviceFeePercentage <= 3000, 
@@ -635,9 +638,14 @@ contract Marketplace is
 
 
     modifier checkOrganizations(address[] memory _organizations,uint256[] memory _donatePercentages){
-            
-        require(_organizations.length >= 1 && _organizations.length <= 10,"you can chose one to ten organizations.");
-        require(_organizations.length == _donatePercentages.length, "invalid organizations input.");
+
+        if(_organizations.length <= 0 && _organizations.length > 10){
+            revert worngOrganizationlength(_organizations.length);
+        }
+
+        if(_organizations.length != _donatePercentages.length){
+            revert lengthDontMatch(_organizations.length,_donatePercentages.length);
+        }
         
         bool atleastOne;
         for(uint i=0; i < _organizations.length; i++){
@@ -661,15 +669,27 @@ contract Marketplace is
         uint256 _noOfCopies,
         address _nftAddress
     ){
-        require(_initialPrice > 0 , "intial price can't be zero.");
-        require(_tokenId >= 0 , "tokenid can't be negative.");
-        require(_noOfCopies > 0 , "0 amount can't be listed.");
-        require(_nftAddress != address(0), "Invalid address."); 
+        if(_initialPrice <= 0){
+            revert initialPriceZero(_initialPrice);
+        }
+        
+        if(_tokenId <= 0){
+            revert wrongTokenId(_tokenId);
+        }
+
+        if(_noOfCopies <= 0){
+            revert wrongNoOfCopies(_noOfCopies);
+        }
+        
+        if(_nftAddress == address(0)){
+            revert wrongAddress(_nftAddress);
+        } 
         
         if (_listStartTime != 0 && _listEndTime != 0 ){
 
-            require(_listStartTime >= block.timestamp && _listEndTime > _listStartTime,
-            "startTime and end time must be greater then currentTime");
+            if(_listStartTime <= block.timestamp && _listEndTime < _listStartTime){
+                revert invalidTimeStamp(_listStartTime,_listEndTime);
+            }
         }
         _;        
     }

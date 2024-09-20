@@ -212,11 +212,11 @@
 			]
 		},
 		"ProfitOrg/marketPlace.sol": {
-			"keccak256": "0xc6be65751dd8f36394566d7c32e72145d2b1fb9c2fa65b3b4c0c9124dd5a206b",
+			"keccak256": "0xc183953ee15a85b7fa792252633c7165579bd56ac15ac0c2e8e6d941789ea920",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://597f5d5ff7d0e03010c29aaae71d1cc8e8fb3bd118f58e3f4eeed7246bb7b0de",
-				"dweb:/ipfs/QmYsMX8ddE3cCqC6i517iSWaEL47oyBvFknguoPFkRnKJu"
+				"bzz-raw://0b0f219daedf04599bc0e0e4fe6a254662780a13ed01df34f821f59778070f0b",
+				"dweb:/ipfs/QmavRpEWzRLn4J4NDq3Gy5aCQHmwLTkejDbpuBUteNmc88"
 			]
 		}
 	},
