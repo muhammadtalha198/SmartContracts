@@ -48,6 +48,28 @@
 				"type": "error"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "servicePercentage",
+						"type": "uint256"
+					}
+				],
+				"name": "InvalidServiceFeePercentage",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "callingAddress",
+						"type": "address"
+					}
+				],
+				"name": "NotAuthorizedError",
+				"type": "error"
+			},
+			{
 				"inputs": [],
 				"name": "NotInitializing",
 				"type": "error"
@@ -116,11 +138,33 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "donationPercentage",
+						"type": "uint256"
+					}
+				],
+				"name": "invalidDonationPercentage",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "fee",
 						"type": "uint256"
 					}
 				],
 				"name": "invalidFee",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "fiscalFee",
+						"type": "uint256"
+					}
+				],
+				"name": "invalidFiscalPercentage",
 				"type": "error"
 			},
 			{
@@ -202,6 +246,28 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bool",
+						"name": "selected",
+						"type": "bool"
+					}
+				],
+				"name": "selectOrganization",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "transfer",
+						"type": "bool"
+					}
+				],
+				"name": "transferFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "organizationLength",
 						"type": "uint256"
@@ -219,6 +285,17 @@
 					}
 				],
 				"name": "wrongAddress",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "fiscalSponsor",
+						"type": "address"
+					}
+				],
+				"name": "wrongFiscalSponsor",
 				"type": "error"
 			},
 			{
@@ -252,6 +329,28 @@
 					}
 				],
 				"name": "wrongTokenId",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "percentage",
+						"type": "uint256"
+					}
+				],
+				"name": "zeroPercentage",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "zeroValue",
 				"type": "error"
 			},
 			{
@@ -1190,7 +1289,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
@@ -1317,11 +1416,11 @@
 			]
 		},
 		"ProfitOrg/marketPlace.sol": {
-			"keccak256": "0x8b654997b5c8ca22b58c6d8099159fbd019430e7af36e54cfc6e92f767a95cfb",
+			"keccak256": "0x5692b393de38f0838af4e9a244bc4a7032c9e2eec242d5bc958370e2f62001f3",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2d2c0039cf629d44004d4993891a5bdb9217879d82fa27890d0747f526251dfe",
-				"dweb:/ipfs/QmQQJqvZ8EURNQfycXJ2Z34QotoDmBfevykAcoW2HbkYZm"
+				"bzz-raw://9d98075384585eb2e5a2a001f2b64cd34b28a0045484d6900b90ab28d93da38e",
+				"dweb:/ipfs/QmZjYTsDJusSmNRNFshSfnRAc9kK2USr5jNqr8LJVUTJro"
 			]
 		}
 	},

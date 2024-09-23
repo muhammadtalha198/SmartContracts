@@ -463,7 +463,7 @@
 		"compilationTarget": {
 			"EthTesting.sol/storageChain.sol": "StakingContract"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"

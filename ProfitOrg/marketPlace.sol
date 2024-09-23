@@ -40,8 +40,6 @@ contract Marketplace is
         adminFeePercentage = 250; 
         mintingContractAddress = _mintingContract;
         mintingContract = MintingContract(_mintingContract);
-    
-
 
         __ERC1155Holder_init();
         __Ownable_init(_ownerAddress);
@@ -89,17 +87,26 @@ contract Marketplace is
 
     error notListed(bool listed);
     error invalidFee(uint256 fee);
+    error zeroValue(uint256 value);
     error onAuction(bool onAuction);
     error ownerCantBuy(address owner);
     error alreadyClaimed(bool claimed);
     error wrongTokenId(uint256 wrongId);
+    error transferFailed(bool transfer);
     error onFixedPrice(bool onfixedPrice);
     error wrongListingId(uint256 listingid);
+    error selectOrganization(bool selected);
+    error zeroPercentage(uint256 percentage);
     error wrongNoOfCopies(uint256 noOfcopies);
     error wrongAddress(address contractAddres);
     error initialPriceZero(uint256 initialPrice);
+    error wrongFiscalSponsor(address fiscalSponsor);
+    error invalidFiscalPercentage(uint256 fiscalFee);
+    error NotAuthorizedError(address callingAddress);
     error worngOrganizationlength(uint256 organizationLength);
     error invalidTimeStamp(uint256 startTime, uint256 endTime);
+    error invalidDonationPercentage(uint256 donationPercentage);
+    error InvalidServiceFeePercentage(uint256 servicePercentage);
     error lengthDontMatch(uint256 organizationLength, uint256 percentagesLength);
 
     //--List item for list--------------------------------------------------------------------/
@@ -345,8 +352,10 @@ contract Marketplace is
             revert onFixedPrice(listing[_listId].fixedPrice);
         }
 
-        require(msg.sender == listing[_listId].nftOwner || msg.sender == listing[_listId].newOwner,
-             "You are not the nftOwner neither the heighest bidder.");
+        if(msg.sender != listing[_listId].nftOwner && msg.sender != listing[_listId].newOwner){
+             revert NotAuthorizedError(msg.sender);
+        }
+
 
         if(block.timestamp < listing[_listId].listingEndTime){
             revert invalidTimeStamp(listing[_listId].listingStartTime,listing[_listId].listingEndTime);
@@ -413,9 +422,15 @@ contract Marketplace is
     }
 
     function cancellListingForlist(uint256 _listingID) external {
+        
+        if(msg.sender != listing[_listingID].nftOwner){
+             revert NotAuthorizedError(msg.sender);
+        }
 
-        require(msg.sender == listing[_listingID].nftOwner , "You are not the nftOwner");
-        require(!listing[_listingID].nftClaimed,"NFT is alrady sold,");
+        if(listing[_listingID].nftClaimed){
+            revert alreadyClaimed(listing[_listingID].nftClaimed);
+        }
+
         
         transferNft(
             listing[_listingID].nftAddress,
@@ -432,8 +447,10 @@ contract Marketplace is
     }
 
     function setPlatFormServiceFeePercentage(uint256 _serviceFeePercentage) external onlyOwner{
-        require( _serviceFeePercentage > 0  && _serviceFeePercentage <= 3000, 
-            "fee % must between in 1% to 30% ");
+
+        if( _serviceFeePercentage <= 0  ||  _serviceFeePercentage > 3000){
+            revert InvalidServiceFeePercentage(_serviceFeePercentage);
+        }
 
         adminFeePercentage = _serviceFeePercentage;
         
@@ -606,10 +623,18 @@ contract Marketplace is
 
     }
 
+    
+
     function calulateFee(uint256 _salePrice , uint256 _serviceFeePercentage) private pure returns(uint256){
         
-        require(_salePrice !=0 , "Price of NFT can not be zero");
-        require(_serviceFeePercentage !=0 , "_PBP can not be zero");
+        if(_salePrice == 0){
+            revert zeroValue(_salePrice);
+        }
+
+        if(_serviceFeePercentage == 0){
+            revert zeroPercentage(_serviceFeePercentage);
+        }
+
         
         uint256 serviceFee = (_salePrice * _serviceFeePercentage) / (10000);
         
@@ -620,16 +645,20 @@ contract Marketplace is
     function transferFundsInEth(address payable _recipient, uint256 _amount) private {
 
         (bool success, ) = _recipient.call{value: _amount}("");
-        require(success, "Transfer failed");
+        
+        if(!success){
+            revert transferFailed(success);
+        }
 
     }
 
 
     function setFiscalSponsorPercentage(uint256 _fiscalSponsorPercentage) external {
         
-        require(_fiscalSponsorPercentage >= 100  && _fiscalSponsorPercentage <= 1000, 
-            "_fiscalSponsorPercentage must be between 1 to 10");
-
+        if(_fiscalSponsorPercentage < 100  || _fiscalSponsorPercentage > 1000){
+            revert invalidFiscalPercentage(_fiscalSponsorPercentage);
+        }
+        
         defaultFiscalFee[msg.sender] = _fiscalSponsorPercentage;
 
         emit SetFiscalFee(msg.sender, _fiscalSponsorPercentage);
@@ -650,15 +679,20 @@ contract Marketplace is
         for(uint i=0; i < _organizations.length; i++){
             if(_organizations[i] != address(0)){
 
-                require(_donatePercentages[i] >= 500,
-                    "donation percentage must be greater then 5%");
+                if(_donatePercentages[i] < 500){
+                    revert invalidDonationPercentage(_donatePercentages[i]);
+                }
+
                 atleastOne = true;
             }
         }
 
-        require(atleastOne,"select an organzation.");
+        if(!atleastOne){
+            revert selectOrganization(atleastOne);
+        }
         _;
     }
+
 
     modifier checkForList (
         uint256 _initialPrice,
@@ -718,7 +752,9 @@ contract Marketplace is
         )  = mintingContract.getFiscalSponsor(msg.sender);
         
         if(_haveSponsor){
-            require(_fiscalSponsor == _previousFiscalSponser, "wrong fiscal sponsor!.");
+            if(_fiscalSponsor != _previousFiscalSponser){
+                revert wrongFiscalSponsor(_fiscalSponsor);
+            }
             // require(_fiscalSponsorPercentage != 0, "Your Fiscal Sponsor didnt set fee Yet!");
         }
         _;
