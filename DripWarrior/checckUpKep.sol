@@ -106,7 +106,7 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
         
     }
 
-    function weeklyTransfer() public {
+    function weeklyTransfer() public  {
         require(
             msg.sender == s_forwarderAddress,
             "This address does not have permission to call performUpkeep"

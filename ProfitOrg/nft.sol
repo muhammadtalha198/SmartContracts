@@ -34,12 +34,30 @@ contract MyToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable, UUPSU
     mapping (address => FiscalSponsor) public fiscalSponsorInfo;
     mapping(address => mapping(address => mapping(uint256 => uint256))) public _allowances;
 
+    address public contratAddress;
+    
+
+
     event SetFiscalFee(address fiscalAddress, uint256 feePercentage);
+    event ContractAddress(address ownerAddress, address contractAddress);
     event ApprovalAmount(address _owner, address _spender, uint256 _amount);
     event Mints(address minter,uint256 tokenid,uint256 amount,string tokenUri);
     event BatchMints(address minter,uint256[] tokenid,uint256[] amount,string[] tokenUris);
     event ChangeFiscalSponser(address organizationAddress, address  _fiscalSponsorAddress);
     event SpendAllowance(address _owner, address _spender,  uint256 nftId, uint256 allowedAmount);
+
+
+    error noFiscalSponsor();
+    error ArrayLengthMismatch();
+    error emptyUri(uint256 uriLength);
+    error zeroCopies(uint256 noOfCopies);
+    error NotAuthorized(address passAddress);
+    error invalidAddress(address passAddress);
+    error zeroAddress(address spenderAddress);
+    error insufficientBalance(uint256  balance);
+    error onlyFiscalSponsor(address fiscalAddress);
+    error invalidPercentage(uint256 feePeerccentage);
+    error invalidAddresses(address organizationAddreess, address fiscalAddress);
     
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -61,18 +79,28 @@ contract MyToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable, UUPSU
         __UUPSUpgradeable_init();
     }
 
+
      function mint( 
         uint256 _noOfCopies,
         string memory _uri, 
         uint256 _royaltyFeePercentage, 
         address _fiscalSponsor
         
-        ) external  returns(uint256) {
-
+    ) external  returns(uint256) {
         
-        require(bytes(_uri).length > 0, "tokenuri cannot be empty");
-        require(_noOfCopies > 0, "_noOfCopies cannot be zero");
-        require(_royaltyFeePercentage > 0  && _royaltyFeePercentage <= 3000 , "_royaltyFeePercentage must be between 1 to 30   ");
+        if(bytes(_uri).length <= 0){
+
+            revert emptyUri(bytes(_uri).length);
+        }
+        if(_noOfCopies <= 0){
+
+            revert zeroCopies(_noOfCopies);
+        }
+        if(_royaltyFeePercentage <= 0  || _royaltyFeePercentage > 3000){
+
+            revert invalidPercentage(_royaltyFeePercentage);
+        }
+        
 
         tokenId++;
 
@@ -102,11 +130,20 @@ contract MyToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable, UUPSU
         address _fiscalSponsor
     
     ) external  returns (uint256 [] memory) {
+
+         if(_tokenUris.length <= 0){
+
+            revert emptyUri(_tokenUris.length);
+        }
+        if(_noOfCopies.length <= 0){
+
+            revert zeroCopies(_noOfCopies.length);
+        }
+
+        if (_tokenUris.length != _noOfCopies.length || _noOfCopies.length != noOfTokens) {
+            revert ArrayLengthMismatch();
+        }
         
-        require(_tokenUris.length > 0, "tokenUris cannot be empty"); 
-        require(_noOfCopies.length > 0, "amounts cannot be empty"); 
-        require(_tokenUris.length == _noOfCopies.length &&
-                 _noOfCopies.length == noOfTokens,"Array lengths must match");
 
         if(_fiscalSponsor != address(0)){
             fiscalSponsorInfo[msg.sender].haveFiscalSponsor = true;
@@ -116,9 +153,12 @@ contract MyToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable, UUPSU
         uint256[] memory tokenids = new uint256[](noOfTokens);
         
         for (uint256 i = 0; i < noOfTokens; i++) {
+
+            if(_royaltyFeePercentage[i] <= 0  || _royaltyFeePercentage[i] > 3000){
+
+                revert invalidPercentage(_royaltyFeePercentage[i]);
+            }
              
-            require(_royaltyFeePercentage[i] > 0 && _royaltyFeePercentage[i] < 1600 , 
-                "_royaltyFeePercentage must be between 0 to 16");
             
             tokenId++;
 
@@ -139,8 +179,10 @@ contract MyToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable, UUPSU
     }
 
     function changeFiscalSponsor(address _fiscalSponsorAddress) external {
-        
-        require(fiscalSponsorInfo[msg.sender].haveFiscalSponsor,"must have a fiscal sponsor!");
+
+        if(!fiscalSponsorInfo[msg.sender].haveFiscalSponsor){
+            revert noFiscalSponsor();
+        }
 
         fiscalSponsorInfo[msg.sender].fiscalSponsorOf = msg.sender;
         fiscalSponsorInfo[msg.sender].fiscalSponsor = _fiscalSponsorAddress;
@@ -150,11 +192,13 @@ contract MyToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable, UUPSU
 
     function setFiscalSponsorPercentage(address organizationAddress,uint256 _fiscalSponsorPercentage) external {
         
-        require(_fiscalSponsorPercentage >= 100  && _fiscalSponsorPercentage <= 5000, 
-            "_fiscalSponsorPercentage must be between 1 to 50%");
+        if(_fiscalSponsorPercentage <= 0  || _fiscalSponsorPercentage > 5000){
+            revert invalidPercentage(_fiscalSponsorPercentage);
+        }
         
-        require(fiscalSponsorInfo[organizationAddress].fiscalSponsor == msg.sender,
-            "Only fiscal sponser can set the fee.");
+        if(fiscalSponsorInfo[organizationAddress].fiscalSponsor != msg.sender){
+            revert onlyFiscalSponsor(fiscalSponsorInfo[organizationAddress].fiscalSponsor);
+        }
 
         fiscalSponsorInfo[organizationAddress].fiscalSponsorPercentage = _fiscalSponsorPercentage;
 
@@ -171,11 +215,16 @@ contract MyToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable, UUPSU
         string memory currentBaseURI = minterInfo[_tokenId]._tokenURIs;
         return string(abi.encodePacked(currentBaseURI));
     }
+    
 
     function approveAmount(address _spender, uint256 id, uint256 amount) external {
-       
-        require(_spender != address(0), "ERC1155: approve to the zero address");
-        require(amount <= balanceOf(msg.sender, id), "you donot have sufficent amount of balance.");
+        
+        if(_spender == address(0)){
+            revert zeroAddress(_spender);
+        }
+        if(amount > balanceOf(msg.sender, id)){
+            revert insufficientBalance(balanceOf(msg.sender, id));
+        }
 
         _allowances[msg.sender][_spender][id] += amount;
         
@@ -221,6 +270,40 @@ contract MyToken is Initializable, ERC1155Upgradeable, OwnableUpgradeable, UUPSU
             fiscalSponsorInfo[_organizationAddress].fiscalSponsor,
             fiscalSponsorInfo[_organizationAddress].fiscalSponsorOf
         );
+    }
+
+    function setFiscalSponsor(address _organizationAddress, address _fiscalSponsor) external  onlyContract(){
+
+        if(_organizationAddress == address(0) || _fiscalSponsor == address(0)){
+            revert invalidAddresses (_organizationAddress,_fiscalSponsor);
+        }
+
+        fiscalSponsorInfo[_organizationAddress].fiscalSponsorOf = _organizationAddress;
+        fiscalSponsorInfo[_organizationAddress].fiscalSponsor = _fiscalSponsor;
+
+        emit ChangeFiscalSponser(msg.sender, _fiscalSponsor);
+    }
+
+
+
+    function setContractAddress(address _contractAddress) external onlyOwner {
+        
+        if(_contractAddress == address(0)){
+            revert invalidAddress(_contractAddress);
+        }
+        
+        contratAddress = _contractAddress;
+
+        emit ContractAddress(msg.sender, contratAddress);
+
+    }
+ 
+
+    modifier onlyContract(){
+        if(msg.sender != contratAddress){
+            revert NotAuthorized(msg.sender);
+        }
+        _;
     }
     
     function _authorizeUpgrade(address newImplementation)

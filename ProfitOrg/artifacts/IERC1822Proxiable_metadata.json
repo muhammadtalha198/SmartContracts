@@ -37,7 +37,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"ProfitOrg/marketPlace.sol": "IERC1822Proxiable"
+			"ProfitOrg/marketPlace_flattened.sol": "IERC1822Proxiable"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -51,12 +51,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"ProfitOrg/marketPlace.sol": {
-			"keccak256": "0x70eb4580bca62da2e33e531aa55bcdbdd48bce19e1a99397d945c8d5cee5b297",
+		"ProfitOrg/marketPlace_flattened.sol": {
+			"keccak256": "0x65bbda108aa99e348cb1f432249785274d0103d688c13f9a86611578f2e2fcbb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://18a1bb857ebe93c51cf4917a63f2cee4051af5f00f1998aeb6e4109847e55b18",
-				"dweb:/ipfs/QmNvu388ZEox6b9RyM8ATzBNrKzqLWnVPUzkBxnks2Zhrg"
+				"bzz-raw://88d176fc902a9a574df40674dae37d3cd9f0e60e845f9efc8b21300fabcb1180",
+				"dweb:/ipfs/QmUQJSThJiBAgQYMshbtJiEUt7QNKYp5E4N6XJ673ahcsM"
 			]
 		}
 	},

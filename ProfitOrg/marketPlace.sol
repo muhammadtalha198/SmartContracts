@@ -75,14 +75,14 @@ contract Marketplace is
     mapping (uint256 => DonationInfo) public donationInfo;
     mapping(address => uint256) public defaultFiscalFee;
 
-    event Bided( address _currentBidder, uint256 _bidAmount, uint256 _previousBidAmount); 
-    event CancelList(address _listerAddress, uint256 _listingID, bool _isListed);
+    event SetFiscalFee(address fiscalAddress, uint256 feePercentage);
     event plateFarmFeePercentage(uint256 _serviceFeePercentage,address _owner);
+    event CancelList(address _listerAddress, uint256 _listingID, bool _isListed);
     event Edited (uint256 _initialPrice,uint256 _listStartTime,uint256 _listEndTime);
+    event Bided( address _currentBidder, uint256 _bidAmount, uint256 _previousBidAmount); 
     event SoldNft(address _from,uint256 indexed _tokenId,address indexed _nftAddress,address _to,uint256 _noOfCopirs);
     event FeeInfo(uint256 fiscalFee, uint256 royaltyFee,uint256 indexed serviceFee,uint256 indexed donationFee, uint256 indexed amountSendToSeller);
     event Listed(uint256 _listId,uint256 _tokenId, uint256 _noOfCopies, uint256 _initialPrices);
-    event SetFiscalFee(address fiscalAddress, uint256 feePercentage);
     
 
     error notListed(bool listed);
@@ -658,7 +658,6 @@ contract Marketplace is
             revert zeroPercentage(_serviceFeePercentage);
         }
 
-        
         uint256 serviceFee = (_salePrice * _serviceFeePercentage) / (10000);
         
         return serviceFee;

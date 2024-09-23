@@ -1,0 +1,63 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "implementation",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "This is the interface that {BeaconProxy} expects of its beacon.",
+			"kind": "dev",
+			"methods": {
+				"implementation()": {
+					"details": "Must return an address that can be used as a delegate call target. {UpgradeableBeacon} will check that this address is a contract."
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"OwnerCustomization/SinglOwneer_flattened.sol": "IBeacon"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"OwnerCustomization/SinglOwneer_flattened.sol": {
+			"keccak256": "0x3abf9073e5759c51e01d03cd4b89de7787a84b707166bbed9f3c1cebab93caca",
+			"urls": [
+				"bzz-raw://013edc862bd5100e2160221188c5e6a7ac1ef4186022cac51b209a38ed0f0a0d",
+				"dweb:/ipfs/QmX9DPQx1GE42tkqMGSTHwTGq5s5j92rws4H3eYP5qg785"
+			]
+		}
+	},
+	"version": 1
+}
