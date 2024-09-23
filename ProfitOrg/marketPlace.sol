@@ -90,6 +90,7 @@ contract Marketplace is
     error zeroValue(uint256 value);
     error onAuction(bool onAuction);
     error ownerCantBuy(address owner);
+    error bidStarted(address newOwner);
     error alreadyClaimed(bool claimed);
     error wrongTokenId(uint256 wrongId);
     error transferFailed(bool transfer);
@@ -208,6 +209,22 @@ contract Marketplace is
         uint256 _listStartTime,
         uint256 _listEndTime,
         uint256 _serviceFee ) external checkSell( _listId) {
+
+        if(block.timestamp < listing[_listId].listingStartTime || block.timestamp > listing[_listId].listingEndTime){
+
+            revert invalidTimeStamp(listing[_listId].listingStartTime,listing[_listId].listingEndTime );
+        }
+
+        if(msg.sender != listing[_listId].nftOwner){
+            revert NotAuthorizedError(listing[_listId].nftOwner);
+        }
+
+        if(_listStartTime != 0 && _listEndTime != 0){
+
+            if(listing[_listId].newOwner != address(0)){
+                revert bidStarted(listing[_listId].newOwner);
+            }
+        }
 
 
         setListingInfo(
@@ -431,6 +448,12 @@ contract Marketplace is
             revert alreadyClaimed(listing[_listingID].nftClaimed);
         }
 
+       if(listing[_listingID].listingStartTime != 0 && listing[_listingID].listingEndTime != 0){
+
+            if(listing[_listingID].newOwner != address(0)){
+                revert bidStarted(listing[_listingID].newOwner);
+            }
+        }
         
         transferNft(
             listing[_listingID].nftAddress,
