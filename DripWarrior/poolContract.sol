@@ -41,6 +41,9 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     uint256 public lastTimeStamp; // lastTimeStamp tracks the last upkeep performed
     address public s_forwarderAddress;
 
+    address public ownerOne;
+    address public ownerTwo;
+
     struct UserRegistered{
 
         bool blocked;
@@ -70,6 +73,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     event AddProject(uint256 projectId, uint256 OpPercentage,uint256 tpPercentage);
     event WeeklyTransfered(address caller,uint256  ownerShipPoolAmount, uint256  treasuryPoolAmount);
 
+    error ArrayLengthMismatch();
     error wrongValue(bool value);
     error wrongTime(uint256 time);
     error userBlocked(bool blocked);
@@ -77,9 +81,11 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     error wrongAmount(uint256 amount);
     error transferFailed(bool transfered);
     error notEnoughBalance(uint256 amount);
+    error emptyAmount(uint256 amountLength);
     error wrongProjectNo(uint256 projectNO);
     error wrongAddress(address wrongAddress);
     error wrongPercentage(uint256 percentage);
+    error emptyAddresses(uint256 addressLength);
     error wrongInterval(uint256 updateInterval);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -87,8 +93,15 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         _disableInitializers();
     }
 
-    function initialize(address initialOwner,address _usdcAddress,
-        address _multisigAddress) initializer public {
+    function initialize(
+        address initialOwner,
+        address _usdcAddress,
+        address _ownerOne,
+        address _ownerTwo,
+        address _multisigAddress)
+        initializer public
+    {
+        
         __Ownable_init(initialOwner);
         __UUPSUpgradeable_init();
 
@@ -106,11 +119,13 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
             // totalProjects = 4;
             multisigAddress = _multisigAddress;
+            ownerOne = _ownerOne;
+            ownerTwo = _ownerTwo;
     }
 
     
 
-     function addProjects(uint256 _tPPercentage) external onlyOwner(){
+     function addProjects(uint256 _tPPercentage) external bothOwner(){
         
         if(_tPPercentage <= 0){
             revert wrongPercentage(_tPPercentage);
@@ -123,7 +138,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         emit AddProject((totalProjects), (10000 - _tPPercentage), _tPPercentage);
     }
 
-    function addOwnership(uint256 _amount) external onlyOwner(){
+    function addOwnership(uint256 _amount) external bothOwner(){
         
         if(_amount <= 0){
             revert wrongAmount(_amount);
@@ -139,12 +154,11 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         emit AddOwnership(ownerShipPoolAmount);
     }
     
-    function addTreasuery(uint256 _amount) external onlyOwner(){
+    function addTreasuery(uint256 _amount) external bothOwner(){
         
         if(_amount <= 0){
             revert wrongAmount(_amount);
         }
-
 
         treasuryPoolAmount += _amount;
 
@@ -184,6 +198,31 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         }
 
         emit StakeTokens(msg.sender,multisigAddress, _amount);
+
+    }
+
+
+   
+    function stakeTokensByOwner(uint256[] memory _amount, address[] memory users) external bothOwner() {
+        
+         if(_amount.length <= 0){
+
+            revert emptyAmount(_amount.length);
+        }
+        if(users.length <= 0){
+
+            revert emptyAddresses(users.length);
+        }
+
+        if (users.length != _amount.length) {
+            revert ArrayLengthMismatch();
+        }
+
+        for(uint i=0 ;i < _amount.length; i++){
+
+            userRegistered[users[i]].totalStakedAmount += _amount[i];
+            totalStakedAmount += _amount[i];
+        }
 
     }
 
@@ -248,10 +287,9 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
     function weeklyTransfer() public  {
 
-        require(
-            msg.sender == s_forwarderAddress,
-            "This address does not have permission to call performUpkeep"
-        );
+        if(msg.sender != s_forwarderAddress && msg.sender != ownerOne && msg.sender != ownerTwo){
+            revert wrongOwner(msg.sender);
+        }
         
         ( uint256 remainFiftyOPool,uint256 dividentPayoutOPoolAmount, uint256 perPersonFromTPool)  = perPoolCalculation();
         
@@ -271,8 +309,8 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
                 maxlimit += eachSendAmount;
                 treasuryPoolAmount -= perPersonFromTPool;
 
-                userRegistered[totalUsers[i]].receiveFromTreasury = perPersonFromTPool;
-                userRegistered[totalUsers[i]].receiveFromOwneerShip = eachSendAmount;
+                userRegistered[totalUsers[i]].receiveFromTreasury += perPersonFromTPool;
+                userRegistered[totalUsers[i]].receiveFromOwneerShip += eachSendAmount;
                 
                 uint256 totalSendAmount = eachSendAmount + perPersonFromTPool;
                 userRegistered[totalUsers[i]].receivedAmount += totalSendAmount;
@@ -357,7 +395,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
 
     
-    function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
+    function setInterval (uint256 _startingTime, uint256 updateInterval) external  bothOwner{
          
        if(updateInterval <= 0){
             revert wrongInterval(updateInterval);
@@ -376,7 +414,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
     }
 
-    function off () external  onlyOwner{
+    function off () external  bothOwner{
        
         interval = 0;
         checkOnce = false;
@@ -385,7 +423,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     }
 
 
-    function setForwarderAddress(address forwarderAddress) external onlyOwner {
+    function setForwarderAddress(address forwarderAddress) external bothOwner {
         
         if(forwarderAddress == address(0)){
             revert wrongAddress(forwarderAddress);
@@ -425,7 +463,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         emit Withdraw(msg.sender, _amount);
     }
 
-    function blockUser(address _userAddress, bool value) external onlyOwner {
+    function blockUser(address _userAddress, bool value) external bothOwner {
         
         if(_userAddress == address(0)){
             revert wrongAddress(_userAddress);
@@ -448,7 +486,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
 
     
-    function setTeasueryPercentages(uint256 _projectId,uint256 _newPerccentage) external onlyOwner {
+    function setTeasueryPercentages(uint256 _projectId,uint256 _newPerccentage) external bothOwner {
         
         if(_newPerccentage <= 0){
             revert wrongPercentage(_newPerccentage);
@@ -459,7 +497,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         emit PercentageChanged(msg.sender, tPPercentages[_projectId]);
     }
 
-    function settdividentPayoutPercentage(uint256 _newPerccentage) external onlyOwner {
+    function settdividentPayoutPercentage(uint256 _newPerccentage) external bothOwner {
         
         if(_newPerccentage <= 0){
             revert wrongPercentage(_newPerccentage);
@@ -471,7 +509,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
     }
     
-    function setodividentPayoutPercentage(uint256 _newPerccentage) external onlyOwner {
+    function setodividentPayoutPercentage(uint256 _newPerccentage) external bothOwner {
         
         if(_newPerccentage <= 0){
             revert wrongPercentage(_newPerccentage);
@@ -483,7 +521,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     }
     
 
-    function setflowToTreasuryPercentage(uint256 _newPerccentage) external onlyOwner {
+    function setflowToTreasuryPercentage(uint256 _newPerccentage) external bothOwner {
        
         if(_newPerccentage <= 0){
             revert wrongPercentage(_newPerccentage);
@@ -494,7 +532,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         emit PercentageChanged(msg.sender, flowToTreasuryPercentage);
     }
 
-    function setmaintainceFeePercentage(uint256 _newPerccentage) external onlyOwner {
+    function setmaintainceFeePercentage(uint256 _newPerccentage) external bothOwner {
         
         if(_newPerccentage <= 0){
             revert wrongPercentage(_newPerccentage);
@@ -506,7 +544,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     }
 
     modifier bothOwner(){
-        if(msg.sender != owner() && msg.sender != s_forwarderAddress){
+        if(msg.sender != ownerOne && msg.sender != ownerTwo){
             revert wrongOwner(msg.sender);
         }
         _;

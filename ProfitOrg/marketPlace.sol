@@ -12,6 +12,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpg
 interface MintingContract{
 
     function getMinterInfo(uint256 _tokenId) external view returns (uint256, address);
+    function setFiscalSponsor(address _organizationAddress, address _fiscalSponsor) external;
     function getFiscalSponsor(address _organizationAddress) external view returns (bool,uint256, address, address);
 }
 
@@ -286,7 +287,7 @@ contract Marketplace is
         uint256 fiscalFee;
         
         if(_haveSponsor){
-             fiscalFee =  sendFiscalFee(_listId,address(0),0);
+            fiscalFee =  sendFiscalFee(_listId,address(0),0);
         }
         
         uint256 royaltyFee =  sendRoyalityFee(_listId);

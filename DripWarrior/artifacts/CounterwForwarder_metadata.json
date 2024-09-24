@@ -327,12 +327,13 @@
 					"notice": "Set the address that `performUpkeep` is called from"
 				}
 			},
+			"notice": "THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY. THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE. DO NOT USE THIS CODE IN PRODUCTION.",
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"DripWarrior/checckUpKep.sol": "CounterwForwarder"
+			"DripWarrior/checckUpKep_flattened.sol": "CounterwForwarder"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -346,36 +347,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol": {
-			"keccak256": "0xf504b227c442cd4ed31b336b7bd15cfcb23220c84c26e750975c7e7d959125aa",
+		"DripWarrior/checckUpKep_flattened.sol": {
+			"keccak256": "0x042f29657ec5ee0097aedded97bd89526f74c7ca148f9288d46bd2edb53255bd",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://34e35eb46dfadf12396e92dd970547209dfd99f0ae5b1ec7b5a3e81617f620a1",
-				"dweb:/ipfs/Qmanoi2CDi9MwkP44HosagvewfMEvCMN1YthGRmCexVjwY"
-			]
-		},
-		"@openzeppelin/contracts/access/Ownable.sol": {
-			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
-				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
-			]
-		},
-		"@openzeppelin/contracts/utils/Context.sol": {
-			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
-				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
-			]
-		},
-		"DripWarrior/checckUpKep.sol": {
-			"keccak256": "0x047fb93091f0908f99fabca02f468bfb17a7f15b824560c08541cc9383355d82",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://984b72bb72d908c475d770a529ef12e2ccd3f43581f346f81de8969af42e6020",
-				"dweb:/ipfs/QmNppdc2Xy7sD1Z5fVNENvooYhDyfkvUAzuTyJeakBbab7"
+				"bzz-raw://47e2e028fb44ac3b9a6db3aeabf7310b372863a4b7aaa2c9ba9293a5c4325aef",
+				"dweb:/ipfs/QmNoj9w3mDoqFdQKQmx5ThBiPyLpCiApVUZNb9DVKj9ZiM"
 			]
 		}
 	},

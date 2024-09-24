@@ -37,7 +37,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"DripWarrior/poolClieent_flattened.sol": "IERC1822Proxiable"
+			"DripWarrior/poolContract_flattened.sol": "IERC1822Proxiable"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -51,12 +51,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"DripWarrior/poolClieent_flattened.sol": {
-			"keccak256": "0xad6c8b78dec21046d8d8d7e95858cb38b25edb82c89ebca589b4b82526285bcf",
+		"DripWarrior/poolContract_flattened.sol": {
+			"keccak256": "0xc784022d457cca3789bfe3a3829f900938a178cf3c6cb25ba94a2970b2b9bbc9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5d17b284f485ffdea1db86380a41fe64b742b15f6348d2140c00f821b10b8b51",
-				"dweb:/ipfs/QmRVqCuvVE5DFDXfciKnqFamZ3VLmXZLrkPi3hhH85rwav"
+				"bzz-raw://369e5bb06fb036e3567c7e02ce3fe56254c77a077f4850d19f01b8dc6b243314",
+				"dweb:/ipfs/QmTkgRjCT7cZCmcFKqztHkQJcow1Rh1TS1YqSchrp2sHBR"
 			]
 		}
 	},
