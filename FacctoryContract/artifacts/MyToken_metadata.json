@@ -23,13 +23,37 @@
 						"type": "uint256"
 					}
 				],
-				"name": "PriceCalculation",
+				"name": "PriceCalculation1",
 				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
 					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_betOn",
+						"type": "uint256"
+					}
+				],
+				"name": "calculateShares",
+				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
@@ -58,43 +82,12 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "marketInfo",
+				"inputs": [],
+				"name": "totalBetAmount",
 				"outputs": [
 					{
-						"internalType": "bool",
-						"name": "resolved",
-						"type": "bool"
-					},
-					{
 						"internalType": "uint256",
-						"name": "endTime",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalBets",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalBetsOnYes",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalBetsOnNo",
+						"name": "",
 						"type": "uint256"
 					}
 				],
@@ -178,11 +171,19 @@
 			]
 		},
 		"FacctoryContract/checkPricce.sol": {
-			"keccak256": "0x23ad74ff129d1eadb110946dd5e6548ca291c7c595b17bc5125990a2e3c67176",
+			"keccak256": "0x3e332d2edccd3594c7d589bef3f1621854eee7176191f6ebbc540c9bf5a20eaa",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e6dfd390a962ba8964244134217b1d6455c4cd6a1967c35992c2d83bbe4c27cf",
-				"dweb:/ipfs/QmZ66yMMxNznvQgnUFodCKjDtKFs4u1M4Ay8XHgucm33Vp"
+				"bzz-raw://95a0bb54c17b219486775c1450bd8b5863e7e1ec329e966e5082397bcd017cec",
+				"dweb:/ipfs/QmdcQEDU85y9R77rPpKXtDzViG92asQ5JWY5Eq6xXDGW4r"
+			]
+		},
+		"hardhat/console.sol": {
+			"keccak256": "0x7434453e6d3b7d0e5d0eb7846ffdbc27f0ccf3b163591263739b628074dc103a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://49355f780520494d1d5a0f01858385e51bb5280ce0ecfb960f16995065dca395",
+				"dweb:/ipfs/QmSwJ6C5QLz6xKeQZS8wbwjU1KxRFTYfwbGmtzisd5sRW4"
 			]
 		}
 	},

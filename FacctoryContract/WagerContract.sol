@@ -126,26 +126,25 @@ contract Market is Ownable {
     }
 
 
-    function PriceCalculation(uint256 totalBetsOnNo, uint256 totalBetsOnYes) public view returns(uint256, uint256){
-        
-         uint256 originalNoPrice = marketInfo[address(this)].initialPrice[0];
-         uint256 originalYesPrice = marketInfo[address(this)].initialPrice[1];
-         
-         uint256 totalBets = totalBetsOnNo + totalBetsOnYes;
-
-        if(totalBetsOnNo != 0){
-            
-            originalNoPrice = ((totalBetsOnNo * 100)/(totalBets));
-            originalNoPrice *= 10000000000000000;
-        }
-        if(totalBetsOnYes != 0){
-           
-            originalYesPrice = ((totalBetsOnYes * 100)/(totalBets));
-            originalYesPrice *= 10000000000000000;
+    function PriceCalculation(uint256 _totalBetAmountOnLahore, uint256 _totalBetAmountOnKarachi) public pure returns (uint256 yesSharePrice, uint256 noSharePrice) {
+        uint256 _totalBet = _totalBetAmountOnLahore + _totalBetAmountOnKarachi;
+        if (_totalBet == 0) {
+            return (0.5 ether, 0.5 ether); // Starting price is 50 cents for both teams
         }
 
-        return(originalNoPrice, originalYesPrice);
-    } 
+        uint256 lahoreRatio = (_totalBetAmountOnKarachi * 100) / _totalBet;
+        uint256 karachiRatio = (_totalBetAmountOnLahore * 100) / _totalBet;
+
+        yesSharePrice = clamp(((lahoreRatio * 99) / 100) + 1, 1, 100) * 1e16;
+        noSharePrice = clamp(((karachiRatio * 99) / 100) + 1, 1, 100) * 1e16;
+    }
+
+    // Helper function to clamp values
+    function clamp(uint256 value, uint256 min, uint256 max) internal pure returns (uint256) {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
 
 
 
@@ -319,7 +318,7 @@ contract Market is Ownable {
         uint256 price =  marketInfo[address(this)].initialPrice[_betOn];
         
         require(price != 0, "_price cannot be zero");
-        uint256 result = (_amount * 100) / price;
+        uint256 result = _amount / price;
         
         return result;
     }
@@ -379,3 +378,24 @@ contract Market is Ownable {
 
 
 }
+
+// function PriceCalculation(uint256 totalBetsOnNo, uint256 totalBetsOnYes) public view returns(uint256, uint256){
+        
+//          uint256 originalNoPrice = marketInfo[address(this)].initialPrice[0];
+//          uint256 originalYesPrice = marketInfo[address(this)].initialPrice[1];
+         
+//          uint256 totalBets = totalBetsOnNo + totalBetsOnYes;
+
+//         if(totalBetsOnNo != 0){
+            
+//             originalNoPrice = ((totalBetsOnNo * 100)/(totalBets));
+//             originalNoPrice *= 10000000000000000;
+//         }
+//         if(totalBetsOnYes != 0){
+           
+//             originalYesPrice = ((totalBetsOnYes * 100)/(totalBets));
+//             originalYesPrice *= 10000000000000000;
+//         }
+
+//         return(originalNoPrice, originalYesPrice);
+//     } 

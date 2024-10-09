@@ -298,12 +298,12 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "totalBetsOnNo",
+						"name": "_totalBetAmountOnLahore",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "totalBetsOnYes",
+						"name": "_totalBetAmountOnKarachi",
 						"type": "uint256"
 					}
 				],
@@ -311,16 +311,16 @@
 				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "yesSharePrice",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "",
+						"name": "noSharePrice",
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "view",
+				"stateMutability": "pure",
 				"type": "function"
 			},
 			{
@@ -856,11 +856,11 @@
 			]
 		},
 		"FacctoryContract/WagerContract.sol": {
-			"keccak256": "0xc1a04cac0f2526850898821122e61fce660bf9f6c2430ef31170d51efea82c5f",
+			"keccak256": "0x54e6c41127503b828bf8c05a01d9713a4b7fee5ba1dd11e35c9feacf2753691e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1cd2afcc17b619ba74b5e59fd690712f4a0108d44af1e1457d1439ef88390482",
-				"dweb:/ipfs/Qma3fKAV5DrmZGoCMuDzS99eK2UmrUBQDwVe2tbbzKz8KB"
+				"bzz-raw://3546fbae833f63c65657693d87f82a56cafd42688f0fdda01a8a5365673738e6",
+				"dweb:/ipfs/QmZnGTKz1FEBh9Nf9SkisivNNmdaapn9kWchYe8hbkHefw"
 			]
 		}
 	},
