@@ -33,7 +33,6 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     uint256 public noOfUsers;
     address public multisigAddress;
 
-    bool public checkOnce;
     bool private locked;
     uint256 public interval; // interval specifies the time between upkeeps
     uint256 public realInterval; // interval specifies the time between upkeeps
@@ -411,7 +410,6 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         startingTime = _startingTime;
         lastTimeStamp = block.timestamp;
         realInterval = updateInterval;
-        checkOnce = false;
 
         emit SetInterval(msg.sender, interval, lastTimeStamp);
 
@@ -420,8 +418,6 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     function off () external  bothOwner{
        
         interval = 0;
-        checkOnce = false;
-
         emit offInterval(msg.sender, interval);
     }
 
