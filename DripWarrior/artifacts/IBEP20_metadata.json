@@ -123,7 +123,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -210,11 +210,11 @@
 			]
 		},
 		"DripWarrior/poolContract.sol": {
-			"keccak256": "0x67d954577b4a2226855bbc2ef90ff87603a074fe8fcbd8ac92ff964884c246b8",
+			"keccak256": "0x6e49f0b119bcf4a4c484e6e60feb1786e50882007ec29a07f0b00e8181fdee65",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0da50153bfa4c3d43664a171b488cfc229b14af76548057d5eb488a1639a1edd",
-				"dweb:/ipfs/QmbdWb76rAZqRoUoiA2vUdLEZE75q3aaRbFqxk5jFEkyHx"
+				"bzz-raw://90c8ed8d953209f291de1e75e258cb8849835414bf1dfc32a91a60b059b73928",
+				"dweb:/ipfs/QmS95Gy5QCpzMoNXvWovzjTeouVva5wH56FSu52kWphMVA"
 			]
 		}
 	},

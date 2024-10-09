@@ -384,10 +384,10 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         
          if(block.timestamp >= startingTime){
 
-            weeklyTransfer();
+            interval = realInterval;
             lastTimeStamp = block.timestamp;
             startingTime = block.timestamp + realInterval;
-            interval = realInterval;
+            weeklyTransfer();
         }
         else{
             revert wrongTime(startingTime);

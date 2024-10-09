@@ -1,7 +1,7 @@
 
 // File: @openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
-// SPDX-License-Identifier: MIT
 
+// SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts (last updated v5.0.0) (proxy/utils/Initializable.sol)
 
 pragma solidity ^0.8.20;
@@ -1161,7 +1161,6 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     uint256 public noOfUsers;
     address public multisigAddress;
 
-    bool public checkOnce;
     bool private locked;
     uint256 public interval; // interval specifies the time between upkeeps
     uint256 public realInterval; // interval specifies the time between upkeeps
@@ -1197,8 +1196,10 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     event SetForwarderAddress(address _owner, address _s_forwarderAddress);
     event UserBlocked(address owner,address blockUserAddress, bool blocked);
     event StakeTokens (address sender, address recepient,uint256 usdcAmount);
+    event singleUserAddeed(address owner,uint256 _amount, address userAddress);
     event SetInterval(address _owner, uint256 _interval, uint256 _lastTimeStamp);
     event AddProject(uint256 projectId, uint256 OpPercentage,uint256 tpPercentage);
+    event multipleUserAddeed(address owner,uint256 _amountLength, uint256 usersLength);
     event WeeklyTransfered(address caller,uint256  ownerShipPoolAmount, uint256  treasuryPoolAmount);
 
     error ArrayLengthMismatch();
@@ -1207,6 +1208,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     error userBlocked(bool blocked);
     error wrongOwner(address owner);
     error wrongAmount(uint256 amount);
+    error zeroUsers(uint256 noOfUsers);
     error transferFailed(bool transfered);
     error notEnoughBalance(uint256 amount);
     error emptyAmount(uint256 amountLength);
@@ -1215,6 +1217,10 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     error wrongPercentage(uint256 percentage);
     error emptyAddresses(uint256 addressLength);
     error wrongInterval(uint256 updateInterval);
+    error notEnoughAmount(uint256 balanceAmount);
+    error  wrongPerceentage(uint256 percentageNumber);
+    error wrongPercentageAmount(uint256 _totalStakeAmount);
+    error emptyPools(uint256 ownerShipPoolAmount, uint256 treasuryPoolAmount);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -1352,7 +1358,9 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             totalStakedAmount += _amount[i];
         }
 
+        emit multipleUserAddeed(msg.sender,_amount.length,users.length);
     }
+
 
     function reStakeTokens(uint256 _amount) external  {
         
@@ -1418,10 +1426,13 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         if(msg.sender != s_forwarderAddress && msg.sender != ownerOne && msg.sender != ownerTwo){
             revert wrongOwner(msg.sender);
         }
+
+        if(ownerShipPoolAmount <= 0 && treasuryPoolAmount <= 0){
+            revert emptyPools(ownerShipPoolAmount,treasuryPoolAmount);
+        }
         
         ( uint256 remainFiftyOPool,uint256 dividentPayoutOPoolAmount, uint256 perPersonFromTPool)  = perPoolCalculation();
         
-        require(ownerShipPoolAmount > 0 && treasuryPoolAmount > 0, "not enough amount");
        
         uint256 maxlimit;
 
@@ -1464,7 +1475,9 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         uint256 tenPercenntToMaintenceAmount = calculatePercentage(remainFiftyOPool, maintainceFeePercentage);
         uint256 remainFiftyTPoolAmount = calculatePercentage(treasuryPoolAmount, tdividentPayoutPercentage);
 
-        require(noOfUsers > 0, "no users!");
+        if(noOfUsers <= 0){
+            revert zeroUsers(noOfUsers);
+        }
         
         uint256 perPersonFromTPool = remainFiftyTPoolAmount/noOfUsers;
         
@@ -1497,30 +1510,18 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             revert wrongInterval(interval);
         }
         
-        if(!checkOnce){
+         if(block.timestamp >= startingTime){
 
-            if(block.timestamp >= startingTime){
-
-               lastTimeStamp = block.timestamp;
-                weeklyTransfer();
-                interval = realInterval;
-            }
-            else{
-                revert wrongTime(startingTime);
-            }
-        }
-        else{
-           
+            interval = realInterval;
             lastTimeStamp = block.timestamp;
+            startingTime = block.timestamp + realInterval;
             weeklyTransfer();
         }
-       
-        if(!checkOnce){
-            checkOnce = true;
+        else{
+            revert wrongTime(startingTime);
         }
         
     }
-
 
     
     function setInterval (uint256 _startingTime, uint256 updateInterval) external  bothOwner{
@@ -1545,8 +1546,6 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     function off () external  bothOwner{
        
         interval = 0;
-        checkOnce = false;
-
         emit offInterval(msg.sender, interval);
     }
 
@@ -1564,20 +1563,28 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
 
     function calculatePercentage(uint256 _totalStakeAmount,uint256 percentageNumber) private pure returns(uint256) {
         
-        require(_totalStakeAmount !=0 , "_totalStakeAmount can not be zero");
-        require(percentageNumber !=0 , "_totalStakeAmount can not be zero");
+        if(_totalStakeAmount <= 0){
+            revert wrongPercentageAmount(_totalStakeAmount);
+        }
+        if(percentageNumber <= 0){
+            revert wrongPerceentage(percentageNumber);
+        }
+       
         uint256 serviceFee = _totalStakeAmount * (percentageNumber) / (10000);
         
         return serviceFee;
     }
     
-    
+
     function userWithdrawAmoount(uint256 _amount) external nonReentrant {
         
         if(_amount <= 0){
             revert wrongAmount(_amount);
         }
-        require(_amount <= userRegistered[msg.sender].receivedAmount, "invalid _amount!");
+
+        if(_amount > userRegistered[msg.sender].receivedAmount){
+            revert notEnoughAmount(userRegistered[msg.sender].receivedAmount);
+        }
 
         userRegistered[msg.sender].receivedAmount -= _amount;
         userRegistered[msg.sender].withdrawAmount += _amount;

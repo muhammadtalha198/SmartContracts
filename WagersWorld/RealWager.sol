@@ -133,17 +133,17 @@ contract Market is Ownable {
     }
 
 
-    function PriceCalculation(uint256 _totalBetAmountOnNo, uint256 _totalBetAmountOnYes) public pure returns (uint256 yesSharePrice, uint256 noSharePrice) {
+    function PriceCalculation(uint256 _totalBetAmountOnNo, uint256 _totalBetAmountOnYes) public pure returns (uint256 noSharePrice, uint256 yesSharePrice) {
         uint256 _totalBet = _totalBetAmountOnNo + _totalBetAmountOnYes;
         if (_totalBet == 0) {
             return (0.5 ether, 0.5 ether); // Starting price is 50 cents for both teams
         }
 
-        uint256 lahoreRatio = (_totalBetAmountOnYes * 100) / _totalBet;
-        uint256 karachiRatio = (_totalBetAmountOnNo * 100) / _totalBet;
+        uint256 noRatio = (_totalBetAmountOnNo * 100) / _totalBet;
+        uint256 yesRatio = (_totalBetAmountOnYes * 100) / _totalBet;
 
-        yesSharePrice = clamp(((lahoreRatio * 99) / 100) + 1, 1, 100) * 1e16;
-        noSharePrice = clamp(((karachiRatio * 99) / 100) + 1, 1, 100) * 1e16;
+        noSharePrice = clamp(((noRatio * 99) / 100) + 1, 1, 100) * 1e16;
+        yesSharePrice = clamp(((yesRatio * 99) / 100) + 1, 1, 100) * 1e16;
     }
 
     // Helper function to clamp values

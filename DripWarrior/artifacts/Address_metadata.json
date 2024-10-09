@@ -72,18 +72,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"DripWarrior/poolContract_flattened.sol": {
-			"keccak256": "0xc784022d457cca3789bfe3a3829f900938a178cf3c6cb25ba94a2970b2b9bbc9",
+			"keccak256": "0x651b4a6f18e2f2117213d53fa4b5616f1cd8ede36757d192a45dbc46b954ecd6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://369e5bb06fb036e3567c7e02ce3fe56254c77a077f4850d19f01b8dc6b243314",
-				"dweb:/ipfs/QmTkgRjCT7cZCmcFKqztHkQJcow1Rh1TS1YqSchrp2sHBR"
+				"bzz-raw://743146e2b22d1ce3e9bd27fd75a515e79e46e487c113af8a35ce36917a9eb4dc",
+				"dweb:/ipfs/QmeXN22bGfEJq3TSjovX23ojZNC38NeyapYVteaqt1kkSn"
 			]
 		}
 	},

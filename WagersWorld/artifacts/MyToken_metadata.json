@@ -82,6 +82,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "totalWinnerShare",
+						"type": "uint256"
+					}
+				],
+				"name": "perPeerson",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "_perShare",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "totalBetAmount",
 				"outputs": [
@@ -108,7 +127,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"FacctoryContract/checkPricce.sol": "MyToken"
+			"WagersWorld/checkPricce.sol": "MyToken"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -116,7 +135,7 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -170,20 +189,12 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
-		"FacctoryContract/checkPricce.sol": {
-			"keccak256": "0x3e332d2edccd3594c7d589bef3f1621854eee7176191f6ebbc540c9bf5a20eaa",
+		"WagersWorld/checkPricce.sol": {
+			"keccak256": "0xa98fc5dd8c29df609ef24e2f7b6873fe2750adf4280d3265cd148729cd2e7bb1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://95a0bb54c17b219486775c1450bd8b5863e7e1ec329e966e5082397bcd017cec",
-				"dweb:/ipfs/QmdcQEDU85y9R77rPpKXtDzViG92asQ5JWY5Eq6xXDGW4r"
-			]
-		},
-		"hardhat/console.sol": {
-			"keccak256": "0x7434453e6d3b7d0e5d0eb7846ffdbc27f0ccf3b163591263739b628074dc103a",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://49355f780520494d1d5a0f01858385e51bb5280ce0ecfb960f16995065dca395",
-				"dweb:/ipfs/QmSwJ6C5QLz6xKeQZS8wbwjU1KxRFTYfwbGmtzisd5sRW4"
+				"bzz-raw://29db35c9530cd84135b3a7b8a477b683e25336bf0005df1d99dea62120237a7b",
+				"dweb:/ipfs/QmR2vkHUViwv7DLuBwvvcnRyEDuroHonLkEad2DT1dzT4M"
 			]
 		}
 	},
