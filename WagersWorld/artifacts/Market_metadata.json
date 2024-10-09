@@ -101,6 +101,17 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "_useerAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "notEnoughAmount",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "listNo",
 						"type": "uint256"
 					}
@@ -117,6 +128,28 @@
 					}
 				],
 				"name": "notResolvedBeforeTime",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "transferd",
+						"type": "bool"
+					}
+				],
+				"name": "transferFaild",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bool",
+						"name": "transfered",
+						"type": "bool"
+					}
+				],
+				"name": "transferFailed",
 				"type": "error"
 			},
 			{
@@ -161,6 +194,28 @@
 					}
 				],
 				"name": "wrongPrice",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "zeroPercentageAmount",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "percentageNumber",
+						"type": "uint256"
+					}
+				],
+				"name": "zeropercentageNumber",
 				"type": "error"
 			},
 			{
@@ -216,7 +271,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "BuyShare",
+				"name": "BuyShares",
 				"type": "event"
 			},
 			{
@@ -298,12 +353,12 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_totalBetAmountOnLahore",
+						"name": "_totalBetAmountOnNo",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_totalBetAmountOnKarachi",
+						"name": "_totalBetAmountOnYes",
 						"type": "uint256"
 					}
 				],
@@ -357,30 +412,6 @@
 				"name": "buyShare",
 				"outputs": [],
 				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "shares",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_betOn",
-						"type": "uint256"
-					}
-				],
-				"name": "calculateInvestment",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -476,12 +507,12 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "totalBetsOnYes",
+						"name": "totalBetAmountOnYes",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "totalBetsOnNo",
+						"name": "totalBetAmountOnNo",
 						"type": "uint256"
 					}
 				],
@@ -793,7 +824,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"FacctoryContract/WagerContract.sol": "Market"
+			"WagersWorld/RealWager.sol": "Market"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -855,12 +886,12 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
-		"FacctoryContract/WagerContract.sol": {
-			"keccak256": "0x54e6c41127503b828bf8c05a01d9713a4b7fee5ba1dd11e35c9feacf2753691e",
+		"WagersWorld/RealWager.sol": {
+			"keccak256": "0xccbe1b860bdae7b5daceda8864644db94d8eb8b505fdb253ba023b47bafd5ff6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3546fbae833f63c65657693d87f82a56cafd42688f0fdda01a8a5365673738e6",
-				"dweb:/ipfs/QmZnGTKz1FEBh9Nf9SkisivNNmdaapn9kWchYe8hbkHefw"
+				"bzz-raw://d496a2e04d4c7abe1093d9f411ff8df786c7b08e28482fe5205710053fba055c",
+				"dweb:/ipfs/QmbomoZjYyHo7zE7vnpWGidYLBZec6X6ademKseuVeTgUt"
 			]
 		}
 	},

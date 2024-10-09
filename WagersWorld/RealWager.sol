@@ -17,8 +17,8 @@ contract Market is Ownable {
         uint256 totalBets;
         uint256 totalAmount;
         uint256[2] initialPrice;
-        uint256 totalBetsOnYes;
-        uint256 totalBetsOnNo;
+        uint256 totalBetAmountOnYes;
+        uint256 totalBetAmountOnNo;
     }
 
     struct UserInfo{
@@ -51,7 +51,7 @@ contract Market is Ownable {
 
     event Bet(address indexed user,uint256 indexed _amount,uint256 _betOn);
     event SellShare(address indexed user, uint256 listNo,  uint256 onPrice);
-    event BuyShare(address buyer, address seller, uint256 _amountBBuyed, uint256 onPrice);
+    event BuyShares(address buyer, address seller, uint256 _amountBBuyed, uint256 onPrice);
     event ResolveMarket(address ownerAddress, uint256 ownerAmount, uint256 perShareAmount, uint256 winningIndex);
 
     error marketResolved();
@@ -61,9 +61,14 @@ contract Market is Ownable {
     error notListed(uint256 listNo);
     error wrongOwner(address owner);
     error wrongAmount(uint256 amount);
+    error transferFaild(bool transferd);
     error wrongBetIndex(uint256 betIndex);
+    error transferFailed(bool transfered);
+    error zeroPercentageAmount(uint256 _amount);
+    error notEnoughAmount(uint256 _useerAmount);
     error notResolvedBeforeTime(uint256 endTime);
     error contractLowbalance(uint256 contractBalance);
+    error zeropercentageNumber(uint256 percentageNumber);
     error contractLowbalanceForOwner(uint256 contractBalance);
 
 
@@ -75,8 +80,8 @@ contract Market is Ownable {
         Ownable(initialOwner) {
 
             marketInfo[address(this)].endTime = _endTime;
-            marketInfo[address(this)].initialPrice[0] = 500000000000000000;
-            marketInfo[address(this)].initialPrice[1] = 500000000000000000;
+            marketInfo[address(this)].initialPrice[0] = 0.5 ether;
+            marketInfo[address(this)].initialPrice[1] = 0.5 ether;
             usdcToken = ERC20(_usdcToken);
             profitPercentage = 1000; // 10 %
     }
@@ -102,12 +107,12 @@ contract Market is Ownable {
 
         if(_betOn == 0 ){
 
-            marketInfo[address(this)].totalBetsOnNo++;
+            marketInfo[address(this)].totalBetAmountOnNo += _amount;
             userInfo[msg.sender].noBetAmount += _amount;
 
         }else {
 
-            marketInfo[address(this)].totalBetsOnYes++;  
+            marketInfo[address(this)].totalBetAmountOnYes += _amount;  
             userInfo[msg.sender].yesBetAmount += _amount;
         }
 
@@ -117,35 +122,36 @@ contract Market is Ownable {
 
 
         (marketInfo[address(this)].initialPrice[0],marketInfo[address(this)].initialPrice[1]) = 
-            PriceCalculation(marketInfo[address(this)].totalBetsOnNo, marketInfo[address(this)].totalBetsOnYes);
+            PriceCalculation(marketInfo[address(this)].totalBetAmountOnNo, marketInfo[address(this)].totalBetAmountOnYes);
        
         bool success = usdcToken.transferFrom(msg.sender, address(this), _amount);
-        require(success, "Transfer failed");
+        if(!success){
+            revert transferFailed(success);
+        }
 
         emit Bet(msg.sender, _amount, _betOn);
     }
 
 
-    function PriceCalculation(uint256 totalBetAmountOnNo, uint256 totalBetAmountOnYes) public view returns(uint256, uint256){
-        
-         uint256 originalNoPrice = marketInfo[address(this)].initialPrice[0];
-         uint256 originalYesPrice = marketInfo[address(this)].initialPrice[1];
-         
-         uint256 totalBetAmount = totalBetAmountOnNo + totalBetAmountOnYes;
-
-        if(totalBetAmountOnNo != 0){
-            
-            originalNoPrice = ((totalBetAmountOnNo * 100)/(totalBetAmount));
-            originalNoPrice *= 10000000000000000;
-        }
-        if(totalBetAmountOnYes != 0){
-           
-            originalYesPrice = ((totalBetAmountOnYes * 100)/(totalBetAmount));
-            originalYesPrice *= 10000000000000000;
+    function PriceCalculation(uint256 _totalBetAmountOnNo, uint256 _totalBetAmountOnYes) public pure returns (uint256 yesSharePrice, uint256 noSharePrice) {
+        uint256 _totalBet = _totalBetAmountOnNo + _totalBetAmountOnYes;
+        if (_totalBet == 0) {
+            return (0.5 ether, 0.5 ether); // Starting price is 50 cents for both teams
         }
 
-        return(originalNoPrice, originalYesPrice);
-    } 
+        uint256 lahoreRatio = (_totalBetAmountOnYes * 100) / _totalBet;
+        uint256 karachiRatio = (_totalBetAmountOnNo * 100) / _totalBet;
+
+        yesSharePrice = clamp(((lahoreRatio * 99) / 100) + 1, 1, 100) * 1e16;
+        noSharePrice = clamp(((karachiRatio * 99) / 100) + 1, 1, 100) * 1e16;
+    }
+
+    // Helper function to clamp values
+    function clamp(uint256 value, uint256 min, uint256 max) internal pure returns (uint256) {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
 
 
 
@@ -171,10 +177,13 @@ contract Market is Ownable {
         
         if(_sellOf == 0){
 
-            require(_amount <= userInfo[msg.sender].noBetAmount, "not enough Amount");
+            if(_amount > userInfo[msg.sender].noBetAmount){
+                revert notEnoughAmount(userInfo[msg.sender].noBetAmount);
+            }
         }else{
-            
-            require(_amount <= userInfo[msg.sender].yesBetAmount, "not enough Amount");
+            if(_amount > userInfo[msg.sender].noBetAmount){
+                revert notEnoughAmount(userInfo[msg.sender].noBetAmount);
+            }
         }
         
         userInfo[msg.sender].listNo++;
@@ -182,8 +191,8 @@ contract Market is Ownable {
         sellInfo[msg.sender][userInfo[msg.sender].listNo].list = true;
         sellInfo[msg.sender][userInfo[msg.sender].listNo].price = _price; 
         sellInfo[msg.sender][userInfo[msg.sender].listNo].amount = _amount; 
-        sellInfo[msg.sender][userInfo[msg.sender].listNo].owner = msg.sender; 
         sellInfo[msg.sender][userInfo[msg.sender].listNo].listOn = _sellOf;
+        sellInfo[msg.sender][userInfo[msg.sender].listNo].owner = msg.sender; 
         
     
         emit SellShare(msg.sender, userInfo[msg.sender].listNo, _price);
@@ -228,11 +237,14 @@ contract Market is Ownable {
             _owner,
             sellInfo[_owner][_listNo].price
         );
-        require(success, "Transfer failed");
 
-        emit BuyShare(msg.sender,_owner, sellInfo[_owner][_listNo].amount, sellInfo[_owner][_listNo].price);
+        if(!success){
+            revert transferFaild(success);
+        }
+
+        emit BuyShares(msg.sender,_owner, sellInfo[_owner][_listNo].amount, sellInfo[_owner][_listNo].price);
     }
- 
+
     
     function resolveMarket(uint256 winningIndex) external   {
         
@@ -296,7 +308,9 @@ contract Market is Ownable {
                     eachUser[i],
                     userTotalAmount - tenPercentAmount
                 );
-                require(success, "Transfer failed");
+                if(!success){
+                    revert transferFaild(success);
+                }
 
             }
         }
@@ -308,7 +322,9 @@ contract Market is Ownable {
         marketInfo[address(this)].resolved = true;
         
         bool success1 = usdcToken.transfer(owner(),_ownerAmount);
-        require(success1, "Transfer failed");
+        if(!success1){
+            revert transferFaild(success1);
+        }
 
         emit ResolveMarket( owner(), _ownerAmount, _perShare, winningIndex);
     }
@@ -325,29 +341,21 @@ contract Market is Ownable {
     }
 
 
-    function calculatePercentage(uint256 _totalStakeAmount,uint256 percentageNumber) private pure returns(uint256) {
+
+    function calculatePercentage(uint256 _amount,uint256 percentageNumber) private pure returns(uint256) {
         
-        require(_totalStakeAmount !=0 , "_totalStakeAmount can not be zero");
-        require(percentageNumber !=0 , "_totalStakeAmount can not be zero");
-        uint256 serviceFee = (_totalStakeAmount * percentageNumber)/(10000);
+        if(_amount <= 0 ){
+            revert zeroPercentageAmount(_amount);
+        }
+        if(_amount <= 0 ){
+            revert zeropercentageNumber(percentageNumber);
+        }
+    
+        uint256 serviceFee = (_amount * percentageNumber)/(10000);
         
         return serviceFee;
     }
 
-    // Function to calculate potential return
-    function calculatePotentialReturn(uint256 _shares) private pure returns (uint256) {
-    
-        uint256 potentialReturn = _shares * 1e18 ;
-        return potentialReturn;
-    }
-    
-    function calculateInvestment(uint256 shares, uint256 _betOn) public view returns (uint256) {
-        
-        require(shares > 0, "Shares must be greater than zero");
-        uint256 amountInCents = (shares * marketInfo[address(this)].initialPrice[_betOn]) / 100;
-        
-        return amountInCents;
-    }
 
     function getInitialPrices() public view returns (uint256, uint256) {
         return (marketInfo[address(this)].initialPrice[0], marketInfo[address(this)].initialPrice[1]);
