@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
-
+import "hardhat/console.sol";
 
 // 0xcCc22A7fc54d184138dfD87B7aD24552cD4E0915
 interface IBEP20 {        
@@ -59,6 +59,9 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     mapping(uint256 => uint256) public tPPercentages;
     mapping(address => UserRegistered) public userRegistered;
 
+    event StartTime(uint256 startExecutionTime, uint256 lastTimeStamp);
+    event EexecutionTime(uint256 blocktimestamp, uint256 executionDuration);
+    event Interval(uint256 interval);
     event AddTreasuery(uint256 _treasuryPoolAmount);
     event AddOwnership(uint256 _ownerShipPoolAmount);
     event AddFunds(uint256 _amount, uint256 _projectNo);
@@ -346,7 +349,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
         uint256 fifteenPercenntToTPoolAmount = calculatePercentage(remainFiftyOPool, flowToTreasuryPercentage);
         uint256 tenPercenntToMaintenceAmount = calculatePercentage(remainFiftyOPool, maintainceFeePercentage);
         uint256 remainFiftyTPoolAmount = calculatePercentage(treasuryPoolAmount, tdividentPayoutPercentage);
-
+       
         if(noOfUsers <= 0){
             revert zeroUsers(noOfUsers);
         }
@@ -372,7 +375,7 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
     
 
     function performUpkeep(bytes calldata /*performData*/) external  {
-        
+
         require(
             msg.sender == s_forwarderAddress,
             "This address does not have permission to call performUpkeep"
@@ -382,12 +385,23 @@ contract PoolContrcat is Initializable, OwnableUpgradeable, UUPSUpgradeable, Aut
             revert wrongInterval(interval);
         }
         
-         if(block.timestamp >= startingTime){
+        if(block.timestamp >= startingTime){
 
-            interval = realInterval;
-            lastTimeStamp = block.timestamp;
-            startingTime = block.timestamp + realInterval;
+            
+            uint256 startExecutionTime = lastTimeStamp = block.timestamp;  
+
+            emit StartTime(startExecutionTime, lastTimeStamp);
+
             weeklyTransfer();
+
+            uint256 executionDuration = block.timestamp - startExecutionTime; 
+
+            emit EexecutionTime(block.timestamp, executionDuration);
+            
+            interval = realInterval - executionDuration; 
+           
+            emit Interval(interval);
+
         }
         else{
             revert wrongTime(startingTime);

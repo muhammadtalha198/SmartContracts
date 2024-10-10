@@ -74,6 +74,94 @@
 				"type": "event"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "msgsender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "interval",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "startingTime",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lastTimeStamp",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "realInterval",
+						"type": "uint256"
+					}
+				],
+				"name": "SetInterval",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "startExecutionTime",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lastTimeStamp",
+						"type": "uint256"
+					}
+				],
+				"name": "first",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "interval",
+						"type": "uint256"
+					}
+				],
+				"name": "three",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "blocktimestamp",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "executionDuration",
+						"type": "uint256"
+					}
+				],
+				"name": "two",
+				"type": "event"
+			},
+			{
 				"inputs": [],
 				"name": "checkOnce",
 				"outputs": [
@@ -167,6 +255,29 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "perPoolCalculation",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -354,11 +465,11 @@
 			]
 		},
 		"DripWarrior/checckUpKep.sol": {
-			"keccak256": "0xdaee8fa5365861504f57526f1f737a2390e0c2f2397e325a103177650a73411f",
+			"keccak256": "0x5290ad2fa4881ee5849cb485cc15875a041bf31fca277e7967958056bf7312fb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5f9237ff4e3246bab30cd964b3c87d6a60f5f7047404f4a173bc2f81ba9e536d",
-				"dweb:/ipfs/QmNk7eFFN7pACLDKpCC2MeJ8eozc5J9ASmZ7NMZarkCYA4"
+				"bzz-raw://b4eaa11d476b2c94cd69148905b0a6492fda40320db7ec495e4494faca5a29fe",
+				"dweb:/ipfs/QmUZhdWDV6YVWK613xxnJrFMn5xS71wMVh7r4uMk29stVN"
 			]
 		}
 	},

@@ -16,6 +16,8 @@ pragma solidity 0.8.26;
 import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+
+
 contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
     
     uint256 public counter; // counter counts the number of upkeeps performed
@@ -29,7 +31,6 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
     
     bool public checkOnce;
     
-    
     error wrongTime(uint256 time);
      error wrongInterval(uint256 updateInterval);
 
@@ -37,13 +38,21 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
         
     }
 
+    event first(uint256 startExecutionTime, uint256 lastTimeStamp);
+    event two(uint256 blocktimestamp, uint256 executionDuration);
+   
+    event three(uint256 interval);
+
+     // emit zero(block.timestamp, lastTimeStamp,(block.timestamp - lastTimeStamp), interval);
+
     function checkUpkeep(bytes calldata /*checkData*/) external override view  returns (bool, bytes memory) {
 
         bool needsUpkeep = (block.timestamp - lastTimeStamp) > interval;
+
         return (needsUpkeep, bytes(""));
     }
 
-      function performUpkeep(bytes calldata /*performData*/) external  {
+    function performUpkeep(bytes calldata /*performData*/) external  {
 
         require(
             msg.sender == s_forwarderAddress,
@@ -54,21 +63,22 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
             revert wrongInterval(interval);
         }
         
-         if(block.timestamp >= startingTime){
+        if(block.timestamp >= startingTime){
 
-            /*
-              startExecutionTime =  1728482424 14:00
-              lastTimeStamp = 1728482484.      14:01
-              executionDuration = 1728482604 - 1728482424 =   14:03 - 14:00 = 
-              interval = 60 - 3 = 57
-
-              current = 1728486024  15:00 
-            */
             
             uint256 startExecutionTime = lastTimeStamp = block.timestamp;  
+
+            emit first(startExecutionTime, lastTimeStamp);
+
             weeklyTransfer();
+
             uint256 executionDuration = block.timestamp - startExecutionTime; 
-            interval = realInterval - executionDuration; // Reduce the interval by the duration taken
+
+            emit two(block.timestamp, executionDuration);
+            
+            interval = realInterval - executionDuration; 
+           
+            emit three(interval);
 
         }
         else{
@@ -77,45 +87,7 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
         
     }
 
-
-
-
-
-    // function performUpkeep(bytes calldata /*performData*/) external override {
-         
-    //     require(
-    //         msg.sender == s_forwarderAddress,
-    //         "This address does not have permission to call performUpkeep"
-    //     );
-       
-    //     if (interval == 0){
-    //         revert wrongInterval(interval);
-    //     }
-        
-    //     if(!checkOnce){
-
-    //         if(block.timestamp >= startingTime){
-
-    //             lastTimeStamp = block.timestamp;
-    //             weeklyTransfer();
-    //             interval = realInterval;
-    //         }
-    //         else{
-    //             revert wrongTime(startingTime);
-    //         }
-    //     }
-    //     else{
-           
-    //         lastTimeStamp = block.timestamp;
-    //         weeklyTransfer();
-    //     }
-       
-    //     if(!checkOnce){
-    //         checkOnce = true;
-    //     }
-        
-    // }
-
+    event SetInterval(address msgsender, uint256 interval,uint256 startingTime,uint256 lastTimeStamp, uint256 realInterval);
 
     function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
          
@@ -132,7 +104,7 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
         lastTimeStamp = block.timestamp;
         realInterval = updateInterval;
 
-        // emit SetInterval(msg.sender, interval, lastTimeStamp);
+         emit SetInterval(msg.sender, interval, startingTime,lastTimeStamp, realInterval);
 
     }
 
@@ -152,40 +124,36 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
     function weeklyTransfer() public  {
 
         
-        ( uint256 remainFiftyOPool,uint256 dividentPayoutOPoolAmount, uint256 perPersonFromTPool)  = perPoolCalculation();
+        (,uint256 dividentPayoutOPoolAmount, uint256 perPersonFromTPool)  = perPoolCalculation();
         
-       
         uint256 maxlimit;
+
 
         for(uint256 i = 0; i < noOfUsers; i++){
 
-            if(!blocked){
-
-                uint256 eachSharePercentage = (totalStakedAmount * (10000)) / (totalStakedAmount);
+                uint256 eachSharePercentage = (totalStakedAmount + (10000)) + (totalStakedAmount);
                 
                 uint256 eachSendAmount = calculatePercentage(dividentPayoutOPoolAmount, eachSharePercentage);
-                uint256 eachSendAmount1 = calculatePercentage(remainFiftyOPool, eachSharePercentage);
+                // uint256 eachSendAmount1 = calculatePercentage(remainFiftyOPool, eachSharePercentage);
                 
-                ownerShipPoolAmount -= eachSendAmount;
+
+                ownerShipPoolAmount += eachSendAmount;
                         
                 maxlimit += eachSendAmount;
-                treasuryPoolAmount -= perPersonFromTPool;
+
+                treasuryPoolAmount += perPersonFromTPool;
+
 
                 receiveFromTreasury += perPersonFromTPool;
                receiveFromOwneerShip += eachSendAmount;
                 
                 uint256 totalSendAmount = eachSendAmount + perPersonFromTPool;
                receivedAmount += totalSendAmount;
-
-            }
-            
         }
-
-       
 
     }
 
-   uint256 noOfUsers = 100;
+   uint256 noOfUsers = 30;
 
     uint256  ownerShipPoolAmount = 999999999999999999999999 ether ;
      uint256   treasuryPoolAmount = 999999999999999999999999 ether;
@@ -195,7 +163,7 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
        uint256 maintainceFeePercentage = 200;
         uint256 tdividentPayoutPercentage = 200;
 
-    function perPoolCalculation() private returns(uint256, uint256,uint256){
+    function perPoolCalculation() public returns(uint256, uint256,uint256){
         
 
         uint256 remainFiftyOPool = calculatePercentage(ownerShipPoolAmount, 5000);
@@ -229,4 +197,39 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
 }
 
 
+//   function performUpkeep(bytes calldata /*performData*/) external  {
 
+    //     require(
+    //         msg.sender == s_forwarderAddress,
+    //         "This address does not have permission to call performUpkeep"
+    //     );
+       
+    //     if (interval == 0){
+    //         revert wrongInterval(interval);
+    //     }
+
+    //     counter++;
+        
+    //     if(block.timestamp >= startingTime){
+
+            
+    //         uint256 startExecutionTime = lastTimeStamp = block.timestamp;  
+
+    //         emit first(startExecutionTime, lastTimeStamp);
+
+    //         weeklyTransfer();
+
+    //         uint256 executionDuration = block.timestamp - startExecutionTime; 
+
+    //         emit two(block.timestamp, executionDuration);
+            
+    //         interval = realInterval - executionDuration; 
+           
+    //         emit three(interval);
+
+    //     }
+    //     // else{
+    //     //     revert wrongTime(startingTime);
+    //     // }
+        
+    // }
