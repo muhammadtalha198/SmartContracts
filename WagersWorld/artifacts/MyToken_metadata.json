@@ -87,6 +87,11 @@
 						"internalType": "uint256",
 						"name": "totalWinnerShare",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "userShareAmount",
+						"type": "uint256"
 					}
 				],
 				"name": "perPeerson",
@@ -94,6 +99,11 @@
 					{
 						"internalType": "uint256",
 						"name": "_perShare",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "userTotalAmount",
 						"type": "uint256"
 					}
 				],
@@ -190,11 +200,11 @@
 			]
 		},
 		"WagersWorld/checkPricce.sol": {
-			"keccak256": "0xa98fc5dd8c29df609ef24e2f7b6873fe2750adf4280d3265cd148729cd2e7bb1",
+			"keccak256": "0x30760c52c7b44cc55868bb6d41e40b2a8e051db3a296eb40de9b46781784a1b2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://29db35c9530cd84135b3a7b8a477b683e25336bf0005df1d99dea62120237a7b",
-				"dweb:/ipfs/QmR2vkHUViwv7DLuBwvvcnRyEDuroHonLkEad2DT1dzT4M"
+				"bzz-raw://ac8c5237f7fd94368c34b3ef60699380bf062b9bd6846d5475262cad1776c4d3",
+				"dweb:/ipfs/QmWW5d9kBa7x4GgqSDJwpSLWUqDCAAHANBznUqVCajXhHx"
 			]
 		}
 	},

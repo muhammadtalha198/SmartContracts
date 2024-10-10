@@ -25,8 +25,8 @@ contract MyToken  {
 
     constructor(){
 
-        marketInfo[address(this)].initialPrice[0] = 500000000000000000;
-        marketInfo[address(this)].initialPrice[1] = 500000000000000000;
+        marketInfo[address(this)].initialPrice[0] = 0.5 ether;
+        marketInfo[address(this)].initialPrice[1] = 0.5 ether;
     }
 
 
@@ -64,11 +64,10 @@ contract MyToken  {
         return (marketInfo[address(this)].initialPrice[0], marketInfo[address(this)].initialPrice[1]);
     }
 
-    function perPeerson( uint256 totalWinnerShare ) view external returns (uint256 _perShare ){
+    function perPeerson( uint256 totalWinnerShare, uint256 userShareAmount ) view external returns (uint256 _perShare, uint256 userTotalAmount ){
           _perShare = totalBetAmount / totalWinnerShare;
+           userTotalAmount = userShareAmount * _perShare;
     }
-
-
 
 
     function calculateShares(uint256 _amount, uint256 _betOn ) public view returns (uint256) {

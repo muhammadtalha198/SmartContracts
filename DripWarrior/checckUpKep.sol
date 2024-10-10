@@ -43,9 +43,8 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
         return (needsUpkeep, bytes(""));
     }
 
+      function performUpkeep(bytes calldata /*performData*/) external  {
 
-    function performUpkeep(bytes calldata /*performData*/) external override {
-         
         require(
             msg.sender == s_forwarderAddress,
             "This address does not have permission to call performUpkeep"
@@ -55,29 +54,67 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
             revert wrongInterval(interval);
         }
         
-        if(!checkOnce){
+         if(block.timestamp >= startingTime){
 
-            if(block.timestamp >= startingTime){
+            /*
+              startExecutionTime =  1728482424 14:00
+              lastTimeStamp = 1728482484.      14:01
+              executionDuration = 1728482604 - 1728482424 =   14:03 - 14:00 = 
+              interval = 60 - 3 = 57
 
-               lastTimeStamp = block.timestamp;
-                weeklyTransfer();
-                interval = realInterval;
-            }
-            else{
-                revert wrongTime(startingTime);
-            }
+              current = 1728486024  15:00 
+            */
+            
+            uint256 startExecutionTime = lastTimeStamp = block.timestamp;  
+            weeklyTransfer();
+            uint256 executionDuration = block.timestamp - startExecutionTime; 
+            interval = realInterval - executionDuration; // Reduce the interval by the duration taken
+
         }
         else{
-           
-            lastTimeStamp = block.timestamp;
-            weeklyTransfer();
-        }
-       
-        if(!checkOnce){
-            checkOnce = true;
+            revert wrongTime(startingTime);
         }
         
     }
+
+
+
+
+
+    // function performUpkeep(bytes calldata /*performData*/) external override {
+         
+    //     require(
+    //         msg.sender == s_forwarderAddress,
+    //         "This address does not have permission to call performUpkeep"
+    //     );
+       
+    //     if (interval == 0){
+    //         revert wrongInterval(interval);
+    //     }
+        
+    //     if(!checkOnce){
+
+    //         if(block.timestamp >= startingTime){
+
+    //             lastTimeStamp = block.timestamp;
+    //             weeklyTransfer();
+    //             interval = realInterval;
+    //         }
+    //         else{
+    //             revert wrongTime(startingTime);
+    //         }
+    //     }
+    //     else{
+           
+    //         lastTimeStamp = block.timestamp;
+    //         weeklyTransfer();
+    //     }
+       
+    //     if(!checkOnce){
+    //         checkOnce = true;
+    //     }
+        
+    // }
 
 
     function setInterval (uint256 _startingTime, uint256 updateInterval) external  onlyOwner{
@@ -106,24 +143,90 @@ contract CounterwForwarder is AutomationCompatibleInterface,Ownable {
         
     }
 
+    uint256 receiveFromTreasury ;
+    uint256 receiveFromOwneerShip ;            
+    bool blocked = false;
+    uint256 receivedAmount ;
+    uint256  totalStakedAmount = 20 ether;
+
     function weeklyTransfer() public  {
-        require(
-            msg.sender == s_forwarderAddress,
-            "This address does not have permission to call performUpkeep"
-        );
-        counter ++;
+
+        
+        ( uint256 remainFiftyOPool,uint256 dividentPayoutOPoolAmount, uint256 perPersonFromTPool)  = perPoolCalculation();
+        
+       
+        uint256 maxlimit;
+
+        for(uint256 i = 0; i < noOfUsers; i++){
+
+            if(!blocked){
+
+                uint256 eachSharePercentage = (totalStakedAmount * (10000)) / (totalStakedAmount);
+                
+                uint256 eachSendAmount = calculatePercentage(dividentPayoutOPoolAmount, eachSharePercentage);
+                uint256 eachSendAmount1 = calculatePercentage(remainFiftyOPool, eachSharePercentage);
+                
+                ownerShipPoolAmount -= eachSendAmount;
+                        
+                maxlimit += eachSendAmount;
+                treasuryPoolAmount -= perPersonFromTPool;
+
+                receiveFromTreasury += perPersonFromTPool;
+               receiveFromOwneerShip += eachSendAmount;
+                
+                uint256 totalSendAmount = eachSendAmount + perPersonFromTPool;
+               receivedAmount += totalSendAmount;
+
+            }
+            
+        }
+
+       
+
     }
 
-    /// @notice Set the address that `performUpkeep` is called from
-    /// @dev Only callable by the owner
-    /// @param forwarderAddress the address to set
+   uint256 noOfUsers = 100;
+
+    uint256  ownerShipPoolAmount = 999999999999999999999999 ether ;
+     uint256   treasuryPoolAmount = 999999999999999999999999 ether;
+
+     uint256  odividentPayoutPercentage = 200;
+       uint256 flowToTreasuryPercentage = 200;
+       uint256 maintainceFeePercentage = 200;
+        uint256 tdividentPayoutPercentage = 200;
+
+    function perPoolCalculation() private returns(uint256, uint256,uint256){
+        
+
+        uint256 remainFiftyOPool = calculatePercentage(ownerShipPoolAmount, 5000);
+
+        uint256 dividentPayoutOPoolAmount = calculatePercentage(remainFiftyOPool, odividentPayoutPercentage);
+        uint256 fifteenPercenntToTPoolAmount = calculatePercentage(remainFiftyOPool, flowToTreasuryPercentage);
+        uint256 tenPercenntToMaintenceAmount = calculatePercentage(remainFiftyOPool, maintainceFeePercentage);
+        uint256 remainFiftyTPoolAmount = calculatePercentage(treasuryPoolAmount, tdividentPayoutPercentage);
+        
+        uint256 perPersonFromTPool = remainFiftyTPoolAmount/noOfUsers;
+        
+        ownerShipPoolAmount -= (fifteenPercenntToTPoolAmount + tenPercenntToMaintenceAmount);
+        treasuryPoolAmount += fifteenPercenntToTPoolAmount;
+
+        
+
+        return (remainFiftyOPool,dividentPayoutOPoolAmount,perPersonFromTPool);
+    }
+
+    function calculatePercentage(uint256 _totalStakeAmount,uint256 percentageNumber) private pure returns(uint256) {
+       
+        uint256 serviceFee = _totalStakeAmount * (percentageNumber) / (10000);
+        
+        return serviceFee;
+    }
+
     function setForwarderAddress(address forwarderAddress) external onlyOwner {
         s_forwarderAddress = forwarderAddress;
     }
 
-    function doWee() public {
-        if(!checkOnce){
-                checkOnce = true;
-        }
-    }
 }
+
+
+
