@@ -101,6 +101,7 @@ contract Marketplace is
     error zeroPercentage(uint256 percentage);
     error wrongNoOfCopies(uint256 noOfcopies);
     error wrongAddress(address contractAddres);
+    error invalidNoOfCopies(uint256 noOfcopies);
     error initialPriceZero(uint256 initialPrice);
     error wrongFiscalSponsor(address fiscalSponsor);
     error invalidFiscalPercentage(uint256 fiscalFee);
@@ -249,8 +250,11 @@ contract Marketplace is
 
   
     // Buy Fixed Price---------------------------------------------------------------------------------------------------
-    function BuyFixedPriceItem(uint256 _listId) payable external checkSell(_listId)  { 
+    function BuyFixedPriceItem(uint256 _listId, uint256 _noOfCopies) payable external checkSell(_listId)  { 
         
+        if(_noOfCopies <=  0){
+            revert invalidNoOfCopies(_noOfCopies);
+        }
         if(msg.value !=  listing[_listId].price){
             revert invalidFee(msg.value);
         }
@@ -690,7 +694,7 @@ contract Marketplace is
 
     modifier checkOrganizations(address[] memory _organizations,uint256[] memory _donatePercentages){
 
-        if(_organizations.length <= 0 && _organizations.length > 10){
+        if(_organizations.length <= 0 || _organizations.length > 10){
             revert worngOrganizationlength(_organizations.length);
         }
 
@@ -743,7 +747,7 @@ contract Marketplace is
         
         if (_listStartTime != 0 && _listEndTime != 0 ){
 
-            if(_listStartTime <= block.timestamp && _listEndTime < _listStartTime){
+            if(_listStartTime <= block.timestamp || _listEndTime < _listStartTime){
                 revert invalidTimeStamp(_listStartTime,_listEndTime);
             }
         }
