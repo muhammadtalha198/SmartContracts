@@ -14,8 +14,10 @@ contract Market is Ownable {
 
         bool resolved;
         uint256 endTime;
-        uint256 totalBets;
-        uint256 totalAmount;
+        uint256 totalNoBets;
+        uint256 totalYesBets;
+        uint256 totalYesShares;
+        uint256 totalNoShares;
         uint256[2] initialPrice;
         uint256 totalBetAmountOnYes;
         uint256 totalBetAmountOnNo;
@@ -29,6 +31,7 @@ contract Market is Ownable {
         uint256 yesBetAmount;
         uint256 noShareAmount;
         uint256 yesShareAmount;
+        uint256 finalShareAmount;
         mapping(uint256 => bool) betOn;
     }
 
@@ -103,12 +106,6 @@ contract Market is Ownable {
         if(marketInfo[address(this)].resolved){
             revert marketResolved();
         }
-        
-
-        // if(!userInfo[msg.sender].betOn[_betOn]){     
-        //     eachUser[totalUsers] = msg.sender;
-        //     totalUsers++;
-        // }
 
         if(!alreadyAdded[msg.sender]){
             
@@ -117,30 +114,39 @@ contract Market is Ownable {
             totalUsers++;
         }
 
+        uint256 userShares;
+
         if(_betOn == 0 ){
 
-            marketInfo[address(this)].totalBetAmountOnNo += _amount;
+            userShares = calculateShares(_amount,_betOn);
+            
             userInfo[msg.sender].noBetAmount += _amount;
+            userInfo[msg.sender].noShareAmount += userShares;
+            
+            marketInfo[address(this)].totalNoBets++;
+            marketInfo[address(this)].totalNoShares += userShares;
+            marketInfo[address(this)].totalBetAmountOnNo += _amount;
 
         }else {
 
-            marketInfo[address(this)].totalBetAmountOnYes += _amount;  
+            userShares = calculateShares(_amount,_betOn);
+
             userInfo[msg.sender].yesBetAmount += _amount;
+            userInfo[msg.sender].yesShareAmount += userShares;
+            
+            
+            marketInfo[address(this)].totalYesBets++; 
+            marketInfo[address(this)].totalYesShares += userShares;  
+            marketInfo[address(this)].totalBetAmountOnYes += _amount;  
+
         }
 
-        marketInfo[address(this)].totalAmount += _amount;
-        marketInfo[address(this)].totalBets++;
         userInfo[msg.sender].betOn[_betOn] = true;
 
 
         (marketInfo[address(this)].initialPrice[0],marketInfo[address(this)].initialPrice[1]) = 
             PriceCalculation(marketInfo[address(this)].totalBetAmountOnNo, marketInfo[address(this)].totalBetAmountOnYes);
         
-        if(_betOn == 0){
-            userInfo[msg.sender].noShareAmount = calculateShares(_amount,_betOn);
-        }else{
-            userInfo[msg.sender].yesShareAmount = calculateShares(_amount,_betOn);
-        }
         
         bool success = usdcToken.transferFrom(msg.sender, address(this), _amount);
        
@@ -302,26 +308,10 @@ contract Market is Ownable {
 
         for(uint256 i = 0; i < totalUsers; i++){
 
-             if(userInfo[eachUser[i]].betOn[winningIndex]) {
+            if(userInfo[eachUser[i]].betOn[winningIndex]) {
 
-                if(winningIndex == 0 && userInfo[eachUser[i]].noBetAmount != 0){
-                    
-                    userInfo[eachUser[i]].shareAmount = calculateShares(
-                        userInfo[eachUser[i]].noBetAmount,
-                        winningIndex
-                    );
-                    totalWinnerShare += userInfo[eachUser[i]].shareAmount;
-
-                }else{
                 
-                    userInfo[eachUser[i]].shareAmount = calculateShares(
-                        userInfo[eachUser[i]].yesBetAmount,
-                        winningIndex
-                    );
-
-                    totalWinnerShare += userInfo[eachUser[i]].shareAmount;
-                }
-             }   
+            }   
         }
 
         uint256 _perShare = marketInfo[address(this)].totalAmount / totalWinnerShare;
@@ -331,7 +321,7 @@ contract Market is Ownable {
             
             if(userInfo[eachUser[i]].betOn[winningIndex]) {
 
-                uint256 userTotalAmount = userInfo[eachUser[i]].shareAmount * _perShare;
+                uint256 userTotalAmount = userInfo[eachUser[i]].finalShareAmount * _perShare;
                 uint256 userProfitAmountAmount = userTotalAmount - userInfo[eachUser[i]].shareAmount;
 
                 uint256 tenPercentAmount = calculatePercentage(userProfitAmountAmount,profitPercentage);
