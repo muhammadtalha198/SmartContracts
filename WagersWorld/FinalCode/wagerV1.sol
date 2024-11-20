@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Contracts ^5.0.0
-pragma solidity ^0.8.26;
+pragma solidity ^0.8.22;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
 
-contract Market is Ownable {
+contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
-    ERC20 public usdcToken;
+    ERC20Upgradeable public usdcToken;
 
     struct MarketInfo {
 
@@ -80,21 +82,24 @@ contract Market is Ownable {
     error contractLowbalanceForOwner(uint256 contractBalance);
 
 
-    constructor(
-        address initialOwner,
-        address _usdcToken,
-        uint256 _endTime ) 
-
-        Ownable(initialOwner) {
-
-            marketInfo[address(this)].endTime = _endTime;
-            marketInfo[address(this)].initialPrice[0] = 500000000000000000;
-            marketInfo[address(this)].initialPrice[1] = 500000000000000000;
-            usdcToken = ERC20(_usdcToken);
-            profitPercentage = 1000; // 10 %
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
     }
 
-    function bet(uint256 _amount, uint256 _betOn) external {
+    function initialize(address initialOwner,address _usdcToken,uint256 _endTime) initializer public {
+       
+        __Ownable_init(initialOwner);
+        __UUPSUpgradeable_init();
+
+        marketInfo[address(this)].endTime = _endTime;
+        marketInfo[address(this)].initialPrice[0] = 500000;
+        marketInfo[address(this)].initialPrice[1] = 500000;
+        usdcToken = ERC20Upgradeable(_usdcToken);
+        profitPercentage = 1000; // 10 %
+    }
+
+     function bet(uint256 _amount, uint256 _betOn) external {
 
         if(_betOn != 0 && _betOn != 1){
             revert wrongBetIndex(_betOn);
@@ -160,18 +165,16 @@ contract Market is Ownable {
         
          uint256 originalNoPrice = marketInfo[address(this)].initialPrice[0];
          uint256 originalYesPrice = marketInfo[address(this)].initialPrice[1];
-         
+
          uint256 totalBetAmount = totalBetAmountOnNo + totalBetAmountOnYes;
 
         if(totalBetAmountOnNo != 0){
             
-            originalNoPrice = ((totalBetAmountOnNo * 100)/(totalBetAmount));
-            originalNoPrice *= 10000000000000000;
+            originalNoPrice = ((totalBetAmountOnNo * 1e6)/(totalBetAmount));
         }
         if(totalBetAmountOnYes != 0){
            
-            originalYesPrice = ((totalBetAmountOnYes * 100)/(totalBetAmount));
-            originalYesPrice *= 10000000000000000;
+            originalYesPrice = ((totalBetAmountOnYes * 1e6)/(totalBetAmount));
         }
 
         return(originalNoPrice, originalYesPrice);
@@ -290,14 +293,14 @@ contract Market is Ownable {
             revert marketResolved();
         }
 
-        if(marketInfo[address(this)].endTime > block.timestamp){
-            revert notResolvedBeforeTime(marketInfo[address(this)].endTime);
-        }
+        // if(marketInfo[address(this)].endTime > block.timestamp){
+        //     revert notResolvedBeforeTime(marketInfo[address(this)].endTime);
+        // }
 
         uint256 _ownerAmount;
         uint256 totalWinnerShare;
         uint256 totalAmount = marketInfo[address(this)].totalBetAmountOnNo + marketInfo[address(this)].totalBetAmountOnYes;
-
+        
         if(winningIndex == 0){
 
             totalWinnerShare = marketInfo[address(this)].totalNoShares;
@@ -306,16 +309,24 @@ contract Market is Ownable {
             totalWinnerShare = marketInfo[address(this)].totalYesShares;
         }
 
-
         for (uint256 i = 0; i < totalUsers; i++) {
-            
+
             if(userInfo[eachUser[i]].betOn[winningIndex]) {
 
-                uint256 userSharePercentage = userInfo[eachUser[i]].noShareAmount/totalWinnerShare;
-                uint256 userAmount = calculatePercentage(totalAmount,userSharePercentage);
+                uint256 userSharePercentage;
+                
+                if(winningIndex == 0){
+                    
+                    userSharePercentage = calculatePercentage(userInfo[eachUser[i]].noShareAmount,totalWinnerShare);
+                }else{
+
+                    userSharePercentage = calculatePercentage(userInfo[eachUser[i]].yesShareAmount,totalWinnerShare);
+                }
+
+                uint256 userAmount = calculatePercentageAmount(totalAmount,userSharePercentage);
                 uint256 userProfitAmount;
 
-                if(winningIndex ==0){
+                if(winningIndex == 0){
 
                      userProfitAmount = userAmount - userInfo[eachUser[i]].noBetAmount;
                 }else{
@@ -323,7 +334,8 @@ contract Market is Ownable {
                     userProfitAmount = userAmount - userInfo[eachUser[i]].yesBetAmount;
                 }
 
-                uint256 tenPercentAmount = calculatePercentage(userProfitAmount,profitPercentage);
+                uint256 tenPercentAmount = calculatePercentageAmount(userProfitAmount,profitPercentage);
+
                 _ownerAmount += tenPercentAmount;
 
                 if(usdcToken.balanceOf(address(this)) < (userAmount - tenPercentAmount)){
@@ -355,19 +367,31 @@ contract Market is Ownable {
         emit ResolveMarket( owner(), _ownerAmount, totalWinnerShare, totalAmount);
     }
 
+    function calculatePercentage(uint256 userAmount, uint256 totalAmount) public pure returns (uint256) {
+        
+        require(userAmount > 0, "user amount must be greater than zero");
+        require(totalAmount > 0, "Total amount must be greater than zero");
+
+        uint256 percentage = (userAmount * 10000) / totalAmount;
+
+        return percentage;
+    }
+
     
     function calculateShares(uint256 _amount, uint256 _betOn ) public view returns (uint256) {
 
         uint256 price =  marketInfo[address(this)].initialPrice[_betOn];
         
         require(price != 0, "_price cannot be zero");
-        uint256 result = (_amount * 100) / price;
-        
+        require(_amount != 0, "_amount cannot be zero");
+
+        uint256 result = (_amount * 1e6) / price;
+
         return result;
     }
 
 
-    function calculatePercentage(uint256 _amount,uint256 percentageNumber) private pure returns(uint256) {
+    function calculatePercentageAmount(uint256 _amount,uint256 percentageNumber) private pure returns(uint256) {
         
         if(_amount <= 0 ){
             revert zeroPercentageAmount(_amount);
@@ -408,4 +432,10 @@ contract Market is Ownable {
     function userBetOn(address _user, uint256 _betIndex) public view returns (bool) {
         return userInfo[_user].betOn[_betIndex];
     }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        onlyOwner
+        override
+    {}
 }
