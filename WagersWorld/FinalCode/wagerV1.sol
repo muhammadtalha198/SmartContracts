@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Contracts ^5.0.0
-pragma solidity ^0.8.22;
 
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+pragma solidity ^0.8.26;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
+contract Wager is Ownable {
 
-    ERC20Upgradeable public usdcToken;
+    ERC20 public usdcToken;
 
     struct MarketInfo {
 
@@ -82,24 +80,20 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     error contractLowbalanceForOwner(uint256 contractBalance);
 
 
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() {
-        _disableInitializers();
+    constructor(
+        address initialOwner,
+        address _usdcToken,
+        uint256 _endTime ) 
+
+        Ownable(initialOwner) {
+
+            marketInfo[address(this)].endTime = _endTime;
+            marketInfo[address(this)].initialPrice[0] = 500000;
+            marketInfo[address(this)].initialPrice[1] = 500000;
+            usdcToken = ERC20(_usdcToken);
+            profitPercentage = 1000; // 10 %
     }
-
-    function initialize(address initialOwner,address _usdcToken,uint256 _endTime) initializer public {
-       
-        __Ownable_init(initialOwner);
-        __UUPSUpgradeable_init();
-
-        marketInfo[address(this)].endTime = _endTime;
-        marketInfo[address(this)].initialPrice[0] = 500000;
-        marketInfo[address(this)].initialPrice[1] = 500000;
-        usdcToken = ERC20Upgradeable(_usdcToken);
-        profitPercentage = 1000; // 10 %
-    }
-
-     function bet(uint256 _amount, uint256 _betOn) external {
+function bet(uint256 _amount, uint256 _betOn) external {
 
         if(_betOn != 0 && _betOn != 1){
             revert wrongBetIndex(_betOn);
@@ -432,10 +426,4 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     function userBetOn(address _user, uint256 _betIndex) public view returns (bool) {
         return userInfo[_user].betOn[_betIndex];
     }
-
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        onlyOwner
-        override
-    {}
 }
