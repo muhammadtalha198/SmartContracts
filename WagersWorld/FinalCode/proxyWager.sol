@@ -91,11 +91,11 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
        
         __Ownable_init(initialOwner);
         __UUPSUpgradeable_init();
-
+      
         marketInfo[address(this)].endTime = _endTime;
         
-        marketInfo[address(this)].totalYesShares = 1000 * 1e6;
-        marketInfo[address(this)].totalNoShares = 1000 * 1e6;
+        marketInfo[address(this)].totalYesShares = 10000 * 1e6;
+        marketInfo[address(this)].totalNoShares = 10000 * 1e6;
         
         (marketInfo[address(this)].initialPrice[0],
             marketInfo[address(this)].initialPrice[1]) = PriceCalculation();
