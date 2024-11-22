@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Contracts ^5.0.0
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.26;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
@@ -71,9 +71,9 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     error wrongOwner(address owner);
     error wrongAmount(uint256 amount);
     error transferFaild(bool transferd);
+    error transferFailed(bool transfered);
     error wrongBetIndex(uint256 betIndex);
     error wrongNoOfShares(uint256 _noOfShares);
-    error transferFailed(bool transfered);
     error zeroPercentageAmount(uint256 _amount);
     error notEnoughAmount(uint256 _useerAmount);
     error notResolvedBeforeTime(uint256 endTime);
@@ -93,8 +93,13 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         __UUPSUpgradeable_init();
 
         marketInfo[address(this)].endTime = _endTime;
-        marketInfo[address(this)].initialPrice[0] = 500000;
-        marketInfo[address(this)].initialPrice[1] = 500000;
+        
+        marketInfo[address(this)].totalYesShares = 1000 * 1e6;
+        marketInfo[address(this)].totalNoShares = 1000 * 1e6;
+        
+        (marketInfo[address(this)].initialPrice[0],
+            marketInfo[address(this)].initialPrice[1]) = PriceCalculation();
+            
         usdcToken = ERC20Upgradeable(_usdcToken);
         profitPercentage = 1000; // 10 %
     }
@@ -119,37 +124,11 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             totalUsers++;
         }
 
-        uint256 userShares;
-
-        if(_betOn == 0 ){
-
-            userShares = calculateShares(_amount,_betOn);
-            
-            userInfo[msg.sender].noBetAmount += _amount;
-            userInfo[msg.sender].noShareAmount += userShares;
-            
-            marketInfo[address(this)].totalNoBets++;
-            marketInfo[address(this)].totalNoShares += userShares;
-            marketInfo[address(this)].totalBetAmountOnNo += _amount;
-
-        }else {
-
-            userShares = calculateShares(_amount,_betOn);
-
-            userInfo[msg.sender].yesBetAmount += _amount;
-            userInfo[msg.sender].yesShareAmount += userShares;
-            
-            marketInfo[address(this)].totalYesBets++; 
-            marketInfo[address(this)].totalYesShares += userShares;  
-            marketInfo[address(this)].totalBetAmountOnYes += _amount;  
-
-        }
-
+        updateInfo( _amount, _betOn);
         userInfo[msg.sender].betOn[_betOn] = true;
 
-
-        (marketInfo[address(this)].initialPrice[0],marketInfo[address(this)].initialPrice[1]) = 
-            PriceCalculation(marketInfo[address(this)].totalBetAmountOnNo, marketInfo[address(this)].totalBetAmountOnYes);
+        // console.log("userShares: ", userShares);
+        (marketInfo[address(this)].initialPrice[0],marketInfo[address(this)].initialPrice[1]) = PriceCalculation();
         
         
         bool success = usdcToken.transferFrom(msg.sender, address(this), _amount);
@@ -160,28 +139,93 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         emit Bet(msg.sender, _amount, _betOn);
     }
 
-
-    function PriceCalculation(uint256 totalBetAmountOnNo, uint256 totalBetAmountOnYes) public view returns(uint256, uint256){
+    function updateInfo(uint256 _amount, uint256 _betOn)  private {
         
-         uint256 originalNoPrice = marketInfo[address(this)].initialPrice[0];
-         uint256 originalYesPrice = marketInfo[address(this)].initialPrice[1];
-         
-         uint256 totalBetAmount = totalBetAmountOnNo + totalBetAmountOnYes;
+        uint256 _totalShares = marketInfo[address(this)].totalYesShares * marketInfo[address(this)].totalNoShares;
+        console.log("_totalShares: ", _totalShares);
 
-        if(totalBetAmountOnNo != 0){
+        uint256 userShares;
+        
+        if(_betOn == 0){
+
+            userShares = calculateShares(_amount,_betOn);
+            console.log("userShares: ", userShares);
             
-            originalNoPrice = ((totalBetAmountOnNo * 100)/(totalBetAmount));
-            originalNoPrice *= 10000;
-        }
-        if(totalBetAmountOnYes != 0){
-           
-            originalYesPrice = ((totalBetAmountOnYes * 100)/(totalBetAmount));
-            originalYesPrice *= 10000;
-        }
+            userInfo[msg.sender].noBetAmount += _amount;
+            userInfo[msg.sender].noShareAmount += userShares;
+            
+            console.log("userInfo[msg.sender].noShareAmount: ", userInfo[msg.sender].noShareAmount);
+            
+            marketInfo[address(this)].totalNoBets++;
+            marketInfo[address(this)].totalBetAmountOnNo += _amount;
+            console.log("marketInfo[address(this)].totalBetAmountOnNo: ", marketInfo[address(this)].totalBetAmountOnNo);
 
-        return(originalNoPrice, originalYesPrice);
+
+
+            console.log("marketInfo[address(this)].totalNoShares: ", marketInfo[address(this)].totalNoShares);
+            marketInfo[address(this)].totalNoShares -= userShares;
+            console.log("marketInfo[address(this)].totalNoShares: ", marketInfo[address(this)].totalNoShares);
+            
+
+
+
+            console.log("marketInfo[address(this)].totalYesShares: ", marketInfo[address(this)].totalYesShares);
+            console.log("_totalShares: ", _totalShares);
+            marketInfo[address(this)].totalYesShares = (_totalShares/marketInfo[address(this)].totalNoShares);
+
+            console.log("marketInfo[address(this)].totalYesShares: ", marketInfo[address(this)].totalYesShares);
+
+        }else{
+
+            userShares = calculateShares(_amount,_betOn);
+            console.log("userShares: ", userShares);
+
+            userInfo[msg.sender].yesBetAmount += _amount;
+            userInfo[msg.sender].yesShareAmount += userShares;
+
+            console.log("userInfo[msg.sender].yesShareAmount: ", userInfo[msg.sender].yesShareAmount);
+            
+            marketInfo[address(this)].totalYesBets++; 
+            marketInfo[address(this)].totalBetAmountOnYes += _amount;  
+
+            
+            
+            
+            console.log("marketInfo[address(this)].totalYesShares: ", marketInfo[address(this)].totalYesShares);
+            marketInfo[address(this)].totalYesShares -= userShares;
+            console.log("marketInfo[address(this)].totalYesShares: ", marketInfo[address(this)].totalYesShares);
+
+            
+            
+            console.log("marketInfo[address(this)].totalYesShares: ", marketInfo[address(this)].totalNoShares);
+            console.log("_totalShares: ", _totalShares);
+            marketInfo[address(this)].totalNoShares = (_totalShares/ marketInfo[address(this)].totalYesShares);
+
+            console.log("marketInfo[address(this)].totalYesShares: ", marketInfo[address(this)].totalNoShares);
+        }
     }
 
+
+
+
+    function PriceCalculation() public view returns(uint256 , uint256 ) {
+       
+        uint256 __totalShares = marketInfo[address(this)].totalYesShares + marketInfo[address(this)].totalNoShares; // Total number of shares
+
+        console.log("__totalShares: ", __totalShares);
+        
+        console.log("marketInfo[address(this)].totalYesShares: ", marketInfo[address(this)].totalYesShares);
+
+        uint256 _noPrice =  ((marketInfo[address(this)].totalYesShares * 1e6)/ __totalShares); // Price of "Yes" shares in wei
+        console.log("noPrice: ",_noPrice);
+        
+        console.log("marketInfo[address(this)].totalNoShares ", marketInfo[address(this)].totalNoShares);
+
+        uint256 _yesPrice = ((marketInfo[address(this)].totalNoShares * 1e6) / __totalShares); // Price of "No" shares in wei
+        console.log("yesPrice: ",_yesPrice);
+        
+        return(_noPrice,_yesPrice);
+    }
 
     function sellShare(uint256 _noOfShares, uint256 _price, uint256 _sellOf) external {
         
@@ -284,7 +328,6 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         emit BuyShares(msg.sender,_owner, sellInfo[_owner][_listNo].amount, sellInfo[_owner][_listNo].price);
     }
 
-    
     function resolveMarket(uint256 winningIndex) external   {
         
         if(winningIndex != 0 && winningIndex != 1){
@@ -299,15 +342,10 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         //     revert notResolvedBeforeTime(marketInfo[address(this)].endTime);
         // }
 
-
-        console.log("one : ",1);
         uint256 _ownerAmount;
         uint256 totalWinnerShare;
         uint256 totalAmount = marketInfo[address(this)].totalBetAmountOnNo + marketInfo[address(this)].totalBetAmountOnYes;
         
-        
-        console.log("totalAmount : ",totalAmount);
-       
         if(winningIndex == 0){
 
             totalWinnerShare = marketInfo[address(this)].totalNoShares;
@@ -316,67 +354,22 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             totalWinnerShare = marketInfo[address(this)].totalYesShares;
         }
 
-        console.log("totalWinnerShare : ",totalWinnerShare);
-
         for (uint256 i = 0; i < totalUsers; i++) {
 
-            
             if(userInfo[eachUser[i]].betOn[winningIndex]) {
 
-             console.log("userInfo[eachUser[i]] : ",eachUser[i]);
-             console.log("userInfo[eachUser[i]].betOn[winningIndex] : ",userInfo[eachUser[i]].betOn[winningIndex]);
-                
                 uint256 userSharePercentage;
                 
                 if(winningIndex == 0){
                     
-                    console.log("userInfo[eachUser[i]].noShareAmount : ",userInfo[eachUser[i]].noShareAmount);
-                    console.log("totalWinnerShare : ",totalWinnerShare);
-
-                    userSharePercentage = (userInfo[eachUser[i]].noShareAmount * 100)/totalWinnerShare;
-                    console.log("userSharePercentage : ",userSharePercentage);
-                    
-                    
-                    userSharePercentage = (userInfo[eachUser[i]].noShareAmount * 1000)/totalWinnerShare;
-                    console.log("userSharePercentage : ",userSharePercentage);
-                    
-                    userSharePercentage = (userInfo[eachUser[i]].noShareAmount * 10000)/totalWinnerShare;
-                    console.log("userSharePercentage : ",userSharePercentage);
-                    
-                    userSharePercentage = userInfo[eachUser[i]].noShareAmount/totalWinnerShare;
-                    console.log("userSharePercentage : ",userSharePercentage);
-
+                    userSharePercentage = calculatePercentage(userInfo[eachUser[i]].noShareAmount,totalWinnerShare);
                 }else{
-                    console.log("userInfo[eachUser[i]].YesShareAmount : ",userInfo[eachUser[i]].yesShareAmount);
-                    console.log("totalWinnerShare : ",totalWinnerShare);
 
-                    userSharePercentage = userInfo[eachUser[i]].yesShareAmount/totalWinnerShare;
-                    console.log("userSharePercentage : ",userSharePercentage);
-                    
-                    
-                    userSharePercentage = (userInfo[eachUser[i]].yesShareAmount * 100)/totalWinnerShare;
-                    console.log("userSharePercentage : ",userSharePercentage);
-                    
-                    
-                    userSharePercentage = (userInfo[eachUser[i]].yesShareAmount * 1000)/totalWinnerShare;
-                    console.log("userSharePercentage : ",userSharePercentage);
-                    
-                    userSharePercentage = (userInfo[eachUser[i]].yesShareAmount * 10000)/totalWinnerShare;
-                    console.log("userSharePercentage : ",userSharePercentage);
-
-
-                    userSharePercentage = userInfo[eachUser[i]].yesShareAmount/totalWinnerShare;
-                    console.log("userSharePercentage : ",userSharePercentage);
+                    userSharePercentage = calculatePercentage(userInfo[eachUser[i]].yesShareAmount,totalWinnerShare);
                 }
 
-
-                // uint256 userSharePercentage = userInfo[eachUser[i]].noShareAmount/totalWinnerShare;
-                uint256 userAmount = calculatePercentage(totalAmount,userSharePercentage);
-
-                console.log("userAmount : ",userAmount);
-                
+                uint256 userAmount = calculatePercentageAmount(totalAmount,userSharePercentage);
                 uint256 userProfitAmount;
-
 
                 if(winningIndex == 0){
 
@@ -385,16 +378,10 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
                     userProfitAmount = userAmount - userInfo[eachUser[i]].yesBetAmount;
                 }
-                
-                console.log("userProfitAmount : ",userProfitAmount);
 
-                uint256 tenPercentAmount = calculatePercentage(userProfitAmount,profitPercentage);
-
-                 console.log("tenPercentAmount : ",tenPercentAmount);
-
+                uint256 tenPercentAmount = calculatePercentageAmount(userProfitAmount,profitPercentage);
 
                 _ownerAmount += tenPercentAmount;
-                 console.log("_ownerAmount : ",_ownerAmount);
 
                 if(usdcToken.balanceOf(address(this)) < (userAmount - tenPercentAmount)){
                     revert contractLowbalance(usdcToken.balanceOf(address(this)));
@@ -426,21 +413,35 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     
+
+    function calculatePercentage(uint256 userAmount, uint256 totalAmount) public pure returns (uint256) {
+        
+        require(userAmount > 0, "user amount must be greater than zero");
+        require(totalAmount > 0, "Total amount must be greater than zero");
+
+        uint256 percentage = (userAmount * 10000) / totalAmount;
+        console.log("percentage : ",percentage);
+
+        return percentage;
+    }
+
+    
     function calculateShares(uint256 _amount, uint256 _betOn ) public view returns (uint256) {
 
         uint256 price =  marketInfo[address(this)].initialPrice[_betOn];
         
         require(price != 0, "_price cannot be zero");
-        uint256 result1 = (_amount * 100) / price;
-        uint256 result = (_amount / price);
+        require(_amount != 0, "_amount cannot be zero");
 
-        console.log("result1,result1: ",result1,result);
+        uint256 result = (_amount * 1e6) / price;
+
+        console.log("result: ",result);
         
         return result;
     }
 
 
-    function calculatePercentage(uint256 _amount,uint256 percentageNumber) private pure returns(uint256) {
+    function calculatePercentageAmount(uint256 _amount,uint256 percentageNumber) private pure returns(uint256) {
         
         if(_amount <= 0 ){
             revert zeroPercentageAmount(_amount);
@@ -488,3 +489,25 @@ contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         override
     {}
 }
+
+
+//  function PriceCalculation(uint256 totalBetAmountOnNo, uint256 totalBetAmountOnYes) public view returns(uint256, uint256){
+        
+//          uint256 originalNoPrice = marketInfo[address(this)].initialPrice[0];
+//          uint256 originalYesPrice = marketInfo[address(this)].initialPrice[1];
+         
+//          uint256 totalBetAmount = totalBetAmountOnNo + totalBetAmountOnYes;
+
+//         if(totalBetAmountOnNo != 0){
+            
+//             originalNoPrice = ((totalBetAmountOnNo * 1e6)/(totalBetAmount));
+//             console.log("originalNoPrice: ",originalNoPrice);
+//         }
+//         if(totalBetAmountOnYes != 0){
+           
+//             originalYesPrice = ((totalBetAmountOnYes * 1e6)/(totalBetAmount));
+//             console.log("originalYesPrice: ",originalYesPrice);
+//         }
+
+//         return(originalNoPrice, originalYesPrice);
+//     }
