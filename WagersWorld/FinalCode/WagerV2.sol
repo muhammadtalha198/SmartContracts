@@ -5,6 +5,7 @@ pragma solidity ^0.8.26;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "hardhat/console.sol";
 
 contract Wager is Ownable {
 
@@ -17,8 +18,10 @@ contract Wager is Ownable {
         uint256 endTime;
         uint256 totalNoBets;
         uint256 totalYesBets;
-        uint256 totalYesShares;
         uint256 totalNoShares;
+        uint256 totalYesShares;
+        uint256 originalYesShares;
+        uint256 originalNoShares;
         uint256[2] initialPrice;
         uint256 totalBetAmountOnYes;
         uint256 totalBetAmountOnNo;
@@ -43,7 +46,6 @@ contract Wager is Ownable {
         uint256 price;
         uint256 noShare;
         uint256 yesShare;
-        uint256 amount;
         uint256 listOn;
     }
 
@@ -59,7 +61,7 @@ contract Wager is Ownable {
 
     event Bet(address indexed user,uint256 indexed _amount,uint256 _betOn);
     event SellShare(address indexed user, uint256 listNo,  uint256 onPrice);
-    event BuyShares(address buyer, address seller, uint256 _amountBBuyed, uint256 onPrice);
+    event BuyShares(address buyer, address seller, uint256 _noOfshares, uint256 onPrice);
     event ResolveMarket(address ownerAddress, uint256 ownerAmount, uint256 totalwinShares, uint256 totalAmoount);
 
     error marketResolved();
@@ -152,6 +154,7 @@ contract Wager is Ownable {
             marketInfo[address(this)].totalBetAmountOnNo += _amount;
 
             marketInfo[address(this)].totalNoShares -= userShares;
+            marketInfo[address(this)].originalNoShares += userShares;
             marketInfo[address(this)].totalYesShares = (_totalShares/marketInfo[address(this)].totalNoShares);
 
         }else{
@@ -165,6 +168,7 @@ contract Wager is Ownable {
             marketInfo[address(this)].totalBetAmountOnYes += _amount;  
 
             marketInfo[address(this)].totalYesShares -= userShares;
+            marketInfo[address(this)].originalYesShares += userShares;
             marketInfo[address(this)].totalNoShares = (_totalShares/ marketInfo[address(this)].totalYesShares);
         }
     }
@@ -228,6 +232,54 @@ contract Wager is Ownable {
         emit SellShare(msg.sender, userInfo[msg.sender].listNo, _price);
     }
 
+    // function cancelShare(uint256 _listNo, uint256 _price, uint256 _sellOf) external {
+        
+    //     if(_sellOf != 0 && _sellOf != 1){
+    //         revert wrongBetIndex(_sellOf);
+    //     }
+    //     if(_noOfShares <= 0){
+    //         revert wrongNoOfShares(_noOfShares);
+    //     }
+        
+    //     if(marketInfo[address(this)].resolved){
+    //         revert marketResolved();
+    //     }
+
+    //     if(!userInfo[msg.sender].betOn[_sellOf]){
+    //         revert notBet(userInfo[msg.sender].betOn[_sellOf]);
+    //     }
+    //     if(_price <= 0){
+    //         revert wrongPrice(_price);
+    //     }
+        
+        
+    //     if(_sellOf == 0){
+
+    //         if(_noOfShares > userInfo[msg.sender].noShareAmount){
+    //             revert notEnoughAmount(userInfo[msg.sender].noShareAmount);
+    //         }
+
+    //         sellInfo[msg.sender][userInfo[msg.sender].listNo].noShare = _noOfShares; 
+
+    //     }else{
+
+    //         if(_noOfShares > userInfo[msg.sender].yesShareAmount){
+    //             revert notEnoughAmount(userInfo[msg.sender].yesShareAmount);
+    //         }
+    //         sellInfo[msg.sender][userInfo[msg.sender].listNo].yesShare = _noOfShares; 
+    //     }
+        
+
+    //     sellInfo[msg.sender][userInfo[msg.sender].listNo].list = true;
+    //     sellInfo[msg.sender][userInfo[msg.sender].listNo].price = _price; 
+    //     sellInfo[msg.sender][userInfo[msg.sender].listNo].listOn = _sellOf;
+    //     sellInfo[msg.sender][userInfo[msg.sender].listNo].owner = msg.sender; 
+        
+    //     userInfo[msg.sender].listNo++;
+    
+    //     emit SellShare(msg.sender, userInfo[msg.sender].listNo, _price);
+    // }
+
     function buyShare(uint256 _listNo, address _owner) external {
         
         if(!sellInfo[_owner][_listNo].list){
@@ -244,17 +296,23 @@ contract Wager is Ownable {
         if(sellInfo[_owner][_listNo].owner != _owner){
             revert wrongOwner(_owner);
         }
+
+        uint256 _noOfshares;
         
         if(sellInfo[_owner][_listNo].listOn == 0){
+            
+            _noOfshares =  sellInfo[_owner][_listNo].noShare;   
 
-            userInfo[_owner].noShareAmount -= sellInfo[_owner][_listNo].noShare;
-            userInfo[msg.sender].noShareAmount += sellInfo[_owner][_listNo].noShare;
+            userInfo[_owner].noShareAmount -= _noOfshares;
+            userInfo[msg.sender].noShareAmount += _noOfshares;
             userInfo[msg.sender].noBetAmount += sellInfo[_owner][_listNo].price;
 
         }else{
 
-            userInfo[_owner].noShareAmount -= sellInfo[_owner][_listNo].yesShare;
-            userInfo[msg.sender].noShareAmount += sellInfo[_owner][_listNo].yesShare;
+            _noOfshares = sellInfo[_owner][_listNo].yesShare;
+
+            userInfo[_owner].noShareAmount -= _noOfshares;
+            userInfo[msg.sender].yesShareAmount += _noOfshares;
             userInfo[msg.sender].yesBetAmount += sellInfo[_owner][_listNo].price;
         }
         
@@ -278,7 +336,7 @@ contract Wager is Ownable {
             revert transferFaild(success);
         }
 
-        emit BuyShares(msg.sender,_owner, sellInfo[_owner][_listNo].amount, sellInfo[_owner][_listNo].price);
+        emit BuyShares(msg.sender,_owner, _noOfshares, sellInfo[_owner][_listNo].price);
     }
 
     function resolveMarket(uint256 winningIndex) external   {
@@ -298,38 +356,52 @@ contract Wager is Ownable {
         uint256 _ownerAmount;
         uint256 totalWinnerShare;
         uint256 totalAmount = marketInfo[address(this)].totalBetAmountOnNo + marketInfo[address(this)].totalBetAmountOnYes;
+
+        console.log("totalAmount: ", totalAmount);
         
         if(winningIndex == 0){
 
-            totalWinnerShare = marketInfo[address(this)].totalNoShares;
+            totalWinnerShare = marketInfo[address(this)].originalNoShares;
+            console.log("totalAmount (0): ", totalWinnerShare);
         }else{
 
-            totalWinnerShare = marketInfo[address(this)].totalYesShares;
+            totalWinnerShare = marketInfo[address(this)].originalYesShares;
+            console.log("totalAmount: (1) ", totalWinnerShare);
         }
 
         for (uint256 i = 0; i < totalUsers; i++) {
 
             if(userInfo[eachUser[i]].betOn[winningIndex]) {
 
+                console.log("eachUser[i]: ", eachUser[i]);
+               
+               
                 uint256 userSharePercentage;
                 
                 if(winningIndex == 0){
                     
                     userSharePercentage = calculatePercentage(userInfo[eachUser[i]].noShareAmount,totalWinnerShare);
+                    console.log("userSharePercentage: (0)",  userSharePercentage);
                 }else{
 
                     userSharePercentage = calculatePercentage(userInfo[eachUser[i]].yesShareAmount,totalWinnerShare);
+                    console.log("userSharePercentage: (1)",  userSharePercentage);
                 }
 
                 uint256 userAmount = calculatePercentageAmount(totalAmount,userSharePercentage);
+                console.log("userAmount:",  userAmount);
+
+
                 uint256 userProfitAmount;
 
                 if(winningIndex == 0){
 
-                     userProfitAmount = userAmount - userInfo[eachUser[i]].noBetAmount;
+                    userProfitAmount = userAmount - userInfo[eachUser[i]].noBetAmount;
+                    console.log("userProfitAmount: (0)",  userProfitAmount);
                 }else{
 
                     userProfitAmount = userAmount - userInfo[eachUser[i]].yesBetAmount;
+                    console.log("userProfitAmount: (1)",  userProfitAmount);
                 }
 
                 uint256 tenPercentAmount = calculatePercentageAmount(userProfitAmount,profitPercentage);
@@ -409,29 +481,9 @@ contract Wager is Ownable {
         return (marketInfo[address(this)].initialPrice[0], marketInfo[address(this)].initialPrice[1]);
     }
 
-
-    function readSellInfo(address _owner, uint256 _id) public view returns (
-        bool list,
-        bool sold,
-        address owner,
-        uint256 price,
-        uint256 amount,
-        uint256 listOn
-    ) {
-        return (
-            sellInfo[_owner][_id].list,
-            sellInfo[_owner][_id].sold,
-            sellInfo[_owner][_id].owner,
-            sellInfo[_owner][_id].price,
-            sellInfo[_owner][_id].amount,
-            sellInfo[_owner][_id].listOn
-        );
-    }
-
     function userBetOn(address _user, uint256 _betIndex) public view returns (bool) {
         return userInfo[_user].betOn[_betIndex];
     }
 }
-
 
 
