@@ -232,53 +232,42 @@ contract Wager is Ownable {
         emit SellShare(msg.sender, userInfo[msg.sender].listNo, _price);
     }
 
-    // function cancelShare(uint256 _listNo, uint256 _price, uint256 _sellOf) external {
-        
-    //     if(_sellOf != 0 && _sellOf != 1){
-    //         revert wrongBetIndex(_sellOf);
-    //     }
-    //     if(_noOfShares <= 0){
-    //         revert wrongNoOfShares(_noOfShares);
-    //     }
-        
-    //     if(marketInfo[address(this)].resolved){
-    //         revert marketResolved();
-    //     }
+    function cancelSellShare(uint256 _listNo) external {
+        // Check if the listing exists
+        if (!sellInfo[msg.sender][_listNo].list) {
+            revert notListed(_listNo);
+        }
 
-    //     if(!userInfo[msg.sender].betOn[_sellOf]){
-    //         revert notBet(userInfo[msg.sender].betOn[_sellOf]);
-    //     }
-    //     if(_price <= 0){
-    //         revert wrongPrice(_price);
-    //     }
-        
-        
-    //     if(_sellOf == 0){
+        // Check if the listing is already sold
+        if (sellInfo[msg.sender][_listNo].sold) {
+            revert alreadySold(sellInfo[msg.sender][_listNo].sold);
+        }
 
-    //         if(_noOfShares > userInfo[msg.sender].noShareAmount){
-    //             revert notEnoughAmount(userInfo[msg.sender].noShareAmount);
-    //         }
+        // Check if the caller is the owner of the listed shares
+        if (sellInfo[msg.sender][_listNo].owner != msg.sender) {
+            revert wrongOwner(msg.sender);
+        }
 
-    //         sellInfo[msg.sender][userInfo[msg.sender].listNo].noShare = _noOfShares; 
+        // Determine which shares to remove
+        if (sellInfo[msg.sender][_listNo].listOn == 0) {
+            // Cancel "No" shares
+            userInfo[msg.sender].noShareAmount += sellInfo[msg.sender][_listNo].noShare;
+        } else {
+            // Cancel "Yes" shares
+            userInfo[msg.sender].yesShareAmount += sellInfo[msg.sender][_listNo].yesShare;
+        }
 
-    //     }else{
+        // Reset the listing details
+        sellInfo[msg.sender][_listNo].list = false;
+        sellInfo[msg.sender][_listNo].price = 0;
+        sellInfo[msg.sender][_listNo].listOn = 0;
+        sellInfo[msg.sender][_listNo].owner = address(0);
+        sellInfo[msg.sender][_listNo].noShare = 0;
+        sellInfo[msg.sender][_listNo].yesShare = 0;
 
-    //         if(_noOfShares > userInfo[msg.sender].yesShareAmount){
-    //             revert notEnoughAmount(userInfo[msg.sender].yesShareAmount);
-    //         }
-    //         sellInfo[msg.sender][userInfo[msg.sender].listNo].yesShare = _noOfShares; 
-    //     }
-        
-
-    //     sellInfo[msg.sender][userInfo[msg.sender].listNo].list = true;
-    //     sellInfo[msg.sender][userInfo[msg.sender].listNo].price = _price; 
-    //     sellInfo[msg.sender][userInfo[msg.sender].listNo].listOn = _sellOf;
-    //     sellInfo[msg.sender][userInfo[msg.sender].listNo].owner = msg.sender; 
-        
-    //     userInfo[msg.sender].listNo++;
-    
-    //     emit SellShare(msg.sender, userInfo[msg.sender].listNo, _price);
-    // }
+        // Emit an event for cancellation
+        // emit CancelSellShare(msg.sender, _listNo);
+}
 
     function buyShare(uint256 _listNo, address _owner) external {
         
@@ -362,11 +351,11 @@ contract Wager is Ownable {
         if(winningIndex == 0){
 
             totalWinnerShare = marketInfo[address(this)].originalNoShares;
-            console.log("totalAmount (0): ", totalWinnerShare);
+            console.log("totalWinnerShare (0): ", totalWinnerShare);
         }else{
 
             totalWinnerShare = marketInfo[address(this)].originalYesShares;
-            console.log("totalAmount: (1) ", totalWinnerShare);
+            console.log("totalWinnerShare: (1) ", totalWinnerShare);
         }
 
         for (uint256 i = 0; i < totalUsers; i++) {
