@@ -1,17 +1,18 @@
-// SPDX-License-Identifier: MIT
+ // SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Contracts ^5.0.0
-
 pragma solidity ^0.8.26;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "hardhat/console.sol";
 
-contract Wager is Ownable {
+contract MyContract is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
-    ERC20 public usdcToken;
+    ERC20Upgradeable public usdcToken;
 
-    struct MarketInfo {
+     struct MarketInfo {
 
         bool resolved;
         uint256 startTime;
@@ -46,7 +47,22 @@ contract Wager is Ownable {
         uint256 price;
         uint256 noShare;
         uint256 yesShare;
+        uint256 amount;
         uint256 listOn;
+    }
+
+    struct SellAllowance{
+        uint256 sellOn;
+        uint256 shares;
+        uint256 sellPrice;
+    }
+
+    struct Allowance {
+        uint256 betOn;
+        uint256 amount;
+        uint256 buyListNo;
+        uint256 cancelListId;
+        mapping (uint256 => SellAllowance) sellAllowance;
     }
 
     uint256 public totalUsers;
@@ -57,12 +73,17 @@ contract Wager is Ownable {
     mapping(address => bool) public alreadyAdded;
     mapping(address => MarketInfo) public marketInfo;
     mapping(address => mapping(uint256 => SellInfo)) public sellInfo;
+    mapping(address => mapping (address => Allowance)) public allowance;
     
 
     event Bet(address indexed user,uint256 indexed _amount,uint256 _betOn);
     event SellShare(address indexed user, uint256 listNo,  uint256 onPrice);
-    event BuyShares(address buyer, address seller, uint256 _noOfshares, uint256 onPrice);
+    event BuyShares(address buyer, address seller, uint256 _amountBBuyed, uint256 onPrice);
     event ResolveMarket(address ownerAddress, uint256 ownerAmount, uint256 totalwinShares, uint256 totalAmoount);
+    event AllowanceForSell(address _from, address _to,uint256 sellOn,uint256 shares,uint256 sellPrice);
+    event CancelAllowanceForSell(address _from,address _to,uint256 _listid);
+    event AllowanceForBuy(address _from,address _to,uint256 _buyLlistNo);
+    event BetAllowance(address from, address to, uint256 betOn, uint256 amount);
 
     error marketResolved();
     error notBet(bool beted);
@@ -74,6 +95,7 @@ contract Wager is Ownable {
     error transferFaild(bool transferd);
     error transferFailed(bool transfered);
     error wrongBetIndex(uint256 betIndex);
+    error wrongAddress(address wrongAddress);
     error wrongNoOfShares(uint256 _noOfShares);
     error zeroPercentageAmount(uint256 _amount);
     error notEnoughAmount(uint256 _useerAmount);
@@ -83,28 +105,61 @@ contract Wager is Ownable {
     error contractLowbalanceForOwner(uint256 contractBalance);
 
 
-   
-   constructor(
-        address initialOwner,
-        address _usdcToken,
-        uint256 _startTime, 
-        uint256 _endTime 
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
 
-    ) Ownable(initialOwner) {
-
-        profitPercentage = 1000;                                    // 10 %
-        usdcToken = ERC20(_usdcToken);
-        marketInfo[address(this)].endTime = _endTime;
+    function initialize(address initialOwner,address _usdcToken,uint256 _startTime, uint256 _endTime) initializer public {
+       
+        __Ownable_init(initialOwner);
+        __UUPSUpgradeable_init();
+      
         marketInfo[address(this)].startTime = _startTime;
-        marketInfo[address(this)].totalNoShares = 10000 * 1e6;
+        marketInfo[address(this)].endTime = _endTime;
+        
         marketInfo[address(this)].totalYesShares = 10000 * 1e6;
+        marketInfo[address(this)].totalNoShares = 10000 * 1e6;
         
         (marketInfo[address(this)].initialPrice[0],
             marketInfo[address(this)].initialPrice[1]) = PriceCalculation();
             
+        usdcToken = ERC20Upgradeable(_usdcToken);
+        profitPercentage = 1000; // 10 %
     }
 
-     function bet(uint256 _amount, uint256 _betOn) external {
+
+   
+
+   
+
+    function setAllowanceForBet(address _from, address _to, uint256 _amount, uint256 _betOn) public {
+        
+        if(_from == address(0)){
+            revert wrongAddress(_from);
+        }
+
+        if(_to == address(0)){
+            revert wrongAddress(_to);
+        }
+
+        if(_amount == 0){
+            revert wrongAmount(_amount);
+        }
+
+        if(_betOn != 0 && _betOn != 1){
+            revert wrongBetIndex(_betOn);
+        }
+
+        allowance[_from][_to].betOn = _betOn;
+        allowance[_from][_to].amount = _amount;
+
+        emit BetAllowance(_from, _to, allowance[_from][_to].betOn, allowance[_from][_to].amount);
+    }
+
+
+
+    function bet(uint256 _amount, uint256 _betOn) external {
 
         if(_betOn != 0 && _betOn != 1){
             revert wrongBetIndex(_betOn);
@@ -184,12 +239,47 @@ contract Wager is Ownable {
         return(_noPrice,_yesPrice);
     }
 
+
+    function setAllowanceForSellShare(address _from, address _to, uint256 _noOfShares, uint256 _price, uint256 _sellOf, uint256 _listId) public {
+        
+        if(_from == address(0)){
+            revert wrongAddress(_from);
+        }
+
+        if(_to == address(0)){
+            revert wrongAddress(_to);
+        }
+
+        if(_noOfShares == 0){
+            revert wrongNoOfShares(_noOfShares);
+        }
+
+        if(_sellOf != 0 && _sellOf != 1){
+            revert wrongBetIndex(_sellOf);
+        }
+
+        allowance[_from][_to].sellAllowance[_listId].sellOn = _sellOf;
+        allowance[_from][_to].sellAllowance[_listId].shares = _noOfShares;
+        allowance[_from][_to].sellAllowance[_listId].sellPrice = _price;
+        
+
+        emit AllowanceForSell(
+            _from,
+            _to,
+            allowance[_from][_to].sellAllowance[_listId].sellOn,
+            allowance[_from][_to].sellAllowance[_listId].shares,
+            allowance[_from][_to].sellAllowance[_listId].sellPrice
+        );
+    }
+
+    
+
     function sellShare(uint256 _noOfShares, uint256 _price, uint256 _sellOf) external {
         
         if(_sellOf != 0 && _sellOf != 1){
             revert wrongBetIndex(_sellOf);
         }
-        if(_noOfShares <= 0){
+        if(_noOfShares == 0){
             revert wrongNoOfShares(_noOfShares);
         }
         
@@ -232,32 +322,48 @@ contract Wager is Ownable {
         emit SellShare(msg.sender, userInfo[msg.sender].listNo, _price);
     }
 
+    function setAllowanceForCancelShare(address _from, address _to, uint256 _listId) public {
+        
+        if(_from == address(0)){
+            revert wrongAddress(_from);
+        }
+
+        if(_to == address(0)){
+            revert wrongAddress(_to);
+        }
+
+        allowance[_from][_to].cancelListId = _listId;
+        
+
+        emit CancelAllowanceForSell(
+            _from,
+            _to,
+            allowance[_from][_to].cancelListId
+            
+        );
+    }
+
+
     function cancelSellShare(uint256 _listNo) external {
-        // Check if the listing exists
+     
         if (!sellInfo[msg.sender][_listNo].list) {
             revert notListed(_listNo);
         }
 
-        // Check if the listing is already sold
         if (sellInfo[msg.sender][_listNo].sold) {
             revert alreadySold(sellInfo[msg.sender][_listNo].sold);
         }
 
-        // Check if the caller is the owner of the listed shares
         if (sellInfo[msg.sender][_listNo].owner != msg.sender) {
             revert wrongOwner(msg.sender);
         }
 
-        // Determine which shares to remove
         if (sellInfo[msg.sender][_listNo].listOn == 0) {
-            // Cancel "No" shares
             userInfo[msg.sender].noShareAmount += sellInfo[msg.sender][_listNo].noShare;
         } else {
-            // Cancel "Yes" shares
             userInfo[msg.sender].yesShareAmount += sellInfo[msg.sender][_listNo].yesShare;
         }
 
-        // Reset the listing details
         sellInfo[msg.sender][_listNo].list = false;
         sellInfo[msg.sender][_listNo].price = 0;
         sellInfo[msg.sender][_listNo].listOn = 0;
@@ -267,7 +373,26 @@ contract Wager is Ownable {
 
         // Emit an event for cancellation
         // emit CancelSellShare(msg.sender, _listNo);
-}
+    }
+
+    function setAllowanceForBuyShare(address _from, address _to, uint256 _buyListNo) public {
+        
+        if(_from == address(0)){
+            revert wrongAddress(_from);
+        }
+
+        if(_to == address(0)){
+            revert wrongAddress(_to);
+        }
+
+        allowance[_from][_to].buyListNo = _buyListNo;
+        
+        emit AllowanceForBuy(
+            _from,
+            _to,
+            allowance[_from][_to].buyListNo 
+        );
+    }
 
     function buyShare(uint256 _listNo, address _owner) external {
         
@@ -473,6 +598,12 @@ contract Wager is Ownable {
     function userBetOn(address _user, uint256 _betIndex) public view returns (bool) {
         return userInfo[_user].betOn[_betIndex];
     }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        onlyOwner
+        override
+    {}
 }
 
 
