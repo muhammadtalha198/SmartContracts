@@ -2241,18 +2241,6 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         uint256 listOn;
     }
 
-    struct Allowance {
-        mapping(uint256 => bool) betOn;
-        uint256 amount;
-
-        mapping(uint256 => bool) sellOn;
-        uint256 sellShares;
-        uint256 sellPrice;
-
-        uint256 buyListNo;
-        uint256 cancelListId;
-    }
-
     uint256 public totalUsers;
     uint256 public profitPercentage;
 
@@ -2261,7 +2249,6 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
     mapping(address => bool) public alreadyAdded;
     mapping(address => MarketInfo) public marketInfo;
     mapping(address => mapping(uint256 => SellInfo)) public sellInfo;
-    mapping(address => mapping (address => Allowance)) public allowance;
     
 
     event Bet(address indexed user,uint256 indexed _amount,uint256 _betOn);
@@ -2376,11 +2363,11 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             revert ERC2612InvalidSigner(signer, _user);
         }
 
-        bet(_user, owner, value, betOn);
+        bet(_user, value, betOn);
     }
 
 
-    function bet(address _user, address _owner, uint256 _amount, uint256 _betOn) public {
+    function bet(address _user, uint256 _amount, uint256 _betOn) public {
 
         if(_betOn != 0 && _betOn != 1){
             revert wrongBetIndex(_betOn);
@@ -2391,10 +2378,6 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         
         if(marketInfo[address(this)].resolved){
             revert marketResolved();
-        }
-        
-        if(!allowance[_user][_owner].betOn[_betOn] || allowance[_user][_owner].amount != _amount){
-            revert betNotAllowed(allowance[_user][_owner].betOn[_betOn],allowance[_user][_owner].amount);
         }
 
         if(!alreadyAdded[_user]){
@@ -2408,9 +2391,6 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         userInfo[_user].betOn[_betOn] = true;
 
         (marketInfo[address(this)].initialPrice[0],marketInfo[address(this)].initialPrice[1]) = PriceCalculation();
-
-        allowance[_user][_owner].betOn[_betOn] = false;
-        allowance[_user][_owner].amount = 0;
         
         bool success = usdcToken.transferFrom(_user, address(this), _amount);
         if(!success){
@@ -2494,11 +2474,11 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             revert ERC2612InvalidSigner(signer, _user);
         }
 
-        sellShare(_user, owner, _noOfShares, _price,_sellOf);
+        sellShare(_user, _noOfShares, _price,_sellOf);
     }
     
 
-    function sellShare(address _user, address _owner,uint256 _noOfShares, uint256 _price, uint256 _sellOf) public {
+    function sellShare(address _user,uint256 _noOfShares, uint256 _price, uint256 _sellOf) public {
         
         if(_sellOf != 0 && _sellOf != 1){
             revert wrongBetIndex(_sellOf);
@@ -2517,18 +2497,6 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         if(_price <= 0){
             revert wrongPrice(_price);
         }
-
-        if(!allowance[_user][_owner].sellOn[_sellOf] || 
-            allowance[_user][_owner].sellShares != _noOfShares ||
-            allowance[_user][_owner].sellPrice != _price ){
-                
-                revert selllNotAllowed(
-                    allowance[_user][_owner].sellOn[_sellOf],
-                    allowance[_user][_owner].sellShares,
-                    allowance[_user][_owner].sellPrice
-                );
-            }
-        
         
         if(_sellOf == 0){
 
@@ -2553,10 +2521,6 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         sellInfo[_user][userInfo[_user].listNo].owner = _user; 
         
         userInfo[_user].listNo++;
-
-        allowance[_user][_owner].sellOn[_sellOf] = false;
-        allowance[_user][_owner].sellShares = 0;
-        allowance[_user][_owner].sellPrice = _price;
     
         emit SelllShares(_user, userInfo[_user].listNo, _price);
     }
@@ -2587,11 +2551,11 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             revert ERC2612InvalidSigner(signer, _user);
         }
 
-        cancelSellShare(_user, owner, _listNo);
+        cancelSellShare(_user, _listNo);
     }
 
 
-    function cancelSellShare(address _user, address _owner,uint256 _listNo) public {
+    function cancelSellShare(address _user,uint256 _listNo) public {
      
         if (!sellInfo[_user][_listNo].list) {
             revert notListed(sellInfo[_user][_listNo].list);
@@ -2603,10 +2567,6 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
 
         if (sellInfo[_user][_listNo].owner != _user) {
             revert wrongOwner(_user);
-        }
-
-        if (allowance[_user][_owner].cancelListId != _listNo) {
-            revert cancalNotAlllowed(allowance[_user][_owner].cancelListId);
         }
 
         if (sellInfo[_user][_listNo].listOn == 0) {
@@ -2652,7 +2612,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             revert ERC2612InvalidSigner(signer, _user);
         }
 
-        cancelSellShare(_user, owner, _listNo);
+        buyShare(_user, _listNo,_listedOwner);
     }
 
     function buyShare(address _user,uint256 _listNo, address _listedOwner) public {
@@ -2713,6 +2673,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
 
         emit BuyShares(_user,_listedOwner, _noOfshares, sellInfo[_listedOwner][_listNo].price);
     }
+
 
     function resolveMarket(uint256 winningIndex) external   {
         
@@ -2856,6 +2817,5 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
     }
 
 }
-
 
 
