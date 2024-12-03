@@ -2241,6 +2241,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
     }
 
     struct Allowance {
+
         mapping(uint256 => bool) betOn;
         uint256 amount;
 
@@ -2344,6 +2345,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         bytes32 r,
         bytes32 s
     ) public virtual {
+        
         if (block.timestamp > deadline) {
             revert ERC2612ExpiredSignature(deadline);
         }
@@ -2363,50 +2365,71 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         emit PermitForBet(_user,msg.sender,value,betOn,deadline);
     }
 
-    function setAllowanceForBet(address _user, address _owner, uint256 _amount, uint256 _betOn) public checker(_user,_owner) checker2(_amount,_betOn)  {
-
-        allowance[_user][_owner].betOn[_betOn] = true;
-        allowance[_user][_owner].amount = _amount;
-
-        emit BetAllowance(_user, _owner, allowance[_user][_owner].betOn[_betOn], allowance[_user][_owner].amount);
-    }
-
-
-    function bet(address _user, address _owner, uint256 _amount, uint256 _betOn) checker(_user,_owner) checker2(_amount,_betOn)public {
-
-        
-        if(marketInfo[address(this)].resolved){
-            revert marketResolved();
-        }
-        
-        if(!allowance[_user][_owner].betOn[_betOn] || allowance[_user][_owner].amount != _amount){
-            revert betNotAllowed(allowance[_user][_owner].betOn[_betOn],allowance[_user][_owner].amount);
-        }
-
-        if(!alreadyAdded[_user]){
+    function setAllowanceForBet(
+        address _user,
+        address _owner, 
+        uint256 _amount, 
+        uint256 _betOn) 
             
-            eachUser[totalUsers] = _user;
-            alreadyAdded[_user] = true;
-            totalUsers++;
-        }
+        validAddress(_user,_owner)
+        validAmount(_amount,_betOn) public {
 
-        updateInfo(_user, _amount, _betOn);
-        userInfo[_user].betOn[_betOn] = true;
+            allowance[_user][_owner].betOn[_betOn] = true;
+            allowance[_user][_owner].amount = _amount;
 
-        (marketInfo[address(this)].initialPrice[0],marketInfo[address(this)].initialPrice[1]) = PriceCalculation();
-
-        allowance[_user][_owner].betOn[_betOn] = false;
-        allowance[_user][_owner].amount = 0;
-        
-        bool success = usdcToken.transferFrom(_user, address(this), _amount);
-        if(!success){
-            revert transferFailed(success);
-        }
-
-        emit Bet(_user, _amount, _betOn);
+            emit BetAllowance(_user, _owner, allowance[_user][_owner].betOn[_betOn], allowance[_user][_owner].amount);
     }
 
-    function updateInfo(address _user,uint256 _amount, uint256 _betOn)  private {
+
+    function bet(
+        address _user,
+        address _owner, 
+        uint256 _amount, 
+        uint256 _betOn
+    )  
+        validAddress(_user,_owner) 
+        validAmount(_amount,_betOn) public {
+
+            if(marketInfo[address(this)].resolved){
+                revert marketResolved();
+            }
+            
+            if(!allowance[_user][_owner].betOn[_betOn] || allowance[_user][_owner].amount != _amount){
+                revert betNotAllowed(allowance[_user][_owner].betOn[_betOn],allowance[_user][_owner].amount);
+            }
+
+            if(!alreadyAdded[_user]){
+                
+                eachUser[totalUsers] = _user;
+                alreadyAdded[_user] = true;
+                totalUsers++;
+            }
+
+            updateInfo(_user, _amount, _betOn);
+            userInfo[_user].betOn[_betOn] = true;
+
+            (marketInfo[address(this)].initialPrice[0],marketInfo[address(this)].initialPrice[1]) = PriceCalculation();
+
+            allowance[_user][_owner].betOn[_betOn] = false;
+            allowance[_user][_owner].amount = 0;
+            
+            bool success = usdcToken.transferFrom(_user, address(this), _amount);
+            if(!success){
+                revert transferFailed(success);
+            }
+
+            emit Bet(_user, _amount, _betOn);
+    }
+
+
+
+    function updateInfo(
+        address _user,
+        uint256 _amount, 
+        uint256 _betOn 
+    )  
+        
+    private {
         
         uint256 _totalShares = marketInfo[address(this)].totalYesShares * marketInfo[address(this)].totalNoShares;
         uint256 userShares;
@@ -2452,6 +2475,9 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         return(_noPrice,_yesPrice);
     }
 
+    
+    
+    
     function SellSharePermit(
         address _user,
         address owner,
@@ -2482,7 +2508,20 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         emit PermitForSellShare(_user,msg.sender, _noOfShares, _price,_sellOf,deadline);
     }
 
-    function setAllowanceForSellShare(address _user, address _owner, uint256 _noOfShares, uint256 _price, uint256 _sellOf) public  checker(_user,_owner) checker3( _price, _sellOf, _noOfShares) {
+    
+    function setAllowanceForSellShare(
+        address _user, 
+        address _owner, 
+        uint256 _noOfShares, 
+        uint256 _price, 
+        uint256 _sellOf
+        
+    )  
+    
+        validAddress(_user,_owner) 
+        checker3( _price, _sellOf, _noOfShares) 
+        
+    public {
 
         allowance[_user][_owner].sellOn[_sellOf] = true;
         allowance[_user][_owner].sellShares = _noOfShares;
@@ -2499,7 +2538,16 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
     }
     
 
-    function sellShare(address _user, address _owner,uint256 _noOfShares, uint256 _price, uint256 _sellOf) public checker(_user,_owner) checker3( _price, _sellOf, _noOfShares) {
+    function sellShare(address _user, 
+        address _owner,
+        uint256 _noOfShares, 
+        uint256 _price, 
+        uint256 _sellOf
+    )  
+        validAddress(_user,_owner) 
+        checker3( _price, _sellOf, _noOfShares) 
+
+    public {
         
         if(marketInfo[address(this)].resolved){
             revert marketResolved();
@@ -2536,7 +2584,12 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         emit SellShares(_user, userInfo[_user].listNo, _price);
     }
 
-    function setSellInfo(uint256 _sellOf, address _user, uint256 _noOfShares) private {
+    function setSellInfo(
+        uint256 _sellOf,
+        address _user, 
+        uint256 _noOfShares
+        
+    ) private {
         
         if(_sellOf == 0){
 
@@ -2588,7 +2641,14 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
     }
 
 
-    function setAllowanceForCancelShare(address _user, address _owner, uint256 _listId) public  checker(_user,_owner){
+    function setAllowanceForCancelShare(
+        address _user, 
+        address _owner, 
+        uint256 _listId
+    )    
+        validAddress(_user,_owner)
+        
+    public {
 
         allowance[_user][_owner].cancelListId = _listId;
         
@@ -2601,18 +2661,17 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
     }
 
 
-    function cancelSellShare(address _user,address owner, uint256 _listNo) public {
+    function cancelSellShare(
+        address _user,
+        address owner, 
+        uint256 _listNo
+    )  
+        checker4(_user,_listNo) 
+
+    public {
         
         if(allowance[_user][owner].cancelListId != _listNo){
             revert cancalNotAlllowed(allowance[_user][owner].cancelListId);
-        }
-     
-        if (!sellInfo[_user][_listNo].list) {
-            revert notListed(sellInfo[_user][_listNo].list);
-        }
-
-        if (sellInfo[_user][_listNo].sold) {
-            revert alreadySold(sellInfo[_user][_listNo].sold);
         }
 
         if (sellInfo[_user][_listNo].owner != _user) {
@@ -2665,7 +2724,14 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
 
     }
 
-    function setAllowanceForBuyShare(address _user, address _owner, uint256 _buyListNo) public checker(_user,_owner){
+    function setAllowanceForBuyShare(
+        address _user, 
+        address _owner, 
+        uint256 _buyListNo
+    )  
+        validAddress(_user,_owner)
+        
+    public {
 
         allowance[_user][_owner].buyListNo = _buyListNo;
         
@@ -2676,19 +2742,16 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         );
     }
 
-    modifier checker4(address _user, address _owner,uint256 _listNo) {
-        
-        if(!sellInfo[_owner][_listNo].list){
-            revert notListed(sellInfo[_owner][_listNo].list);
-        }
 
-        if(sellInfo[_owner][_listNo].sold){
-            revert alreadySold(sellInfo[_owner][_listNo].sold);
-        }
-        _;
-    }
+    function buyShare(
+        address _user,
+        address _owner,
+        uint256 _listNo, 
+        address _listedOwner
+    )  
+        checker4(_listedOwner,_listNo) 
 
-    function buyShare(address _user,address _owner,uint256 _listNo, address _listedOwner) public checker4(_user, _listedOwner,_listNo) {
+    public {
 
         if( allowance[_user][_owner].buyListNo != _listNo ){
             revert buyShareNotAlllowed(allowance[_user][_owner].buyListNo);
@@ -2895,7 +2958,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         return _domainSeparatorV4();
     }
 
-    modifier checker(address _user, address _owner) {
+    modifier validAddress(address _user, address _owner) {
         
         if(_user == address(0)){
             revert wrongAddress(_user);
@@ -2907,7 +2970,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         _;
     }
 
-    modifier checker2(uint256 _amount, uint256 _betOn) {
+    modifier validAmount(uint256 _amount, uint256 _betOn) {
         
         if(_amount == 0){
             revert wrongAmount(_amount);
@@ -2934,21 +2997,17 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         _;
     }
 
-    // modifier checker4(address _user, address _owner,uint256 _listNo, address  _listedOwner) {
+    modifier checker4(address _owner,uint256 _listNo) {
         
-    //     if( allowance[_user][_owner].buyListNo != _listNo ){
-    //         revert buyShareNotAlllowed(allowance[_user][_owner].buyListNo);
-    //     }
-        
-    //     if(!sellInfo[_listedOwner][_listNo].list){
-    //         revert notListed(sellInfo[_listedOwner][_listNo].list);
-    //     }
+        if(!sellInfo[_owner][_listNo].list){
+            revert notListed(sellInfo[_owner][_listNo].list);
+        }
 
-    //     if(sellInfo[_listedOwner][_listNo].sold){
-    //         revert alreadySold(sellInfo[_listedOwner][_listNo].sold);
-    //     }
-    //     _;
-    // }
+        if(sellInfo[_owner][_listNo].sold){
+            revert alreadySold(sellInfo[_owner][_listNo].sold);
+        }
+        _;
+    }
 
 }
 
