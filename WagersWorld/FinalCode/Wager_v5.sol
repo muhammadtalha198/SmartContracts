@@ -1,6 +1,5 @@
 
 
-
 // File: @openzeppelin/contracts/token/ERC20/extensions/Permit.sol
 // SPDX-License-Identifier: MIT
 
@@ -2266,19 +2265,26 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
 
     event Bet(address indexed user,uint256 indexed _amount,uint256 _betOn);
     event SellShares(address indexed user, uint256 listNo,  uint256 onPrice);
-    event BuyShares(address buyer, address seller, uint256 _amountBBuyed, uint256 onPrice);
+    event CancelSellShare( address _user, address owner, uint256 _listNo);
+    event BuyShares(address buyer, address seller, uint256 _amountBuyed, uint256 onPrice);
     event ResolveMarket(address ownerAddress, uint256 ownerAmount, uint256 totalwinShares, uint256 totalAmoount);
+   
+    event BetAllowance(address from, address to, bool betOn, uint256 amount);
     event AllowanceForSell(address _user, address _owner,bool sellOn,uint256 shares,uint256 sellPrice);
     event CancelAllowanceForSell(address _user,address _owner,uint256 _listid);
     event AllowanceForBuy(address _user,address _owner,uint256 _buyLlistNo);
-    event BetAllowance(address from, address to, bool betOn, uint256 amount);
+
+    event PermitForBet(address user,address owner,uint256 value, uint256 betOn, uint256 deadline);
+    event PermitForSellShare(address _user,address owner, uint256 _noOfShares, uint256 _price,uint256 _sellOf, uint256 deadline);
+    event PermitForCancelShare(address user,address owner,uint256 listNo, uint256 deadline);
+    event PermitForBuyShare(address _user,address owner, uint256  _listNo, address _listedOwner, uint256 deadline);
 
     error marketResolved();
     error notBet(bool beted);
     error alreadySold(bool sold);
-    error wrongPrice(uint256 price);
     error notListed(bool listed);
     error wrongOwner(address owner);
+    error wrongPrice(uint256 price);
     error wrongAmount(uint256 amount);
     error transferFaild(bool transferd);
     error transferFailed(bool transfered);
@@ -2288,6 +2294,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
     error zeroPercentageAmount(uint256 _amount);
     error notEnoughAmount(uint256 _useerAmount);
     error notResolvedBeforeTime(uint256 endTime);
+    error buyShareNotAlllowed(uint256 buyListId);
     error cancalNotAlllowed(uint256 cancelListId);
     error contractLowbalance(uint256 contractBalance);
     error betNotAllowed(bool betAgaiinst, uint256 amount);
@@ -2323,10 +2330,10 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
 
      
     bytes32 private constant PERMIT_TYPEHASH1 = keccak256("BetPermit(address user,address owner,uint256 value,uint256 betOn,uint256 nonce,uint256 deadline)");
-    bytes32 private constant PERMIT_TYPEHASH2 = keccak256("SellSharePermit(address user,address owner,uint256 noOfShares,uint256 price, uint256 nonce,uint256 sellOf, uint256 deadline)");
     bytes32 private constant PERMIT_TYPEHASH3 = keccak256("cancelSellSharePermit(address user,address owner,uint256 listNo,uint256 nonce,uint256 deadline)");
     bytes32 private constant PERMIT_TYPEHASH4 = keccak256("BuySharePermit(address user,address owner,uint256 listNo,address listedOwner,uint256 nonce,uint256 deadline)");
-    
+    bytes32 private constant PERMIT_TYPEHASH2 = keccak256("SellSharePermit(address user,address owner,uint256 noOfShares,uint256 price, uint256 nonce,uint256 sellOf, uint256 deadline)");
+
     function BetPermit(
         address _user,
         address owner,
@@ -2350,7 +2357,10 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             revert ERC2612InvalidSigner(signer, _user);
         }
 
+        setAllowanceForBet(_user,owner,value,betOn);
         bet(_user,owner, value, betOn);
+
+        emit PermitForBet(_user,msg.sender,value,betOn,deadline);
     }
 
     function setAllowanceForBet(address _user, address _owner, uint256 _amount, uint256 _betOn) public {
@@ -2463,11 +2473,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         
         return(_noPrice,_yesPrice);
     }
-     
-    
-   
 
-    
     function SellSharePermit(
         address _user,
         address owner,
@@ -2492,7 +2498,10 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             revert ERC2612InvalidSigner(signer, _user);
         }
 
+        setAllowanceForSellShare(_user,owner, _noOfShares, _price,_sellOf);
         sellShare(_user,owner, _noOfShares, _price,_sellOf);
+
+         emit PermitForSellShare(_user,msg.sender, _noOfShares, _price,_sellOf,deadline);
     }
 
     function setAllowanceForSellShare(address _user, address _owner, uint256 _noOfShares, uint256 _price, uint256 _sellOf) public {
@@ -2552,13 +2561,14 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             allowance[_user][_owner].sellShares != _noOfShares ||
             allowance[_user][_owner].sellPrice != _price ){
                 
-                revert selllNotAllowed(
-                    allowance[_user][_owner].sellOn[_sellOf],
-                    allowance[_user][_owner].sellShares,
-                    allowance[_user][_owner].sellPrice
-                );
-            }
-        
+            revert selllNotAllowed(
+                allowance[_user][_owner].sellOn[_sellOf],
+                allowance[_user][_owner].sellShares,
+                allowance[_user][_owner].sellPrice
+            );
+        }
+
+        userInfo[msg.sender].listNo++; 
         
         if(_sellOf == 0){
 
@@ -2581,8 +2591,6 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         sellInfo[msg.sender][userInfo[msg.sender].listNo].price = _price; 
         sellInfo[msg.sender][userInfo[msg.sender].listNo].listOn = _sellOf;
         sellInfo[msg.sender][userInfo[msg.sender].listNo].owner = msg.sender; 
-        
-        userInfo[msg.sender].listNo++;
 
         allowance[_user][_owner].sellOn[_sellOf] = false;
         allowance[_user][_owner].sellShares = 0;
@@ -2616,7 +2624,10 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             revert ERC2612InvalidSigner(signer, _user);
         }
 
-        cancelSellShare(_user, _listNo);
+        setAllowanceForCancelShare(_user, owner, _listNo);
+        cancelSellShare(_user, owner, _listNo);
+
+        emit PermitForCancelShare(_user,msg.sender, _listNo,deadline);
     }
 
     function setAllowanceForCancelShare(address _user, address _owner, uint256 _listId) public {
@@ -2641,7 +2652,11 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
     }
 
 
-    function cancelSellShare(address _user,uint256 _listNo) public {
+    function cancelSellShare(address _user,address owner, uint256 _listNo) public {
+        
+        if(allowance[_user][owner].cancelListId != _listNo){
+            revert cancalNotAlllowed(allowance[_user][owner].cancelListId);
+        }
      
         if (!sellInfo[_user][_listNo].list) {
             revert notListed(sellInfo[_user][_listNo].list);
@@ -2668,8 +2683,10 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         sellInfo[_user][_listNo].noShare = 0;
         sellInfo[_user][_listNo].yesShare = 0;
 
-        // Emit an event for cancellation
-        // emit CancelSellShare(_user, _listNo);
+        allowance[_user][owner].cancelListId = 0;
+
+    
+        emit CancelSellShare(_user,owner, _listNo);
     }
 
      
@@ -2698,7 +2715,11 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             revert ERC2612InvalidSigner(signer, _user);
         }
 
-        buyShare(_user, _listNo,_listedOwner);
+        setAllowanceForBuyShare(_user,owner, _listNo);
+        buyShare(_user,owner, _listNo,_listedOwner);
+
+        emit PermitForBuyShare(_user,msg.sender, _listNo,_listedOwner,deadline);
+
     }
 
     function setAllowanceForBuyShare(address _user, address _owner, uint256 _buyListNo) public {
@@ -2720,7 +2741,11 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         );
     }
 
-    function buyShare(address _user,uint256 _listNo, address _listedOwner) public {
+    function buyShare(address _user,address _owner,uint256 _listNo, address _listedOwner) public {
+
+        if( allowance[_user][_owner].buyListNo != _listNo ){
+            revert buyShareNotAlllowed(allowance[_user][_owner].buyListNo);
+        }
         
         if(!sellInfo[_listedOwner][_listNo].list){
             revert notListed(sellInfo[_listedOwner][_listNo].list);
@@ -2765,6 +2790,8 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             alreadyAdded[_user] = true;
             totalUsers++;
         }
+
+        allowance[_user][_owner].buyListNo = 0;
 
         bool success = usdcToken.transferFrom(
             _user,
