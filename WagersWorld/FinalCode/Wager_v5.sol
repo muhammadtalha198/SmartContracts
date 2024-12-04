@@ -2271,7 +2271,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
     event ResolveMarket(address ownerAddress, uint256 ownerAmount, uint256 totalwinShares, uint256 totalAmoount);
    
     event BetAllowance(address from, address to, bool betOn, uint256 amount);
-    event AllowanceForSell(address _user, address _owner,bool sellOn,uint256 shares,uint256 sellPrice);
+    event AllowanceForSell(address _user, address _owner,uint256 shares,uint256 sellPrice);
     event CancelAllowanceForSell(address _user,address _owner,uint256 _listid);
     event AllowanceForBuy(address _user,address _owner,uint256 _buyLlistNo);
 
@@ -2287,6 +2287,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
     error wrongOwner(address owner);
     error wrongPrice(uint256 price);
     error wrongAmount(uint256 amount);
+    error wrongListNo(uint256 listId);
     error transferFaild(bool transferd);
     error transferFailed(bool transfered);
     error wrongBetIndex(uint256 betIndex);
@@ -2528,13 +2529,13 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         allowance[_user][_owner].sellPrice = _price;
         
 
-        // emit AllowanceForSell(
-        //     _user,
-        //     _owner,
-        //     allowance[_user][_owner].sellOn[_sellOf],
-        //     allowance[_user][_owner].sellShares,
-        //     allowance[_user][_owner].sellPrice
-        // );
+        emit AllowanceForSell(
+            _user,
+            _owner,
+            // allowance[_user][_owner].sellOn[_sellOf],
+            allowance[_user][_owner].sellShares,
+            allowance[_user][_owner].sellPrice
+        );
     }
     
 
@@ -2548,7 +2549,6 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         isMarketReesolved()
         validAddress(_user,_owner) 
         checkSellInfo( _price, _sellOf, _noOfShares)
-        checkSellAllowance( _user, _owner, _price, _sellOf, _noOfShares)
 
     public {
         
@@ -2557,8 +2557,18 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             revert notBet(userInfo[_user].betOn[_sellOf]);
         }
 
+        if(!allowance[_user][_owner].sellOn[_sellOf] || 
+            allowance[_user][_owner].sellShares != _noOfShares ||
+            allowance[_user][_owner].sellPrice != _price ){
+                
+            revert selllNotAllowed(
+                allowance[_user][_owner].sellOn[_sellOf],
+                allowance[_user][_owner].sellShares,
+                allowance[_user][_owner].sellPrice
+            );
+        }
+
         userInfo[_user].listNo++; 
-        
         setSellInfo(_user, _owner,_noOfShares,_price,_sellOf);
     
         emit SellShares(_user, userInfo[_user].listNo, _price);
@@ -2641,6 +2651,10 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         
     public {
 
+        if(_listId == 0){
+            revert wrongListNo(_listId);
+        }
+
         allowance[_user][_owner].cancelListId = _listId;
         
         emit CancelAllowanceForSell(
@@ -2657,7 +2671,8 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         address owner, 
         uint256 _listNo
     )  
-        checker4(_user,_listNo) 
+        validAddress(_user,owner)
+        checkBuyShare(_user,_listNo) 
 
     public {
         
@@ -2669,17 +2684,21 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             revert wrongOwner(_user);
         }
 
+        allowance[_user][owner].cancelListId = 0;
+        setCancelInfo( _user, _listNo);
+    
+        emit CancelSellShare(_user,owner, _listNo);
+    }
+
+    function setCancelInfo(address _user, uint256 _listNo) private {
+
         sellInfo[_user][_listNo].list = false;
         sellInfo[_user][_listNo].price = 0;
-        // sellInfo[_user][_listNo].listOn = 0;
+        sellInfo[_user][_listNo].listOn = 0;
         sellInfo[_user][_listNo].owner = address(0);
         sellInfo[_user][_listNo].noShare = 0;
         sellInfo[_user][_listNo].yesShare = 0;
 
-        allowance[_user][owner].cancelListId = 0;
-
-    
-        emit CancelSellShare(_user,owner, _listNo);
     }
 
      
@@ -2723,6 +2742,11 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         
     public {
 
+
+        if(_buyListNo == 0){
+            revert wrongListNo(_buyListNo);
+        }
+
         allowance[_user][_owner].buyListNo = _buyListNo;
         
         emit AllowanceForBuy(
@@ -2739,25 +2763,21 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         uint256 _listNo, 
         address _listedOwner
     )  
-        checker4(_listedOwner,_listNo)
         isMarketReesolved() 
+        validAddress(_user,_owner)
+        checkBuyShare(_listedOwner,_listNo)
 
     public {
 
         if( allowance[_user][_owner].buyListNo != _listNo ){
             revert buyShareNotAlllowed(allowance[_user][_owner].buyListNo);
         }
-        
-        
 
         if(sellInfo[_listedOwner][_listNo].owner != _listedOwner){
             revert wrongOwner(_listedOwner);
         }
 
-        uint256 _noOfshares = setBuyInfo(_user, _listedOwner, _listNo);
-        
-        userInfo[_user].betOn[sellInfo[_listedOwner][_listNo].listOn] = true;
-        sellInfo[_listedOwner][_listNo].sold = true;
+        uint256 _noOfshares = setBuyInfo(_user,_owner, _listedOwner, _listNo);
 
         if(!alreadyAdded[_user]){
             
@@ -2765,8 +2785,6 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             alreadyAdded[_user] = true;
             totalUsers++;
         }
-
-        allowance[_user][_owner].buyListNo = 0;
 
         bool success = usdcToken.transferFrom(
             _user,
@@ -2781,7 +2799,7 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         emit BuyShares(_user,_listedOwner, _noOfshares, sellInfo[_listedOwner][_listNo].price);
     }
 
-    function setBuyInfo(address _user, address _listedOwner, uint256 _listNo) private returns (uint256 _noOfshares) {
+    function setBuyInfo(address _user,address _owner, address _listedOwner, uint256 _listNo) private returns (uint256 _noOfshares) {
         
         if(sellInfo[_listedOwner][_listNo].listOn == 0){
             
@@ -2799,6 +2817,11 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
             userInfo[_user].yesShareAmount += _noOfshares;
             userInfo[_user].yesBetAmount += sellInfo[_listedOwner][_listNo].price;
         }
+
+        userInfo[_user].betOn[sellInfo[_listedOwner][_listNo].listOn] = true;
+        sellInfo[_listedOwner][_listNo].sold = true;
+
+        allowance[_user][_owner].buyListNo = 0;
 
         return _noOfshares;
 
@@ -3004,8 +3027,12 @@ contract MyContract is Permit, EIP712, Nonces, Ownable {
         _;
     }
 
-    modifier checker4(address _owner,uint256 _listNo) {
+    modifier checkBuyShare(address _owner,uint256 _listNo) {
         
+        if(_listNo == 0){
+            revert wrongListNo(_listNo);
+        }
+
         if(!sellInfo[_owner][_listNo].list){
             revert notListed(sellInfo[_owner][_listNo].list);
         }
