@@ -2188,6 +2188,7 @@ interface IERC20 {
     function transferFrom(address sender,address recipient,uint256 amount) external returns (bool);
 }
 
+import "hardhat/console.sol";
 
 pragma solidity ^0.8.20;
 
@@ -2245,13 +2246,13 @@ contract Settlement is Permit, EIP712, Nonces {
 
     function trade(
         
-        Order memory makerOrder,
-        uint8 makerSignature_v,
-        bytes32 makerSignature_r,
-        bytes32 makerSignature_s,
-        uint8 takerSignature_v,
-        bytes32 takerSignature_r,
-        bytes32 takerSignature_s
+        Order memory makerOrder
+        // uint8 makerSignature_v,
+        // bytes32 makerSignature_r,
+        // bytes32 makerSignature_s,
+        // uint8 takerSignature_v,
+        // bytes32 takerSignature_r,
+        // bytes32 takerSignature_s
     ) external  {
         
         // Signature verification
@@ -2278,27 +2279,48 @@ contract Settlement is Permit, EIP712, Nonces {
         //     "Invalid  signature");
 
         uint256 senderBalance =  IERC20(makerOrder.tokenIn).balanceOf(makerOrder.taker);
+        console.log("senderBalance: ", senderBalance);
+
 
         // Include leftover amount from previous orders
         uint256 remainingAmount = userLeftAmount[makerOrder.maker];
+        console.log("remainingAmount: ", remainingAmount);
+
         uint256 totalOrderAmount = makerOrder.amountOut + remainingAmount;
+        console.log("totalOrderAmount: ", totalOrderAmount);
 
         uint256 sendAmount;
         
         if (partialAllowed) {
         // Adjust sendAmount to be no more than maxAmountOut
             if (totalOrderAmount > makerOrder.maxAmountOut) {
+                
+                console.log("totalOrderAmount > makerOrder.maxAmountOut: ", true);
+
                 sendAmount = makerOrder.maxAmountOut;
+                console.log("sendAmount: ", sendAmount);
+                
                 userLeftAmount[makerOrder.maker] = totalOrderAmount - sendAmount; // Update leftover balance
+                console.log("userLeftAmount[makerOrder.maker]: ", userLeftAmount[makerOrder.maker]);
+
             } else {
                 sendAmount = totalOrderAmount;
+                console.log("sendAmount: ", sendAmount);
+
                 userLeftAmount[makerOrder.maker] = 0; // No leftover if fully fulfilled
+                console.log("userLeftAmount[makerOrder.maker]: ", userLeftAmount[makerOrder.maker]);
             }
 
             // Further adjust sendAmount if taker's balance is insufficient
             if (senderBalance < sendAmount) {
+
+                console.log("senderBalance < sendAmount: ", true);
+
                 sendAmount = senderBalance; // Use available balance
+                console.log("sendAmount: ", sendAmount);
+
                 userLeftAmount[makerOrder.maker] += totalOrderAmount - sendAmount; // Add remaining to leftover
+                console.log("userLeftAmount[makerOrder.maker]: ", userLeftAmount[makerOrder.maker]);
             }
         } else {
             // Partial fills not allowed
@@ -2309,7 +2331,6 @@ contract Settlement is Permit, EIP712, Nonces {
             userLeftAmount[makerOrder.maker] = 0;
         }
     
-
         // Atomic transfer
         require(
             IERC20(makerOrder.tokenIn).transferFrom(makerOrder.maker, makerOrder.taker, makerOrder.amountIn),
@@ -2355,12 +2376,14 @@ contract Settlement is Permit, EIP712, Nonces {
 
         return true;
     }
-
+    
+    // Incasee have to send the amount manually 
     function transferRemaining(address tokenOut, address userAddress, uint256 amount) external onlyOwner {
         
         require(userAddress != address(0), "worng Addrees");
         require(amount >= userLeftAmount[userAddress], "worng Addrees");
 
+        userLeftAmount[userAddress] -= amount;
         require(
             IERC20(tokenOut).transferFrom(msg.sender,userAddress, amount),
             "Taker transfer failed"
@@ -2394,6 +2417,25 @@ contract Settlement is Permit, EIP712, Nonces {
 }
 
 
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+// ["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4","0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2","0x2b7fE14E8ee02AE8033437d458e28c644D4458Fe","10000000000000000000","0xb634247Abf7A50Dd7b9Cf6671A3e83F34f5f78D0","10000000000000000000","1","1","20000000000000000000"]
+// ["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4","0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2","0x2b7fE14E8ee02AE8033437d458e28c644D4458Fe",10000000000000000000,"0xb634247Abf7A50Dd7b9Cf6671A3e83F34f5f78D0",10000000000000000000,1,1,"20000000000000000000"]
 
 
 // Page | 4 
