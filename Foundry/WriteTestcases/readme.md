@@ -4,6 +4,8 @@ create test cases for smart contracts using foundry
 - forge test
 - forge test -vvvv
 - forge test --match-path test/HelloWorld.t.sol
+- - forge test --match-path test/HelloWorld.t.sol --gas-report
+
 
 
 
