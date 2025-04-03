@@ -1,41 +1,26 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.26;
 
-import {Test, console} from "forge-std/Test.sol";
-import {stdError} from "forge-std/StdError.sol";
-import {Counter} from "../src/Counter.sol";
+import "forge-std/console.sol";
 
-contract CounterTest is Test {
-    Counter public counter;
+contract Counter {
+    uint256 public count;
 
-    function setUp() public {
-        counter = new Counter();
-
+    // Function to get the current count
+    function get() public view returns (uint256) {
+        return count;
     }
 
-    function test_Increment() public {
-        counter.inc();
-        assertEq(counter.get(), 1);
+    // Function to increment count by 1
+    function inc() public {
+        console.log("Incrementing count");
+        console.log("Count before increment:", count);
+        count += 1;
     }
 
-    function test_Decrement() public {
-        counter.inc();  
-        counter.inc();
-        counter.dec();
-
-        assertEq(counter.get(), 1);
+    // Function to decrement count by 1
+    function dec() public {
+        // This function will fail if count = 0
+        count -= 1;
     }
-
-     function test_Invrement_Decrement() public {
-        counter.inc();
-        counter.dec();
-        assertEq(counter.get(), 0);
-    }
-
-    function test_Increment_Revert() public {
-        // vm.expectRevert("Counter underflow");
-        vm.expectRevert(stdError.arithmeticError);
-        counter.dec();
-    }
-   
 }
