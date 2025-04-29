@@ -600,6 +600,7 @@ contract Bridge is Ownable {
     bytes32 public  IMAGE_ID;
     uint64 public outwardNonce;
     uint256[] public inwardNonce;
+    uint256 public lastInwardNonce;
     bytes32 public lastFinalizedHash;
     
 
@@ -643,8 +644,7 @@ contract Bridge is Ownable {
     error InvalidBeneficiary(address beneficiary);
     error InvalidTokenAddress(address tokenAddress);
     error InvalidVerifierAddress(address verifierAddress);
-    
-    error NonceSequenceViolation(uint256 previousNonce, uint256 currentNonce);
+    error NonceSequenceViolation(uint256 expected, uint256 actual);
 
 
     constructor(address verifierAddress, address tokenAddress, bytes32 _imageId,address initialOwner) Ownable(initialOwner) {
@@ -709,6 +709,14 @@ contract Bridge is Ownable {
         if (transfers.length > 0) {
 
             for (uint256 i = 0; i < transfers.length; i++) {
+
+                uint256 expected = lastInwardNonce + 1;
+                uint256 actual = transfers[i].nonce;
+
+                if (actual != expected) {
+                    revert NonceSequenceViolation(expected, actual);
+                }
+                
                 Transfer memory transfer = transfers[i];
                 
                 if (i > 0) {
