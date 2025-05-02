@@ -676,14 +676,14 @@ contract Bridge is Ownable {
     }
 
 
-    function bridgeWithVerificationDebug(bytes calldata seal, bytes calldata journal, bytes calldata postStateJournal) external {
-        try verifierRouter.verifyWithJournal(seal, IMAGE_ID, journal) {
-            _processVerifiedTransaction(postStateJournal);
+    function bridgeWithVerification(bytes calldata seal, bytes calldata journal) external {
+        try verifier.verifyWithJournal(seal, IMAGE_ID, journal) {
+            _processVerifiedTransaction(journal);
             emit VerificationSuccess(IMAGE_ID, sha256(journal));
         } catch Error(string memory reason) {
-            emit VerificationFaild(IMAGE_ID, reason);
+            emit VerificationFailed(IMAGE_ID, reason);
         } catch (bytes memory) {
-            emit VerificationFaild(IMAGE_ID, "Low-level verification error");
+            emit VerificationFailed(IMAGE_ID, "Low-level verification error");
         }
     }
 
