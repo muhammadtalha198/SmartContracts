@@ -631,7 +631,12 @@ contract Bridge is Ownable {
     event TokenContractChanged(address oldToken, address newToken);
     event VerificationSuccess(bytes32 indexed imageId, bytes32 journalHash);
     event VerificationFaild(bytes32 indexed imageId, string reason);
+    event TestHashUpdated(bytes32 newValue, uint256 timestamp);
+    event ImageIdUpdated(bytes32 newValue, uint256 timestamp);
 
+
+    error InvalidHash();
+    error InvalidImageID();
     error InvalidHashSequence();
     error InvalidHashLength();
     error BatchAlreadyProcessed();
@@ -794,5 +799,23 @@ contract Bridge is Ownable {
 
     function getinwardNonceCount() external view returns (uint256) {
         return inwardNonce.length;
+    }
+
+    //In case u need to them!
+
+    function setlastFinalizedHash(bytes32 _newHash) external onlyOwner {
+       
+        require(_newHash != bytes32(0), "Hash cannot be zero");
+        lastFinalizedHash = _newHash;
+        
+        emit TestHashUpdated(_newHash, block.timestamp);
+    }
+
+    function setImageID(bytes32 _newImageID) external onlyOwner {
+        
+        require(_newImageID != bytes32(0), "Image ID cannot be zero");
+        IMAGE_ID = _newImageID;
+        
+        emit ImageIdUpdated(_newImageID, block.timestamp);
     }
 }
